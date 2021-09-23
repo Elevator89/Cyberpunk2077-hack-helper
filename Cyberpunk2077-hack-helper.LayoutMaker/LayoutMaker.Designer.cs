@@ -29,6 +29,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMaker
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutMaker));
 			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.mainMenu = new System.Windows.Forms.MenuStrip();
@@ -45,13 +46,19 @@ namespace Cyberpunk2077_hack_helper.LayoutMaker
 			this.openImageDialog = new System.Windows.Forms.OpenFileDialog();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
-			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+			this.MatixPosXUpDown = new System.Windows.Forms.NumericUpDown();
+			this.layoutBindingSource = new System.Windows.Forms.BindingSource(this.components);
+			this.pointControl1 = new Cyberpunk2077_hack_helper.LayoutMaker.PointControl();
+			this.layoutTableBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.mainMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
 			this.splitContainer.Panel2.SuspendLayout();
 			this.splitContainer.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.MatixPosXUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.layoutBindingSource)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.layoutTableBindingSource)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// pictureBox
@@ -116,7 +123,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMaker
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -163,19 +170,43 @@ namespace Cyberpunk2077_hack_helper.LayoutMaker
 			// 
 			// splitContainer.Panel2
 			// 
-			this.splitContainer.Panel2.Controls.Add(this.propertyGrid);
+			this.splitContainer.Panel2.Controls.Add(this.pointControl1);
+			this.splitContainer.Panel2.Controls.Add(this.MatixPosXUpDown);
 			this.splitContainer.Size = new System.Drawing.Size(800, 404);
 			this.splitContainer.SplitterDistance = 566;
 			this.splitContainer.TabIndex = 6;
 			// 
-			// propertyGrid
+			// MatixPosXUpDown
 			// 
-			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.propertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.propertyGrid.Name = "propertyGrid";
-			this.propertyGrid.Size = new System.Drawing.Size(230, 404);
-			this.propertyGrid.TabIndex = 0;
-			this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
+			this.MatixPosXUpDown.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.layoutTableBindingSource, "TestValue", true));
+			this.MatixPosXUpDown.Location = new System.Drawing.Point(38, 20);
+			this.MatixPosXUpDown.Maximum = new decimal(new int[] {
+            1920,
+            0,
+            0,
+            0});
+			this.MatixPosXUpDown.Name = "MatixPosXUpDown";
+			this.MatixPosXUpDown.Size = new System.Drawing.Size(120, 20);
+			this.MatixPosXUpDown.TabIndex = 0;
+			// 
+			// layoutBindingSource
+			// 
+			this.layoutBindingSource.DataSource = typeof(Cyberpunk2077_hack_helper.Grabbing.Layout);
+			// 
+			// pointControl1
+			// 
+			this.pointControl1.DataBindings.Add(new System.Windows.Forms.Binding("Point", this.layoutTableBindingSource, "Position", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+			this.pointControl1.Location = new System.Drawing.Point(16, 65);
+			this.pointControl1.MaximumSize = new System.Drawing.Size(0, 20);
+			this.pointControl1.MinimumSize = new System.Drawing.Size(154, 20);
+			this.pointControl1.Name = "pointControl1";
+			this.pointControl1.Point = new System.Drawing.Point(0, 0);
+			this.pointControl1.Size = new System.Drawing.Size(154, 20);
+			this.pointControl1.TabIndex = 1;
+			// 
+			// layoutTableBindingSource
+			// 
+			this.layoutTableBindingSource.DataSource = typeof(Cyberpunk2077_hack_helper.Grabbing.LayoutTable);
 			// 
 			// LayoutMaker
 			// 
@@ -196,6 +227,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMaker
 			this.splitContainer.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
 			this.splitContainer.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.MatixPosXUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.layoutBindingSource)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.layoutTableBindingSource)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -218,7 +252,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMaker
 		private System.Windows.Forms.OpenFileDialog openImageDialog;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.SplitContainer splitContainer;
-		private System.Windows.Forms.PropertyGrid propertyGrid;
+		private System.Windows.Forms.NumericUpDown MatixPosXUpDown;
+		private System.Windows.Forms.BindingSource layoutBindingSource;
+		private PointControl pointControl1;
+		private System.Windows.Forms.BindingSource layoutTableBindingSource;
 	}
 }
 

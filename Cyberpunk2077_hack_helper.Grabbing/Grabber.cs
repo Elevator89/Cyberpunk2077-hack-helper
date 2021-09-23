@@ -10,9 +10,6 @@ namespace Cyberpunk2077_hack_helper.Grabbing
 {
 	public class Grabber
 	{
-		private Dictionary<Symbol, Point[]> _matrixSymbolPointMap;
-		private Dictionary<Symbol, Point[]> _daemonSequenceSymbolPointMap;
-
 		public Problem Grab(Bitmap bitmap, Layout layout)
 		{
 			throw new NotImplementedException();

@@ -55,10 +55,34 @@
     <Compile Include="LayoutMaker.Designer.cs">
       <DependentUpon>LayoutMaker.cs</DependentUpon>
     </Compile>
+    <Compile Include="LayoutTable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LayoutTable.Designer.cs">
+      <DependentUpon>LayoutTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PointControl.Designer.cs">
+      <DependentUpon>PointControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SizeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SizeControl.Designer.cs">
+      <DependentUpon>SizeControl.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="LayoutMaker.resx">
       <DependentUpon>LayoutMaker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayoutTable.resx">
+      <DependentUpon>LayoutTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PointControl.resx">
+      <DependentUpon>PointControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -69,7 +93,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SizeControl.resx">
+      <DependentUpon>SizeControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Cyberpunk2077_hack_helper.Grabbing.Layout.datasource" />
+    <None Include="Properties\DataSources\Cyberpunk2077_hack_helper.Grabbing.LayoutTable.datasource" />
+    <None Include="Properties\DataSources\System.Drawing.Point.datasource" />
+    <None Include="Properties\DataSources\System.Drawing.Size.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
