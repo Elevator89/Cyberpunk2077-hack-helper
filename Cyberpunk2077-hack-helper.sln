@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077_hack_helper.G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077_hack_helper.Common", "Cyberpunk2077_hack_helper.Common\Cyberpunk2077_hack_helper.Common.csproj", "{517AF8D1-7573-4C24-9E83-63D401FD7475}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077-hack-helper.LayoutMaker", "Cyberpunk2077-hack-helper.LayoutMaker\Cyberpunk2077-hack-helper.LayoutMaker.csproj", "{2FEBD133-7480-44E4-82CF-AD696FCC039F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077-hack-helper.LayoutMarker", "Cyberpunk2077-hack-helper.LayoutMarker\Cyberpunk2077-hack-helper.LayoutMarker.csproj", "{9BA760CB-49EC-4E81-8BC3-6BFEC2F04841}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{517AF8D1-7573-4C24-9E83-63D401FD7475}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{517AF8D1-7573-4C24-9E83-63D401FD7475}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{517AF8D1-7573-4C24-9E83-63D401FD7475}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FEBD133-7480-44E4-82CF-AD696FCC039F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FEBD133-7480-44E4-82CF-AD696FCC039F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FEBD133-7480-44E4-82CF-AD696FCC039F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FEBD133-7480-44E4-82CF-AD696FCC039F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9BA760CB-49EC-4E81-8BC3-6BFEC2F04841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BA760CB-49EC-4E81-8BC3-6BFEC2F04841}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BA760CB-49EC-4E81-8BC3-6BFEC2F04841}.Release|Any CPU.ActiveCfg = Release|Any CPU

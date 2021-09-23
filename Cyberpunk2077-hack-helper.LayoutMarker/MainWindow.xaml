@@ -39,9 +39,9 @@
                         <RowDefinition Height="22"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.Position}" Margin="0,2,0,2"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.Position}" Margin="0,2,0,0"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.CellSize}" Margin="0,2,0,2"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.CellSize}" Margin="0,2,0,0"/>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Sequences table" Margin="2,2,2,2">
@@ -55,9 +55,9 @@
                         <RowDefinition Height="22"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
-                    <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,2"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,0"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,2"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,0"/>
                 </Grid>
             </GroupBox>
         </StackPanel>
