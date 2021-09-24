@@ -37,11 +37,19 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="22"/>
                         <RowDefinition Height="22"/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
                     <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.Position}" Margin="0,2,0,0"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
                     <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.CellSize}" Margin="0,2,0,0"/>
+                    <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Matrix.SymbolMaps}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Symbol}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Sequences table" Margin="2,2,2,2">
@@ -53,11 +61,19 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="22"/>
                         <RowDefinition Height="22"/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
                     <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,0"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
                     <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,0"/>
+                    <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Sequences.SymbolMaps}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Symbol}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Grid>
             </GroupBox>
         </StackPanel>

@@ -46,6 +46,7 @@
     <Compile Include="Layout.cs" />
     <Compile Include="LayoutTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SymbolMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cyberpunk2077_hack_helper.Common\Cyberpunk2077_hack_helper.Common.csproj">

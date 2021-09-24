@@ -2,6 +2,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
@@ -18,7 +21,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(Position));
 				OnPropertyChanged(nameof(CellSize));
-				OnPropertyChanged(nameof(TestValue));
+
+				SymbolMaps.CollectionChanged -= HandleCollectionChanged;
+				SymbolMaps.Clear();
+				foreach (SymbolMap symbolMap in _model.SymbolMaps)
+					SymbolMaps.Add(new SymbolMapViewModel(symbolMap));
+				SymbolMaps.CollectionChanged += HandleCollectionChanged;
 			}
 		}
 
@@ -48,22 +56,33 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public int TestValue
-		{
-			get { return _model.TestValue; }
-			set
-			{
-				if (_model.TestValue == value)
-					return;
-
-				_model.TestValue = value;
-				OnPropertyChanged();
-			}
-		}
+		public ObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
 
 		public LayoutTableViewModel(LayoutTable layoutTable)
 		{
 			_model = layoutTable;
+			SymbolMaps = new ObservableCollection<SymbolMapViewModel>(_model.SymbolMaps.Select(m => new SymbolMapViewModel(m)));
+			SymbolMaps.CollectionChanged += HandleCollectionChanged;
+		}
+
+		private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					_model.SymbolMaps.InsertRange(e.NewStartingIndex, e.NewItems.Cast<SymbolMapViewModel>().Select(vm => vm.Model));
+					return;
+				case NotifyCollectionChangedAction.Remove:
+					_model.SymbolMaps.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+					return;
+				case NotifyCollectionChangedAction.Replace:
+					_model.SymbolMaps.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+					_model.SymbolMaps.InsertRange(e.NewStartingIndex, e.NewItems.Cast<SymbolMapViewModel>().Select(vm => vm.Model));
+					return;
+				case NotifyCollectionChangedAction.Reset:
+					_model.SymbolMaps.Clear();
+					return;
+			}
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")

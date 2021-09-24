@@ -1,4 +1,5 @@
-﻿using Cyberpunk2077_hack_helper.Grabbing;
+﻿using Cyberpunk2077_hack_helper.Common;
+using Cyberpunk2077_hack_helper.Grabbing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,13 +36,35 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				{
 					Position = new Point(100, 100),
 					CellSize = new Size(10, 10),
-					TestValue = 42,
+					SymbolMaps = new List<SymbolMap>() {
+						new SymbolMap(Symbol.S_1C, new List<Point>(){
+							new Point(1,1),
+							new Point(2,2),
+							new Point(3,3),
+						}),
+						new SymbolMap(Symbol.S_55, new List<Point>(){
+							new Point(1,5),
+							new Point(2,5),
+							new Point(3,5),
+						})
+					}
 				},
 				sequences: new LayoutTable()
 				{
 					Position = new Point(400, 200),
 					CellSize = new Size(20, 20),
-					TestValue = 24,
+					SymbolMaps = new List<SymbolMap>() {
+						new SymbolMap(Symbol.S_7A, new List<Point>(){
+							new Point(7,1),
+							new Point(7,2),
+							new Point(7,3),
+						}),
+						new SymbolMap(Symbol.S_BD, new List<Point>(){
+							new Point(8,5),
+							new Point(8,5),
+							new Point(8,5),
+						})
+					}
 				});
 
 			_layoutViewModel = new LayoutViewModel(_model);
