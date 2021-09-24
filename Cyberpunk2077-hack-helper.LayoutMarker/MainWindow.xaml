@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:Cyberpunk2077_hack_helper.LayoutMarker"
         mc:Ignorable="d"
         Title="Layout Marker" Height="450" Width="800">
-
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCmdExecuted"/>
     </Window.CommandBindings>
@@ -67,13 +66,22 @@
                     <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,0"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
                     <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,0"/>
-                    <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Sequences.SymbolMaps}">
-                        <ListView.ItemTemplate>
+                    <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Sequences.SymbolMaps}">
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Symbol}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <ComboBox ItemsSource="{Binding Source={StaticResource symbols}}" SelectedItem="{Binding Path=Symbol}" Width="50" Height="22" VerticalAlignment="Top" />
+                                    <ListBox ItemsSource="{Binding Path=Points}" >
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBox TextWrapping="Wrap" Text="{Binding Path=.}" Width="100" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </GroupBox>
         </StackPanel>

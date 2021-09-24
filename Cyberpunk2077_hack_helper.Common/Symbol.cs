@@ -2,11 +2,11 @@
 {
 	public enum Symbol
 	{
-		S_55,
-		S_FF,
-		S_1C,
-		S_E9,
-		S_7A,
-		S_BD,
+		_55,
+		_FF,
+		_1C,
+		_E9,
+		_7A,
+		_BD,
 	}
 }
