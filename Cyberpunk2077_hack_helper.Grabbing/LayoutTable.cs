@@ -7,6 +7,7 @@ namespace Cyberpunk2077_hack_helper.Grabbing
 	{
 		public Point Position { get; set; }
 		public Size CellSize { get; set; }
+		public Size CellCount { get; set; }
 		public List<SymbolMap> SymbolMaps { get; set; }
 	}
 }

@@ -5,12 +5,19 @@ using System.Drawing;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
+
 	public class LayoutTableViewModel : INotifyPropertyChanged
 	{
 		private LayoutTable _model;
+
+		private RelayCommand _addSymbolMapCommand;
+		private RelayCommand _removeSymbolMapCommand;
+
+		private int _selectedSymbolMapIndex;
 
 		public LayoutTable Model
 		{
@@ -53,6 +60,51 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 				_model.CellSize = value;
 				OnPropertyChanged();
+			}
+		}
+
+		public Size CellCount
+		{
+			get { return _model.CellCount; }
+			set
+			{
+				if (_model.CellCount == value)
+					return;
+
+				_model.CellCount = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public int SelectedSymbolMapIndex
+		{
+			get { return _selectedSymbolMapIndex; }
+			set { _selectedSymbolMapIndex = value; }
+		}
+
+		public RelayCommand AddSymbolMapCommand
+		{
+			get
+			{
+				return _addSymbolMapCommand ??
+				  (_addSymbolMapCommand = new RelayCommand(obj =>
+				  {
+					  SymbolMap newMap = new SymbolMap(Common.Symbol._1C, new List<Point>());
+					  SymbolMapViewModel newMapVm = new SymbolMapViewModel(newMap);
+					  SymbolMaps.Add(newMapVm);
+				  }));
+			}
+		}
+
+		public RelayCommand RemoveSymbolMapCommand
+		{
+			get
+			{
+				return _removeSymbolMapCommand ??
+				  (_removeSymbolMapCommand = new RelayCommand(obj =>
+				  {
+					  SymbolMaps.RemoveAt(SelectedSymbolMapIndex);
+				  }));
 			}
 		}
 

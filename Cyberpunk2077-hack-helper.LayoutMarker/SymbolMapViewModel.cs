@@ -13,6 +13,11 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 	{
 		private SymbolMap _model;
 
+		private RelayCommand _addPointCommand;
+		private RelayCommand _removePointCommand;
+
+		private int _selectedPointIndex;
+
 		public SymbolMap Model
 		{
 			get { return _model; }
@@ -40,6 +45,37 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 				_model.Symbol = value;
 				OnPropertyChanged();
+			}
+		}
+
+		public int SelectedPointIndex
+		{
+			get { return _selectedPointIndex; }
+			set { _selectedPointIndex = value; }
+		}
+
+		public RelayCommand AddPointCommand
+		{
+			get
+			{
+				return _addPointCommand ??
+				  (_addPointCommand = new RelayCommand(obj =>
+				  {
+					  Point point = new Point(0, 0);
+					  Points.Add(point);
+				  }));
+			}
+		}
+
+		public RelayCommand RemovePointCommand
+		{
+			get
+			{
+				return _removePointCommand ??
+				  (_removePointCommand = new RelayCommand(obj =>
+				  {
+					  Points.RemoveAt(SelectedPointIndex);
+				  }));
 			}
 		}
 

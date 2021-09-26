@@ -36,6 +36,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				{
 					Position = new Point(100, 100),
 					CellSize = new Size(10, 10),
+					CellCount = new Size(6, 6),
 					SymbolMaps = new List<SymbolMap>() {
 						new SymbolMap(Symbol._1C, new List<Point>(){
 							new Point(1,1),
@@ -53,6 +54,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				{
 					Position = new Point(400, 200),
 					CellSize = new Size(20, 20),
+					CellCount = new Size(8, 2),
 					SymbolMaps = new List<SymbolMap>() {
 						new SymbolMap(Symbol._7A, new List<Point>(){
 							new Point(7,1),
