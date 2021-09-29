@@ -119,6 +119,7 @@
                         <ImageBrush/>
                     </Canvas.Background>
                     <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
+                    <local:LayoutTableView LayoutTable="{Binding Path=Layout.Matrix}" />
                 </Canvas>
             </Grid>
         </ScrollViewer>

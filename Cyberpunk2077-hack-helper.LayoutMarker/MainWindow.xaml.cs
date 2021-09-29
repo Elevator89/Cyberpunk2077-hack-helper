@@ -28,9 +28,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private SolidColorBrush _probeBrush = new SolidColorBrush();
 
-		private LayoutTableVisualHost _matrixVisualHost;
-		private LayoutTableVisualHost _sequencesVisualHost;
-
 		public MainWindow()
 		{
 			_dialogService = new DefaultDialogService();
@@ -40,17 +37,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			InitializeComponent();
 			DataContext = _applicationViewModel;
 			Cursor.Fill = _probeBrush;
-
-			_applicationViewModel.Layout.Matrix.PropertyChanged += (object sender, PropertyChangedEventArgs e) => DrawLayoutTable(((LayoutTableViewModel)sender).Model, Brushes.Red);
-			_applicationViewModel.Layout.Sequences.PropertyChanged += (object sender, PropertyChangedEventArgs e) => DrawLayoutTable(((LayoutTableViewModel)sender).Model, Brushes.Blue);
 		}
 
 		private void WindowLoaded(object sender, EventArgs e)
 		{
-			_matrixVisualHost = new LayoutTableVisualHost(_applicationViewModel.Layout.Matrix, Brushes.Red);
-			_sequencesVisualHost = new LayoutTableVisualHost(_applicationViewModel.Layout.Sequences, Brushes.Blue);
-			Canvas.Children.Add(_matrixVisualHost);
-			Canvas.Children.Add(_sequencesVisualHost);
 		}
 
 		private void OpenCmdExecuted(object target, ExecutedRoutedEventArgs e)
@@ -93,31 +83,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			source.CopyPixels(rect, pixel, stride, 0);
 
 			return Color.FromRgb(pixel[2], pixel[1], pixel[0]);
-		}
-
-		private void DrawLayoutTable(LayoutTable layoutTable, Brush brush)
-		{
-			for (int row = 0; row <= layoutTable.CellCount.Height; ++row)
-			{
-				Line line = new Line();
-				line.X1 = layoutTable.Position.X;
-				line.X2 = layoutTable.Position.X + layoutTable.CellCount.Width * layoutTable.CellSize.Width;
-				line.Y1 = layoutTable.Position.Y + row * layoutTable.CellSize.Height;
-				line.Y2 = layoutTable.Position.Y + row * layoutTable.CellSize.Height;
-				line.Stroke = brush;
-				Canvas.Children.Add(line);
-			}
-
-			for (int col = 0; col <= layoutTable.CellCount.Width; ++col)
-			{
-				Line line = new Line();
-				line.X1 = layoutTable.Position.X + col * layoutTable.CellSize.Width;
-				line.X2 = layoutTable.Position.X + col * layoutTable.CellSize.Width;
-				line.Y1 = layoutTable.Position.Y;
-				line.Y2 = layoutTable.Position.Y + layoutTable.CellCount.Height * layoutTable.CellSize.Height;
-				line.Stroke = brush;
-				Canvas.Children.Add(line);
-			}
 		}
 	}
 }
