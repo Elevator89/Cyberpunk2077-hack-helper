@@ -119,7 +119,8 @@
                         <ImageBrush/>
                     </Canvas.Background>
                     <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
-                    <local:LayoutTableView LayoutTable="{Binding Path=Layout.Matrix}" />
+                    <local:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
+                    <local:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
                 </Canvas>
             </Grid>
         </ScrollViewer>
