@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -9,6 +12,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		public static readonly DependencyProperty PositionProperty;
 		public static readonly DependencyProperty CellSizeProperty;
 		public static readonly DependencyProperty CellCountProperty;
+		public static readonly DependencyProperty PointsProperty;
 		public static readonly DependencyProperty BrushProperty;
 
 		static LayoutTableView()
@@ -43,6 +47,16 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 							FrameworkPropertyMetadataOptions.AffectsRender,
 							new PropertyChangedCallback(OnCellCountChanged)));
 
+			PointsProperty = DependencyProperty.Register(
+						"Points",
+						typeof(IEnumerable),
+						typeof(LayoutTableView),
+						new FrameworkPropertyMetadata(
+							null,
+							FrameworkPropertyMetadataOptions.AffectsMeasure |
+							FrameworkPropertyMetadataOptions.AffectsRender,
+							new PropertyChangedCallback(OnPointsChanged)));
+
 			BrushProperty = DependencyProperty.Register(
 						"Brush",
 						typeof(Brush),
@@ -56,6 +70,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
 		private System.Drawing.Size _cellCount;
+		private List<System.Drawing.Point> _points;
 
 		private Brush _brush;
 		private Pen _pen;
@@ -91,18 +106,39 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		{
 			_brush = Brushes.Red;
 			_pen = new Pen(_brush, 1.0);
+			_position = new System.Drawing.Point(0, 0);
+			_cellSize = new System.Drawing.Size(0, 0);
+			_cellCount = new System.Drawing.Size(0, 0);
+			_points = new List<System.Drawing.Point>();
 
 			_visuals = new VisualCollection(this)
 			{
+				new DrawingVisual(),
 				new DrawingVisual()
 			};
 		}
 
 		protected override int VisualChildrenCount => _visuals.Count;
 
-		private void RedrawSelf()
+		private void RedrawGrid()
 		{
-			RedrawGrid((DrawingVisual)GetVisualChild(0), _pen, _position, _cellSize, _cellCount);
+			DrawingVisual gridVisual = (DrawingVisual)_visuals[0];
+
+			using (DrawingContext drawingContext = gridVisual.RenderOpen())
+			{
+				DrawGrid(drawingContext, _pen, _position, _cellSize, _cellCount);
+				drawingContext.Close();
+			}
+		}
+
+		private void RedrawPoints()
+		{
+			DrawingVisual pointsVisual = (DrawingVisual)_visuals[1];
+			using (DrawingContext drawingContext = pointsVisual.RenderOpen())
+			{
+				DrawPoints(drawingContext, _pen, _points, _position, _cellSize, _cellCount);
+				drawingContext.Close();
+			}
 		}
 
 		// Provide a required override for the GetVisualChild method.
@@ -122,7 +158,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			System.Drawing.Point position = (System.Drawing.Point)e.NewValue;
 
 			thisObj._position = position;
-			thisObj.RedrawSelf();
+			thisObj.RedrawGrid();
+			thisObj.RedrawPoints();
 		}
 
 		private static void OnCellSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -131,7 +168,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			System.Drawing.Size cellSize = (System.Drawing.Size)e.NewValue;
 
 			thisObj._cellSize = cellSize;
-			thisObj.RedrawSelf();
+			thisObj.RedrawGrid();
+			thisObj.RedrawPoints();
 		}
 
 		private static void OnCellCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -140,7 +178,17 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			System.Drawing.Size cellCount = (System.Drawing.Size)e.NewValue;
 
 			thisObj._cellCount = cellCount;
-			thisObj.RedrawSelf();
+			thisObj.RedrawGrid();
+			thisObj.RedrawPoints();
+		}
+
+		private static void OnPointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			LayoutTableView thisObj = (LayoutTableView)d;
+			IEnumerable points = (IEnumerable)e.NewValue;
+
+			thisObj._points = points.Cast<System.Drawing.Point>().ToList();
+			thisObj.RedrawPoints();
 		}
 
 		private static void OnBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -150,41 +198,60 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			thisObj._brush = brush;
 			thisObj._pen = new Pen(brush, 1.0);
-			thisObj.RedrawSelf();
+			thisObj.RedrawGrid();
+			thisObj.RedrawPoints();
 		}
 
-		private static void RedrawGrid(DrawingVisual drawingVisual, Pen pen, System.Drawing.Point position, System.Drawing.Size cellSize, System.Drawing.Size cellCount)
+		private static void DrawGrid(DrawingContext drawingContext, Pen pen, System.Drawing.Point position, System.Drawing.Size cellSize, System.Drawing.Size cellCount)
 		{
-			// Retrieve the DrawingContext in order to create new drawing content.
-			using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+			for (int row = 0; row <= cellCount.Height; ++row)
 			{
-				for (int row = 0; row <= cellCount.Height; ++row)
-				{
-					drawingContext.DrawLine(
-						pen,
-						new Point(
-							position.X,
-							position.Y + row * cellSize.Height),
-						new Point(
-							position.X + cellCount.Width * cellSize.Width,
-							position.Y + row * cellSize.Height));
-				}
-
-				for (int col = 0; col <= cellCount.Width; ++col)
-				{
-					drawingContext.DrawLine(
-						pen,
-						new Point(
-							position.X + col * cellSize.Width,
-							position.Y),
-						new Point(
-							position.X + col * cellSize.Width,
-							position.Y + cellCount.Height * cellSize.Height));
-				}
-
-				// Persist the drawing content.
-				drawingContext.Close();
+				drawingContext.DrawLine(
+					pen,
+					new Point(
+						position.X,
+						position.Y + row * cellSize.Height),
+					new Point(
+						position.X + cellCount.Width * cellSize.Width,
+						position.Y + row * cellSize.Height));
 			}
+
+			for (int col = 0; col <= cellCount.Width; ++col)
+			{
+				drawingContext.DrawLine(
+					pen,
+					new Point(
+						position.X + col * cellSize.Width,
+						position.Y),
+					new Point(
+						position.X + col * cellSize.Width,
+						position.Y + cellCount.Height * cellSize.Height));
+			}
+		}
+
+		private static void DrawPoints(DrawingContext drawingContext, Pen pen, IEnumerable<System.Drawing.Point> points, System.Drawing.Point position, System.Drawing.Size cellSize, System.Drawing.Size cellCount)
+		{
+			foreach (System.Drawing.Point point in points)
+			{
+				Vector pointV = new Vector(point.X, point.Y);
+				for (int row = 0; row < cellCount.Height; ++row)
+				{
+					for (int col = 0; col < cellCount.Width; ++col)
+					{
+						Point cellPos = new Point(
+							position.X + col * cellSize.Width,
+							position.Y + row * cellSize.Height);
+
+						DrawPoint(drawingContext, pen, cellPos + pointV);
+					}
+				}
+			}
+		}
+
+		private static void DrawPoint(DrawingContext drawingContext, Pen pen, Point point)
+		{
+			Rect rect = new Rect(point.X - 1, point.Y - 1, 3, 3);
+			drawingContext.DrawRectangle(null, pen, rect);
 		}
 	}
 }
