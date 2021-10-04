@@ -30,7 +30,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				Points.CollectionChanged -= HandleCollectionChanged;
 				Points.Clear();
 				foreach (Point point in _model.Points)
-					Points.Add(point);
+					Points.Add(new PointViewModel(point));
+
 				Points.CollectionChanged += HandleCollectionChanged;
 			}
 		}
@@ -61,8 +62,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addPointCommand ??
 				  (_addPointCommand = new RelayCommand(obj =>
 				  {
-					  Point point = new Point(0, 0);
-					  Points.Add(point);
+					  Points.Add(new PointViewModel(new Point(0, 0)));
 				  }));
 			}
 		}
@@ -79,12 +79,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public ObservableCollection<Point> Points { get; }
+		public ObservableCollection<PointViewModel> Points { get; }
 
 		public SymbolMapViewModel(SymbolMap model)
 		{
 			_model = model;
-			Points = new ObservableCollection<Point>(_model.Points);
+
+			Points = new ObservableCollection<PointViewModel>(_model.Points.Select(p => new PointViewModel(p)));
 			Points.CollectionChanged += HandleCollectionChanged;
 		}
 
@@ -93,14 +94,14 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			switch (e.Action)
 			{
 				case NotifyCollectionChangedAction.Add:
-					_model.Points.InsertRange(e.NewStartingIndex, e.NewItems.Cast<Point>());
+					_model.Points.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(pvm => pvm.Point));
 					return;
 				case NotifyCollectionChangedAction.Remove:
 					_model.Points.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					return;
 				case NotifyCollectionChangedAction.Replace:
 					_model.Points.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
-					_model.Points.InsertRange(e.NewStartingIndex, e.NewItems.Cast<Point>());
+					_model.Points.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(pvm => pvm.Point));
 					return;
 				case NotifyCollectionChangedAction.Reset:
 					_model.Points.Clear();

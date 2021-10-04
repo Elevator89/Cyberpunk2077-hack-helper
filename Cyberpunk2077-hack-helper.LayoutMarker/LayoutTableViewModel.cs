@@ -87,7 +87,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public ObservableCollection<Points> SelectedSymbolMapPoints
+		public ObservableCollection<PointViewModel> SelectedSymbolMapPoints
 		{
 			get
 			{
