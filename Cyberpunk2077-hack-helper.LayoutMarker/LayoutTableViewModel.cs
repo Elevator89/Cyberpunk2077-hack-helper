@@ -79,7 +79,23 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		public int SelectedSymbolMapIndex
 		{
 			get { return _selectedSymbolMapIndex; }
-			set { _selectedSymbolMapIndex = value; }
+			set
+			{
+				_selectedSymbolMapIndex = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(SelectedSymbolMapPoints));
+			}
+		}
+
+		public ObservableCollection<Points> SelectedSymbolMapPoints
+		{
+			get
+			{
+				if (SelectedSymbolMapIndex < 0 || SelectedSymbolMapIndex >= Model.SymbolMaps.Count)
+					return null;
+
+				return SymbolMaps[SelectedSymbolMapIndex].Points;
+			}
 		}
 
 		public RelayCommand AddSymbolMapCommand

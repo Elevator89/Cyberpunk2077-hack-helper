@@ -96,6 +96,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			set { SetValue(CellCountProperty, value); }
 		}
 
+		public IEnumerable<System.Drawing.Point> Points
+		{
+			get { return (IEnumerable<System.Drawing.Point>)GetValue(PointsProperty); }
+			set { SetValue(PointsProperty, value); }
+		}
+
 		public Brush Brush
 		{
 			get { return (Brush)GetValue(BrushProperty); }
@@ -187,7 +193,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			LayoutTableView thisObj = (LayoutTableView)d;
 			IEnumerable points = (IEnumerable)e.NewValue;
 
-			thisObj._points = points.Cast<System.Drawing.Point>().ToList();
+			thisObj._points = points.Cast<PointViewModel>().Select(pvm => pvm.Point).ToList();
 			thisObj.RedrawPoints();
 		}
 
