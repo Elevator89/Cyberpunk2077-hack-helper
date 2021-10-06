@@ -10,6 +10,9 @@
         <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCmdExecuted"/>
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCmdExecuted"/>
     </Window.CommandBindings>
+    <Window.Resources>
+        <local:PointVmToStringConverter x:Key="pointVmToStringConverter" />
+    </Window.Resources>
     <DockPanel Margin="0">
         <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
             <MenuItem Header="Layout">
@@ -89,7 +92,7 @@
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBox TextWrapping="Wrap" Text="{Binding Path=.}" Width="100" />
+                                                        <TextBox TextWrapping="Wrap" Text="{Binding Path=., Converter={StaticResource pointVmToStringConverter}}" Width="100" />
                                                         <Button Content="*" Command="" />
                                                     </StackPanel>
                                                 </DataTemplate>

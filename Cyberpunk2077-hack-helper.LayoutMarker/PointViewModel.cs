@@ -18,6 +18,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 				_point = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(X));
+				OnPropertyChanged(nameof(Y));
 			}
 		}
 
