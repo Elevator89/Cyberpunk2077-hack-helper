@@ -17,6 +17,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		private RelayCommand _addSymbolMapCommand;
 		private RelayCommand _removeSymbolMapCommand;
 
+		private RelayCommand _debugCommand;
+
 		private int _selectedSymbolMapIndex;
 
 		public LayoutTable Model
@@ -120,6 +122,18 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				  (_removeSymbolMapCommand = new RelayCommand(obj =>
 				  {
 					  SymbolMaps.RemoveAt(SelectedSymbolMapIndex);
+				  }));
+			}
+		}
+
+		public RelayCommand DebugCommand
+		{
+			get
+			{
+				return _debugCommand ??
+				  (_debugCommand = new RelayCommand(obj =>
+				  {
+					  SelectedSymbolMapPoints.Add(new PointViewModel(new Point(42, 42)));
 				  }));
 			}
 		}
