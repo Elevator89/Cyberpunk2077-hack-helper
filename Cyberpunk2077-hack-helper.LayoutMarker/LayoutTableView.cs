@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using System.Collections.Specialized;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
@@ -49,7 +49,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			PointsProperty = DependencyProperty.Register(
 						"Points",
-						typeof(IEnumerable),
+						typeof(IEnumerable<PointViewModel>),
 						typeof(LayoutTableView),
 						new FrameworkPropertyMetadata(
 							null,
@@ -70,7 +70,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
 		private System.Drawing.Size _cellCount;
-		private List<System.Drawing.Point> _points;
+
+		private List<System.Drawing.Point> _pointsInternal;
+		private INotifyCollectionChanged _pointsNotifyCollectionChangedInternal;
 
 		private Brush _brush;
 		private Pen _pen;
@@ -96,9 +98,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			set { SetValue(CellCountProperty, value); }
 		}
 
-		public IEnumerable<System.Drawing.Point> Points
+		public IEnumerable<PointViewModel> Points
 		{
-			get { return (IEnumerable<System.Drawing.Point>)GetValue(PointsProperty); }
+			get { return (IEnumerable<PointViewModel>)GetValue(PointsProperty); }
 			set { SetValue(PointsProperty, value); }
 		}
 
@@ -115,7 +117,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			_position = new System.Drawing.Point(0, 0);
 			_cellSize = new System.Drawing.Size(0, 0);
 			_cellCount = new System.Drawing.Size(0, 0);
-			_points = new List<System.Drawing.Point>();
+			_pointsInternal = new List<System.Drawing.Point>();
 
 			_visuals = new VisualCollection(this)
 			{
@@ -142,9 +144,50 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			DrawingVisual pointsVisual = (DrawingVisual)_visuals[1];
 			using (DrawingContext drawingContext = pointsVisual.RenderOpen())
 			{
-				DrawPoints(drawingContext, _pen, _points, _position, _cellSize, _cellCount);
+				DrawPoints(drawingContext, _pen, _pointsInternal, _position, _cellSize, _cellCount);
 				drawingContext.Close();
 			}
+		}
+
+		private void SetPointsInternal(IEnumerable<PointViewModel> newPoints)
+		{
+			if (_pointsNotifyCollectionChangedInternal != null)
+				_pointsNotifyCollectionChangedInternal.CollectionChanged -= HandlePointsCollectionChanged;
+
+			_pointsNotifyCollectionChangedInternal = null;
+			_pointsInternal.Clear();
+
+			if (newPoints != null)
+			{
+				_pointsInternal.AddRange(newPoints.Select(pvm => pvm.Point));
+				_pointsNotifyCollectionChangedInternal = newPoints as INotifyCollectionChanged;
+
+				if (_pointsNotifyCollectionChangedInternal != null)
+					_pointsNotifyCollectionChangedInternal.CollectionChanged += HandlePointsCollectionChanged;
+			}
+
+			RedrawPoints();
+		}
+
+		private void HandlePointsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+					break;
+				case NotifyCollectionChangedAction.Replace:
+					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
+					break;
+				case NotifyCollectionChangedAction.Reset:
+					_pointsInternal.Clear();
+					break;
+			}
+			RedrawPoints();
 		}
 
 		// Provide a required override for the GetVisualChild method.
@@ -190,11 +233,11 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private static void OnPointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			LayoutTableView thisObj = (LayoutTableView)d;
-			IEnumerable points = (IEnumerable)e.NewValue;
+			LayoutTableView layoutTableView = (LayoutTableView)d;
 
-			thisObj._points = points.Cast<PointViewModel>().Select(pvm => pvm.Point).ToList();
-			thisObj.RedrawPoints();
+			IEnumerable<PointViewModel> points = (IEnumerable<PointViewModel>)e.NewValue;
+
+			layoutTableView.SetPointsInternal(points);
 		}
 
 		private static void OnBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
