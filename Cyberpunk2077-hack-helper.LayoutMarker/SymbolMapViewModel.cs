@@ -74,6 +74,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _removePointCommand ??
 				  (_removePointCommand = new RelayCommand(obj =>
 				  {
+					  if (SelectedPointIndex < 0)
+						  return;
+
 					  Points.RemoveAt(SelectedPointIndex);
 				  }));
 			}
