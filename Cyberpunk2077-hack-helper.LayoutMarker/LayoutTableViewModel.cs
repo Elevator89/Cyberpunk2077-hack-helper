@@ -2,14 +2,12 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
-
 	public class LayoutTableViewModel : INotifyPropertyChanged
 	{
 		private LayoutTable _model;
@@ -89,7 +87,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public ObservableCollection<PointViewModel> SelectedSymbolMapPoints
+		public TrulyObservableCollection<PointViewModel> SelectedSymbolMapPoints
 		{
 			get
 			{
@@ -133,17 +131,19 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _debugCommand ??
 				  (_debugCommand = new RelayCommand(obj =>
 				  {
-					  SelectedSymbolMapPoints.Add(new PointViewModel(new Point(42, 42)));
+					  SymbolMapViewModel selectedSymbolMap = SymbolMaps[SelectedSymbolMapIndex];
+					  if (selectedSymbolMap.SelectedPointIndex >= 0)
+						  selectedSymbolMap.Points[selectedSymbolMap.SelectedPointIndex].X++;
 				  }));
 			}
 		}
 
-		public ObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
+		public TrulyObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
 
 		public LayoutTableViewModel(LayoutTable layoutTable)
 		{
 			_model = layoutTable;
-			SymbolMaps = new ObservableCollection<SymbolMapViewModel>(_model.SymbolMaps.Select(m => new SymbolMapViewModel(m)));
+			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>(_model.SymbolMaps.Select(m => new SymbolMapViewModel(m)));
 			SymbolMaps.CollectionChanged += HandleCollectionChanged;
 		}
 
@@ -169,8 +169,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
 		{
-			if (PropertyChanged != null)
-				PropertyChanged(this, new PropertyChangedEventArgs(prop));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
