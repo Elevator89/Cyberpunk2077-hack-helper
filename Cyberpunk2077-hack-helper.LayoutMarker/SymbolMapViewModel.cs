@@ -82,13 +82,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public ObservableCollection<PointViewModel> Points { get; }
+		public TrulyObservableCollection<PointViewModel> Points { get; }
 
 		public SymbolMapViewModel(SymbolMap model)
 		{
 			_model = model;
 
-			Points = new ObservableCollection<PointViewModel>(_model.Points.Select(p => new PointViewModel(p)));
+			Points = new TrulyObservableCollection<PointViewModel>(_model.Points.Select(p => new PointViewModel(p)));
 			Points.CollectionChanged += HandleCollectionChanged;
 		}
 
