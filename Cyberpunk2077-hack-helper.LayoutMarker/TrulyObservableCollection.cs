@@ -40,8 +40,15 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, sender, sender, IndexOf((T)sender));
-			OnCollectionChanged(args);
+			int index = IndexOf((T)sender);
+			NotifyCollectionChangedEventArgs removedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, sender, index);
+			NotifyCollectionChangedEventArgs addedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, sender, index);
+			OnCollectionChanged(removedArgs);
+			OnCollectionChanged(addedArgs);
+
+			// The code below doesn't work for ListView
+			// NotifyCollectionChangedEventArgs replacedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, sender, sender, IndexOf((T)sender));
+			// OnCollectionChanged(replacedArgs);
 		}
 	}
 }
