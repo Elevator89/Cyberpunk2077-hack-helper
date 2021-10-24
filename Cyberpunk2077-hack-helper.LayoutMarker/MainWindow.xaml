@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="Layout Marker" Height="575.55" Width="1007.025" Loaded="WindowLoaded">
     <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveCmdExecuted"/>
         <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCmdExecuted"/>
         <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCmdExecuted"/>
     </Window.CommandBindings>
@@ -109,7 +110,7 @@
                         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Command="{Binding Path=Layout.Sequences.AddSymbolMapCommand}" Width="30">+</Button>
                             <Button Command="{Binding Path=Layout.Sequences.RemoveSymbolMapCommand}" Width="30">-</Button>
-							<Button Command="{Binding Path=Layout.Sequences.DebugCommand}" Width="30">?</Button>
+                            <Button Command="{Binding Path=Layout.Sequences.DebugCommand}" Width="30">?</Button>
                         </StackPanel>
                     </Grid>
                 </GroupBox>
