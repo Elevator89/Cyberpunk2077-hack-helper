@@ -45,9 +45,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void OpenCmdExecuted(object target, ExecutedRoutedEventArgs e)
 		{
-			string command = ((RoutedCommand)e.Command).Name;
-			string targetobj = ((FrameworkElement)target).Name;
-			MessageBox.Show("The " + command + " command has been invoked on target object " + targetobj);
+			_applicationViewModel.Open();
+		}
+
+		private void SaveCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			_applicationViewModel.Save();
 		}
 
 		private void CloseCmdExecuted(object target, ExecutedRoutedEventArgs e)
@@ -84,5 +87,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			return Color.FromRgb(pixel[2], pixel[1], pixel[0]);
 		}
+
 	}
 }
