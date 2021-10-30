@@ -1,32 +1,14 @@
-﻿using Cyberpunk2077_hack_helper.Grabbing;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
-
 	public class LayoutViewModel : INotifyPropertyChanged
 	{
-		private Layout _model;
-
 		private LayoutTableViewModel _matrixViewModel;
 		private LayoutTableViewModel _sequencesViewModel;
 
-		public Layout Model
-		{
-			get { return _model; }
-			set
-			{
-				_model = value;
-				_matrixViewModel.Model = _model.Matrix;
-				_sequencesViewModel.Model = _model.Sequences;
-			}
-		}
+		private int _selectedTableIndex = -1;
 
 		public LayoutTableViewModel Matrix
 		{
@@ -38,11 +20,22 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			get { return _sequencesViewModel; }
 		}
 
-		public LayoutViewModel(Layout model)
+		public int SelectedTableIndex
 		{
-			_model = model;
-			_matrixViewModel = new LayoutTableViewModel(_model.Matrix);
-			_sequencesViewModel = new LayoutTableViewModel(_model.Sequences);
+			get { return _selectedTableIndex; }
+			set
+			{
+				if (_selectedTableIndex == value)
+					return;
+				_selectedTableIndex = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public LayoutViewModel()
+		{
+			_matrixViewModel = new LayoutTableViewModel();
+			_sequencesViewModel = new LayoutTableViewModel();
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")

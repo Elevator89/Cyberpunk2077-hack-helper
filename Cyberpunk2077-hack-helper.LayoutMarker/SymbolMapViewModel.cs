@@ -1,50 +1,28 @@
-﻿using Cyberpunk2077_hack_helper.Grabbing;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using System.Collections.ObjectModel;
 using Cyberpunk2077_hack_helper.Common;
-using System.Collections.Specialized;
-using System.Linq;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class SymbolMapViewModel : INotifyPropertyChanged
 	{
-		private SymbolMap _model;
-
 		private RelayCommand _addPointCommand;
 		private RelayCommand _removePointCommand;
 
-		private int _selectedPointIndex;
+		private Symbol _symbol;
 
-		public SymbolMap Model
-		{
-			get { return _model; }
-			set
-			{
-				_model = value;
-
-				OnPropertyChanged(nameof(Symbol));
-
-				Points.CollectionChanged -= HandleCollectionChanged;
-				Points.Clear();
-				foreach (Point point in _model.Points)
-					Points.Add(new PointViewModel(point));
-
-				Points.CollectionChanged += HandleCollectionChanged;
-			}
-		}
+		private int _selectedPointIndex = -1;
 
 		public Symbol Symbol
 		{
-			get { return _model.Symbol; }
+			get { return _symbol; }
 			set
 			{
-				if (_model.Symbol == value)
+				if (_symbol == value)
 					return;
 
-				_model.Symbol = value;
+				_symbol = value;
 				OnPropertyChanged();
 			}
 		}
@@ -84,32 +62,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		public TrulyObservableCollection<PointViewModel> Points { get; }
 
-		public SymbolMapViewModel(SymbolMap model)
+		public SymbolMapViewModel()
 		{
-			_model = model;
-
-			Points = new TrulyObservableCollection<PointViewModel>(_model.Points.Select(p => new PointViewModel(p)));
-			Points.CollectionChanged += HandleCollectionChanged;
-		}
-
-		private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			switch (e.Action)
-			{
-				case NotifyCollectionChangedAction.Add:
-					_model.Points.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(pvm => pvm.Point));
-					return;
-				case NotifyCollectionChangedAction.Remove:
-					_model.Points.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
-					return;
-				case NotifyCollectionChangedAction.Replace:
-					_model.Points.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
-					_model.Points.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(pvm => pvm.Point));
-					return;
-				case NotifyCollectionChangedAction.Reset:
-					_model.Points.Clear();
-					return;
-			}
+			_symbol = Symbol._1C;
+			Points = new TrulyObservableCollection<PointViewModel>();
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
