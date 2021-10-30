@@ -1,77 +1,57 @@
-﻿using Cyberpunk2077_hack_helper.Grabbing;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class LayoutTableViewModel : INotifyPropertyChanged
 	{
-		private LayoutTable _model;
-
 		private RelayCommand _addSymbolMapCommand;
 		private RelayCommand _removeSymbolMapCommand;
 
 		private RelayCommand _debugCommand;
 
+		private Point _position = Point.Empty;
+		private Size _cellSize = Size.Empty;
+		private Size _cellCount = Size.Empty;
+
 		private int _selectedSymbolMapIndex;
-
-		public LayoutTable Model
-		{
-			get { return _model; }
-			set
-			{
-				_model = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(Position));
-				OnPropertyChanged(nameof(CellSize));
-
-				SymbolMaps.CollectionChanged -= HandleCollectionChanged;
-				SymbolMaps.Clear();
-				foreach (SymbolMap symbolMap in _model.SymbolMaps)
-					SymbolMaps.Add(new SymbolMapViewModel(symbolMap));
-				SymbolMaps.CollectionChanged += HandleCollectionChanged;
-			}
-		}
 
 		public Point Position
 		{
-			get { return _model.Position; }
+			get { return _position; }
 			set
 			{
-				if (_model.Position == value)
+				if (_position == value)
 					return;
 
-				_model.Position = value;
+				_position = value;
 				OnPropertyChanged();
 			}
 		}
 
 		public Size CellSize
 		{
-			get { return _model.CellSize; }
+			get { return _cellSize; }
 			set
 			{
-				if (_model.CellSize == value)
+				if (_cellSize == value)
 					return;
 
-				_model.CellSize = value;
+				_cellSize = value;
 				OnPropertyChanged();
 			}
 		}
 
 		public Size CellCount
 		{
-			get { return _model.CellCount; }
+			get { return _cellCount; }
 			set
 			{
-				if (_model.CellCount == value)
+				if (_cellCount == value)
 					return;
 
-				_model.CellCount = value;
+				_cellCount = value;
 				OnPropertyChanged();
 			}
 		}
@@ -91,7 +71,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		{
 			get
 			{
-				if (SelectedSymbolMapIndex < 0 || SelectedSymbolMapIndex >= Model.SymbolMaps.Count)
+				if (SelectedSymbolMapIndex < 0 || SelectedSymbolMapIndex >= SymbolMaps.Count)
 					return null;
 
 				return SymbolMaps[SelectedSymbolMapIndex].Points;
@@ -105,9 +85,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addSymbolMapCommand ??
 				  (_addSymbolMapCommand = new RelayCommand(obj =>
 				  {
-					  SymbolMap newMap = new SymbolMap(Common.Symbol._1C, new List<Point>());
-					  SymbolMapViewModel newMapVm = new SymbolMapViewModel(newMap);
-					  SymbolMaps.Add(newMapVm);
+					  SymbolMaps.Add(new SymbolMapViewModel());
 				  }));
 			}
 		}
@@ -140,31 +118,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		public TrulyObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
 
-		public LayoutTableViewModel(LayoutTable layoutTable)
+		public LayoutTableViewModel()
 		{
-			_model = layoutTable;
-			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>(_model.SymbolMaps.Select(m => new SymbolMapViewModel(m)));
-			SymbolMaps.CollectionChanged += HandleCollectionChanged;
-		}
-
-		private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			switch (e.Action)
-			{
-				case NotifyCollectionChangedAction.Add:
-					_model.SymbolMaps.InsertRange(e.NewStartingIndex, e.NewItems.Cast<SymbolMapViewModel>().Select(vm => vm.Model));
-					return;
-				case NotifyCollectionChangedAction.Remove:
-					_model.SymbolMaps.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
-					return;
-				case NotifyCollectionChangedAction.Replace:
-					_model.SymbolMaps.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
-					_model.SymbolMaps.InsertRange(e.NewStartingIndex, e.NewItems.Cast<SymbolMapViewModel>().Select(vm => vm.Model));
-					return;
-				case NotifyCollectionChangedAction.Reset:
-					_model.SymbolMaps.Clear();
-					return;
-			}
+			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>();
+			_selectedSymbolMapIndex = -1;
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
