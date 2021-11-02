@@ -6,10 +6,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class LayoutTableViewModel : INotifyPropertyChanged
 	{
+		private LayoutViewModel _layoutViewModel;
 		private RelayCommand _addSymbolMapCommand;
 		private RelayCommand _removeSymbolMapCommand;
 
 		private RelayCommand _debugCommand;
+		private RelayCommand _cellSizeEditCommand;
+		private RelayCommand _positionEditCommand;
 
 		private Point _position = Point.Empty;
 		private Size _cellSize = Size.Empty;
@@ -91,7 +94,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addSymbolMapCommand ??
 				  (_addSymbolMapCommand = new RelayCommand(obj =>
 				  {
-					  SymbolMaps.Add(new SymbolMapViewModel());
+					  SymbolMaps.Add(new SymbolMapViewModel(this));
 				  }));
 			}
 		}
@@ -124,10 +127,40 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		public TrulyObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
 
-		public LayoutTableViewModel()
+		public RelayCommand PositionEditCommand
 		{
+			get
+			{
+				return _positionEditCommand ??
+				  (_positionEditCommand = new RelayCommand(obj =>
+				  {
+					  _layoutViewModel.NotifyLayoutTablePositionEdit(this);
+				  }));
+			}
+		}
+
+		public RelayCommand CellSizeEditCommand
+		{
+			get
+			{
+				return _cellSizeEditCommand ??
+				  (_cellSizeEditCommand = new RelayCommand(obj =>
+				  {
+					  _layoutViewModel.NotifyLayoutTableCellSizeEdit(this);
+				  }));
+			}
+		}
+
+		public LayoutTableViewModel(LayoutViewModel layoutViewModel)
+		{
+			_layoutViewModel = layoutViewModel;
 			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>();
 			_selectedSymbolMapIndex = -1;
+		}
+
+		public void NotifyPointEdit(PointViewModel point)
+		{
+			_layoutViewModel.NotifyPointEdit(point);
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
