@@ -6,7 +6,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class PointViewModel : INotifyPropertyChanged
 	{
+		private SymbolMapViewModel _symbolMapViewModel;
 		private Point _point;
+		private RelayCommand _editCommand;
 
 		public Point Point
 		{
@@ -51,8 +53,21 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public PointViewModel(Point point)
+		public RelayCommand EditCommand
 		{
+			get
+			{
+				return _editCommand ??
+				  (_editCommand = new RelayCommand(obj =>
+				  {
+					  _symbolMapViewModel.NotifyPointEdit(this);
+				  }));
+			}
+		}
+
+		public PointViewModel(SymbolMapViewModel symbolMapViewModel, Point point)
+		{
+			_symbolMapViewModel = symbolMapViewModel;
 			_point = point;
 		}
 
