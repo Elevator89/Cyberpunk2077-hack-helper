@@ -1,4 +1,5 @@
 ﻿using Cyberpunk2077_hack_helper.Grabbing;
+using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +28,11 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		private ApplicationViewModel _applicationViewModel;
 
 		private SolidColorBrush _probeBrush = new SolidColorBrush();
+
+		private SizeTool _sizeTool = new SizeTool();
+		private PointTool _pointTool = new PointTool();
+
+		private ITool _activeTool = null;
 
 		public MainWindow()
 		{
@@ -58,16 +64,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			Close();
 		}
 
-		private void Canvas_MouseMove(object sender, MouseEventArgs e)
-		{
-			Point mousePos = e.GetPosition(Image);
-
-			ImageSource imageSource = Image.Source;
-			BitmapSource bitmap = (BitmapSource)imageSource;
-
-			Color color = GetPixel(bitmap, mousePos);
-			_probeBrush.Color = color;
-		}
 
 		private Color GetPixel(BitmapSource source, Point position)
 		{
@@ -88,5 +84,45 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			return Color.FromRgb(pixel[2], pixel[1], pixel[0]);
 		}
 
+		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			_activeTool?.MouseUp(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
+		}
+
+		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			_activeTool?.MouseDown(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
+		}
+
+		private void Canvas_MouseEnter(object sender, MouseEventArgs e)
+		{
+			_activeTool?.MouseEnter(Util.ToDrawingPoint(e.GetPosition(Image)));
+		}
+
+		private void Canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			Point mousePos = e.GetPosition(Image);
+			System.Drawing.Point drawingPoint = Util.ToDrawingPoint(mousePos);
+
+			_activeTool?.MouseMove(drawingPoint);
+
+			//_applicationViewModel.Layout.Sequences.SelectedSymbolMap.Points[_applicationViewModel.Layout.Sequences.SelectedSymbolMap.SelectedPointIndex].Point = drawingPoint;
+
+			ImageSource imageSource = Image.Source;
+			BitmapSource bitmap = (BitmapSource)imageSource;
+
+			Color color = GetPixel(bitmap, mousePos);
+			_probeBrush.Color = color;
+		}
+
+		private void Canvas_MouseLeave(object sender, MouseEventArgs e)
+		{
+			_activeTool?.MouseLeave(Util.ToDrawingPoint(e.GetPosition(Image)));
+		}
+
+		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			_activeTool?.MouseWheel(Util.ToDrawingPoint(e.GetPosition(Image)), e.Delta);
+		}
 	}
 }

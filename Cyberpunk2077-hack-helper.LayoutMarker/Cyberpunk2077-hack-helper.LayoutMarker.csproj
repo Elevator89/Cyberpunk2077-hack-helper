@@ -79,12 +79,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Tools\ITool.cs" />
     <Compile Include="LayoutTableView.cs" />
+    <Compile Include="Tools\PointTool.cs" />
     <Compile Include="PointViewModel.cs" />
     <Compile Include="PointVmToStringConverter.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="Tools\SizeTool.cs" />
     <Compile Include="SymbolMapViewModel.cs" />
     <Compile Include="TrulyObservableCollection.cs" />
+    <Compile Include="Util.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
