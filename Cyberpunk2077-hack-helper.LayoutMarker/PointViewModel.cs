@@ -7,7 +7,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class PointViewModel : INotifyPropertyChanged
 	{
+		private readonly LayoutTableViewModel _layoutTableViewModel;
 		private readonly IToolManager _toolManager;
+
 		private Point _point;
 		private RelayCommand _editCommand;
 
@@ -63,13 +65,14 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _editCommand ??
 				  (_editCommand = new RelayCommand(obj =>
 				  {
-					  _toolManager.ActivateTool(new PointTool(point => Point = point));
+					  _toolManager.ActivateTool(new PointVmTool(_layoutTableViewModel.Position, this));
 				  }));
 			}
 		}
 
-		public PointViewModel(IToolManager toolManager, Point point)
+		public PointViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager, Point point)
 		{
+			_layoutTableViewModel = layoutTableViewModel;
 			_toolManager = toolManager;
 			_point = point;
 		}

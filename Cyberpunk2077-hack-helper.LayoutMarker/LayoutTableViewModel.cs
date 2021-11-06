@@ -97,7 +97,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addSymbolMapCommand ??
 				  (_addSymbolMapCommand = new RelayCommand(obj =>
 				  {
-					  SymbolMaps.Add(new SymbolMapViewModel(_toolManager));
+					  SymbolMaps.Add(new SymbolMapViewModel(this, _toolManager));
 				  }));
 			}
 		}

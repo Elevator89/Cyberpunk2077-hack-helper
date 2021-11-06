@@ -109,17 +109,17 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			layoutTableViewModel.SymbolMaps.Clear();
 			foreach (SymbolMap symbolMap in layoutTable.SymbolMaps)
 			{
-				layoutTableViewModel.SymbolMaps.Add(CreateSymbolMapViewModel(toolManager, symbolMap));
+				layoutTableViewModel.SymbolMaps.Add(CreateSymbolMapViewModel(layoutTableViewModel, toolManager, symbolMap));
 			}
 		}
 
-		private static SymbolMapViewModel CreateSymbolMapViewModel(IToolManager toolManager, SymbolMap symbolMap)
+		private static SymbolMapViewModel CreateSymbolMapViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager, SymbolMap symbolMap)
 		{
-			SymbolMapViewModel symbolMapViewModel = new SymbolMapViewModel(toolManager);
+			SymbolMapViewModel symbolMapViewModel = new SymbolMapViewModel(layoutTableViewModel, toolManager);
 			symbolMapViewModel.Symbol = symbolMap.Symbol;
 
 			foreach (Point point in symbolMap.Points)
-				symbolMapViewModel.Points.Add(new PointViewModel(toolManager, point));
+				symbolMapViewModel.Points.Add(new PointViewModel(layoutTableViewModel, toolManager, point));
 
 			return symbolMapViewModel;
 		}
