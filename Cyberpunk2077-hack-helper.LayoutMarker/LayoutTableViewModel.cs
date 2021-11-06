@@ -8,13 +8,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 	public class LayoutTableViewModel : INotifyPropertyChanged
 	{
 		private readonly IToolManager _toolManager;
-		private LayoutViewModel _layoutViewModel;
+
 		private RelayCommand _addSymbolMapCommand;
 		private RelayCommand _removeSymbolMapCommand;
+		private RelayCommand _positionAndSizeEditCommand;
 
 		private RelayCommand _debugCommand;
-		private RelayCommand _cellSizeEditCommand;
-		private RelayCommand _positionAndSizeEditCommand;
 
 		private Point _position = Point.Empty;
 		private Size _cellSize = Size.Empty;
@@ -98,7 +97,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addSymbolMapCommand ??
 				  (_addSymbolMapCommand = new RelayCommand(obj =>
 				  {
-					  SymbolMaps.Add(new SymbolMapViewModel(this, _toolManager));
+					  SymbolMaps.Add(new SymbolMapViewModel(_toolManager));
 				  }));
 			}
 		}
@@ -136,23 +135,16 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _positionAndSizeEditCommand ??
 				  (_positionAndSizeEditCommand = new RelayCommand(obj =>
 				  {
-					  _layoutViewModel.NotifyLayoutTablePositionEdit(this);
 					  _toolManager.ActivateTool(new SizeTool(point => Position = point, size => CellSize = size));
 				  }));
 			}
 		}
 
-		public LayoutTableViewModel(LayoutViewModel layoutViewModel, IToolManager toolManager)
+		public LayoutTableViewModel(IToolManager toolManager)
 		{
 			_toolManager = toolManager;
-			_layoutViewModel = layoutViewModel;
 			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>();
 			_selectedSymbolMapIndex = -1;
-		}
-
-		public void NotifyPointEdit(PointViewModel point)
-		{
-			_layoutViewModel.NotifyPointEdit(point);
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
