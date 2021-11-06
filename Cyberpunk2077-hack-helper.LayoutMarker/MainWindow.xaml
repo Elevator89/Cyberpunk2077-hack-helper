@@ -12,7 +12,6 @@
 		<CommandBinding Command="ApplicationCommands.Close" Executed="CloseCmdExecuted"/>
 	</Window.CommandBindings>
 	<Window.Resources>
-		<local:PointToStringConverter x:Key="pointToStringConverter" />
 	</Window.Resources>
 	<DockPanel Margin="0">
 		<Menu VerticalAlignment="Top" DockPanel.Dock="Top">
@@ -93,7 +92,7 @@
 											<ListBox.ItemTemplate>
 												<DataTemplate>
 													<StackPanel Orientation="Horizontal">
-														<TextBox TextWrapping="Wrap" Text="{Binding Path=Point, Converter={StaticResource pointToStringConverter}}" Width="100" />
+														<TextBox TextWrapping="Wrap" Text="{Binding Path=Point}" Width="100" />
 														<Button Content="*" Command="{Binding EditCommand}" />
 													</StackPanel>
 												</DataTemplate>
