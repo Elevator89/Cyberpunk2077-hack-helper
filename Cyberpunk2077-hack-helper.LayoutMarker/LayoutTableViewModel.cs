@@ -1,18 +1,20 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
+using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class LayoutTableViewModel : INotifyPropertyChanged
 	{
+		private readonly IToolManager _toolManager;
 		private LayoutViewModel _layoutViewModel;
 		private RelayCommand _addSymbolMapCommand;
 		private RelayCommand _removeSymbolMapCommand;
 
 		private RelayCommand _debugCommand;
 		private RelayCommand _cellSizeEditCommand;
-		private RelayCommand _positionEditCommand;
+		private RelayCommand _positionAndSizeEditCommand;
 
 		private Point _position = Point.Empty;
 		private Size _cellSize = Size.Empty;
@@ -59,6 +61,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
+		public TrulyObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
+
 		public int SelectedSymbolMapIndex
 		{
 			get { return _selectedSymbolMapIndex; }
@@ -94,7 +98,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addSymbolMapCommand ??
 				  (_addSymbolMapCommand = new RelayCommand(obj =>
 				  {
-					  SymbolMaps.Add(new SymbolMapViewModel(this));
+					  SymbolMaps.Add(new SymbolMapViewModel(this, _toolManager));
 				  }));
 			}
 		}
@@ -125,34 +129,22 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public TrulyObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
-
-		public RelayCommand PositionEditCommand
+		public RelayCommand PositionAndSizeEditCommand
 		{
 			get
 			{
-				return _positionEditCommand ??
-				  (_positionEditCommand = new RelayCommand(obj =>
+				return _positionAndSizeEditCommand ??
+				  (_positionAndSizeEditCommand = new RelayCommand(obj =>
 				  {
 					  _layoutViewModel.NotifyLayoutTablePositionEdit(this);
+					  _toolManager.ActivateTool(new SizeTool(point => Position = point, size => CellSize = size));
 				  }));
 			}
 		}
 
-		public RelayCommand CellSizeEditCommand
+		public LayoutTableViewModel(LayoutViewModel layoutViewModel, IToolManager toolManager)
 		{
-			get
-			{
-				return _cellSizeEditCommand ??
-				  (_cellSizeEditCommand = new RelayCommand(obj =>
-				  {
-					  _layoutViewModel.NotifyLayoutTableCellSizeEdit(this);
-				  }));
-			}
-		}
-
-		public LayoutTableViewModel(LayoutViewModel layoutViewModel)
-		{
+			_toolManager = toolManager;
 			_layoutViewModel = layoutViewModel;
 			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>();
 			_selectedSymbolMapIndex = -1;
