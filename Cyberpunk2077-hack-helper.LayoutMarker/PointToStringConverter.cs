@@ -5,11 +5,11 @@ using System.Globalization;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
-	public class PointVmToStringConverter : IValueConverter
+	public class PointToStringConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			PointViewModel pointViewModel = (PointViewModel)value;
+			Point pointViewModel = (Point)value;
 			return $"{pointViewModel.X}; {pointViewModel.Y}";
 		}
 
@@ -18,7 +18,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			string pointStr = (string)value;
 			string[] coords = pointStr.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
 			Point point = new Point(int.Parse(coords[0]), int.Parse(coords[1]));
-			return new PointViewModel(point);
+			return point;
 		}
 	}
 }

@@ -5,6 +5,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Tools
 {
 	public interface ITool
 	{
+		void Reset();
+
 		void MouseUp(Point position, MouseButton button);
 		void MouseDown(Point position, MouseButton button);
 		void MouseEnter(Point position);

@@ -29,16 +29,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private SolidColorBrush _probeBrush = new SolidColorBrush();
 
-		private SizeTool _sizeTool = new SizeTool();
-		private PointTool _pointTool = new PointTool();
-
-		private ITool _activeTool = null;
+		private IToolManager _toolManager = new ToolManager();
 
 		public MainWindow()
 		{
 			_dialogService = new DefaultDialogService();
 			_fileService = new JsonFileService();
-			_applicationViewModel = new ApplicationViewModel(_dialogService, _fileService);
+			_applicationViewModel = new ApplicationViewModel(_dialogService, _fileService, _toolManager);
 
 			InitializeComponent();
 			DataContext = _applicationViewModel;
@@ -86,17 +83,17 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			_activeTool?.MouseUp(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
+			_toolManager.ActiveTool?.MouseUp(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
 		}
 
 		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			_activeTool?.MouseDown(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
+			_toolManager.ActiveTool?.MouseDown(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
 		}
 
 		private void Canvas_MouseEnter(object sender, MouseEventArgs e)
 		{
-			_activeTool?.MouseEnter(Util.ToDrawingPoint(e.GetPosition(Image)));
+			_toolManager.ActiveTool?.MouseEnter(Util.ToDrawingPoint(e.GetPosition(Image)));
 		}
 
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
@@ -104,9 +101,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			Point mousePos = e.GetPosition(Image);
 			System.Drawing.Point drawingPoint = Util.ToDrawingPoint(mousePos);
 
-			_activeTool?.MouseMove(drawingPoint);
-
-			//_applicationViewModel.Layout.Sequences.SelectedSymbolMap.Points[_applicationViewModel.Layout.Sequences.SelectedSymbolMap.SelectedPointIndex].Point = drawingPoint;
+			_toolManager.ActiveTool?.MouseMove(drawingPoint);
 
 			ImageSource imageSource = Image.Source;
 			BitmapSource bitmap = (BitmapSource)imageSource;
@@ -117,12 +112,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void Canvas_MouseLeave(object sender, MouseEventArgs e)
 		{
-			_activeTool?.MouseLeave(Util.ToDrawingPoint(e.GetPosition(Image)));
+			_toolManager.ActiveTool?.MouseLeave(Util.ToDrawingPoint(e.GetPosition(Image)));
 		}
 
 		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
-			_activeTool?.MouseWheel(Util.ToDrawingPoint(e.GetPosition(Image)), e.Delta);
+			_toolManager.ActiveTool?.MouseWheel(Util.ToDrawingPoint(e.GetPosition(Image)), e.Delta);
 		}
 	}
 }

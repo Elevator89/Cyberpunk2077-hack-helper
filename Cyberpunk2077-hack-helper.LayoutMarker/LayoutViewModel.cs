@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
@@ -18,6 +19,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		public event LayoutTablePositionEditEventHandler LayoutTablePositionEdit;
 		public event LayoutTableCellSizeEditEventHandler LayoutTableCellSizeEdit;
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		private readonly IToolManager _toolManager;
 
 		public LayoutTableViewModel Matrix
 		{
@@ -41,10 +44,11 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			}
 		}
 
-		public LayoutViewModel()
+		public LayoutViewModel(IToolManager toolManager)
 		{
-			_matrixViewModel = new LayoutTableViewModel(this);
-			_sequencesViewModel = new LayoutTableViewModel(this);
+			_toolManager = toolManager;
+			_matrixViewModel = new LayoutTableViewModel(this, _toolManager);
+			_sequencesViewModel = new LayoutTableViewModel(this, _toolManager);
 		}
 
 		public void NotifyPointEdit(PointViewModel point)

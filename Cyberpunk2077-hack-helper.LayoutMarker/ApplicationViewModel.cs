@@ -1,5 +1,6 @@
 ﻿using Cyberpunk2077_hack_helper.Common;
 using Cyberpunk2077_hack_helper.Grabbing;
+using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +12,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 	{
 		private readonly IDialogService _dialogService;
 		private readonly IFileService _fileService;
+		private readonly IToolManager _toolManager;
 
 		private readonly LayoutViewModel _layoutViewModel;
 
@@ -19,18 +21,19 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			get { return _layoutViewModel; }
 		}
 
-		public ApplicationViewModel(IDialogService dialogService, IFileService fileService)
+		public ApplicationViewModel(IDialogService dialogService, IFileService fileService, IToolManager toolManager)
 		{
 			_dialogService = dialogService;
 			_fileService = fileService;
+			_toolManager = toolManager;
 
-			_layoutViewModel = new LayoutViewModel();
+			_layoutViewModel = new LayoutViewModel(_toolManager);
 			New();
 		}
 
 		public void New()
 		{
-			FillViewModelFromLayout(CreateDefaultLayout(), _layoutViewModel);
+			FillViewModelFromLayout(_toolManager, CreateDefaultLayout(), _layoutViewModel);
 		}
 
 		public void Open()
@@ -40,7 +43,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				if (_dialogService.OpenFileDialog() == true)
 				{
 					Layout layout = _fileService.Open(_dialogService.FilePath);
-					FillViewModelFromLayout(layout, _layoutViewModel);
+					FillViewModelFromLayout(_toolManager, layout, _layoutViewModel);
 
 					_dialogService.ShowMessage("Файл открыт");
 				}
@@ -89,14 +92,14 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			return new SymbolMap(symbolMapViewModel.Symbol, symbolMapViewModel.Points.Select(pointVm => pointVm.Point).ToList());
 		}
 
-		private static void FillViewModelFromLayout(Layout layout, LayoutViewModel layoutViewModel)
+		private static void FillViewModelFromLayout(IToolManager toolManager, Layout layout, LayoutViewModel layoutViewModel)
 		{
-			FillLayoutTableViewModel(layout.Matrix, layoutViewModel.Matrix);
-			FillLayoutTableViewModel(layout.Sequences, layoutViewModel.Sequences);
+			FillLayoutTableViewModel(toolManager, layout.Matrix, layoutViewModel.Matrix);
+			FillLayoutTableViewModel(toolManager, layout.Sequences, layoutViewModel.Sequences);
 			layoutViewModel.SelectedTableIndex = -1;
 		}
 
-		private static void FillLayoutTableViewModel(LayoutTable layoutTable, LayoutTableViewModel layoutTableViewModel)
+		private static void FillLayoutTableViewModel(IToolManager toolManager, LayoutTable layoutTable, LayoutTableViewModel layoutTableViewModel)
 		{
 			layoutTableViewModel.Position = layoutTable.Position;
 			layoutTableViewModel.CellSize = layoutTable.CellSize;
@@ -106,17 +109,17 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			layoutTableViewModel.SymbolMaps.Clear();
 			foreach (SymbolMap symbolMap in layoutTable.SymbolMaps)
 			{
-				layoutTableViewModel.SymbolMaps.Add(CreateSymbolMapViewModel(layoutTableViewModel, symbolMap));
+				layoutTableViewModel.SymbolMaps.Add(CreateSymbolMapViewModel(layoutTableViewModel, toolManager, symbolMap));
 			}
 		}
 
-		private static SymbolMapViewModel CreateSymbolMapViewModel(LayoutTableViewModel layoutTableViewModel, SymbolMap symbolMap)
+		private static SymbolMapViewModel CreateSymbolMapViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager, SymbolMap symbolMap)
 		{
-			SymbolMapViewModel symbolMapViewModel = new SymbolMapViewModel(layoutTableViewModel);
+			SymbolMapViewModel symbolMapViewModel = new SymbolMapViewModel(layoutTableViewModel, toolManager);
 			symbolMapViewModel.Symbol = symbolMap.Symbol;
 
 			foreach (Point point in symbolMap.Points)
-				symbolMapViewModel.Points.Add(new PointViewModel(symbolMapViewModel, point));
+				symbolMapViewModel.Points.Add(new PointViewModel(symbolMapViewModel, toolManager, point));
 
 			return symbolMapViewModel;
 		}

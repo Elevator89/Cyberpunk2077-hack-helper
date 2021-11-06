@@ -6,11 +6,24 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Tools
 {
 	public class SizeTool : ITool
 	{
-		public Action<Point> PositionSetter { get; set; } = null;
-		public Action<Size> SizeSetter { get; set; } = null;
+		public Action<Point> PositionSetter { get; private set; } = null;
 
-		private Point _downPostition;
+		public Action<Size> SizeSetter { get; private set; } = null;
+
+		private Point _downPostition = Point.Empty;
 		private bool _isDown = false;
+
+		public SizeTool(Action<Point> positionSetter, Action<Size> sizeSetter)
+		{
+			PositionSetter = positionSetter;
+			SizeSetter = sizeSetter;
+		}
+
+		public void Reset()
+		{
+			_isDown = false;
+			_downPostition = Point.Empty;
+		}
 
 		public void MouseDown(Point position, MouseButton button)
 		{
