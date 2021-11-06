@@ -8,6 +8,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
 	public class SymbolMapViewModel : INotifyPropertyChanged
 	{
+		private readonly LayoutTableViewModel _layoutTableViewModel;
 		private readonly IToolManager _toolManager;
 
 		private RelayCommand _addPointCommand;
@@ -52,7 +53,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _addPointCommand ??
 				  (_addPointCommand = new RelayCommand(obj =>
 				  {
-					  Points.Add(new PointViewModel(_toolManager, new Point(0, 0)));
+					  Points.Add(new PointViewModel(_layoutTableViewModel, _toolManager, new Point(0, 0)));
 				  }));
 			}
 		}
@@ -74,8 +75,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		public TrulyObservableCollection<PointViewModel> Points { get; }
 
-		public SymbolMapViewModel(IToolManager toolManager)
+		public SymbolMapViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager)
 		{
+			_layoutTableViewModel = layoutTableViewModel;
 			_toolManager = toolManager;
 			_symbol = Symbol._1C;
 			Points = new TrulyObservableCollection<PointViewModel>();

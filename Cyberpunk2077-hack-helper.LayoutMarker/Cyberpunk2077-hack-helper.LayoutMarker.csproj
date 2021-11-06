@@ -86,6 +86,7 @@
     <Compile Include="Tools\PointTool.cs" />
     <Compile Include="PointViewModel.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="Tools\PointVmTool.cs" />
     <Compile Include="Tools\SizeTool.cs" />
     <Compile Include="SymbolMapViewModel.cs" />
     <Compile Include="Tools\ToolManager.cs" />
