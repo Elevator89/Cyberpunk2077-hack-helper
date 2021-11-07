@@ -58,6 +58,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				typeof(LayoutTableView),
 				null);
 
+		private const double PositionerSize = 5.0;
+		private const double PositionerHalfSize = 0.5 * PositionerSize;
+		private const double SizerSize = 5.0;
+
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
 		private System.Drawing.Size _cellCount;
@@ -108,7 +112,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			_visuals = new VisualCollection(this)
 			{
-				new DrawingVisual()
+				new DrawingVisual(),
+				new DrawingVisual(),
+				new DrawingVisual(),
 			};
 		}
 
@@ -117,10 +123,29 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		private void RedrawGrid()
 		{
 			DrawingVisual gridVisual = (DrawingVisual)_visuals[0];
-
 			using (DrawingContext drawingContext = gridVisual.RenderOpen())
 			{
 				DrawGrid(drawingContext, _pen, _position, _cellSize, _cellCount);
+				drawingContext.Close();
+			}
+		}
+
+		private void RedrawPositioner()
+		{
+			DrawingVisual positionerVisual = (DrawingVisual)_visuals[1];
+			using (DrawingContext drawingContext = positionerVisual.RenderOpen())
+			{
+				drawingContext.DrawRectangle(_pen.Brush, _pen, new Rect(_position.X - PositionerHalfSize, _position.Y - PositionerHalfSize, PositionerSize, PositionerSize));
+				drawingContext.Close();
+			}
+		}
+
+		private void RedrawSizer()
+		{
+			DrawingVisual sizerVisual = (DrawingVisual)_visuals[2];
+			using (DrawingContext drawingContext = sizerVisual.RenderOpen())
+			{
+				drawingContext.DrawRectangle(_pen.Brush, _pen, new Rect(_position.X + _cellCount.Width * _cellSize.Width, _position.Y + _cellCount.Height * _cellSize.Height, SizerSize, SizerSize));
 				drawingContext.Close();
 			}
 		}
@@ -143,6 +168,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			thisObj._position = position;
 			thisObj.RedrawGrid();
+			thisObj.RedrawPositioner();
+			thisObj.RedrawSizer();
 		}
 
 		private static void OnCellSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -152,6 +179,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			thisObj._cellSize = cellSize;
 			thisObj.RedrawGrid();
+			thisObj.RedrawSizer();
 		}
 
 		private static void OnCellCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -161,6 +189,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			thisObj._cellCount = cellCount;
 			thisObj.RedrawGrid();
+			thisObj.RedrawSizer();
 		}
 
 		private static void OnBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -171,6 +200,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			thisObj._brush = brush;
 			thisObj._pen = new Pen(brush, 1.0);
 			thisObj.RedrawGrid();
+			thisObj.RedrawPositioner();
+			thisObj.RedrawSizer();
 		}
 
 		private static void DrawGrid(DrawingContext drawingContext, Pen pen, System.Drawing.Point position, System.Drawing.Size cellSize, System.Drawing.Size cellCount)
