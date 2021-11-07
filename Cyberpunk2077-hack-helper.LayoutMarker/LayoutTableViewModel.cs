@@ -121,9 +121,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				return _debugCommand ??
 				  (_debugCommand = new RelayCommand(obj =>
 				  {
-					  SymbolMapViewModel selectedSymbolMap = SymbolMaps[SelectedSymbolMapIndex];
-					  if (selectedSymbolMap.SelectedPointIndex >= 0)
-						  selectedSymbolMap.Points[selectedSymbolMap.SelectedPointIndex].X++;
+					  if (SelectedSymbolMap?.SelectedPointIndex >= 0)
+						  SelectedSymbolMap.Points[SelectedSymbolMap.SelectedPointIndex].X++;
 				  }));
 			}
 		}
