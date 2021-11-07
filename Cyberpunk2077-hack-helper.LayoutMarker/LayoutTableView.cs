@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Markup;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
-	[ContentProperty("MainContent")]
 	public class LayoutTableView : FrameworkElement
 	{
 		public static readonly DependencyProperty PositionProperty =
@@ -17,7 +16,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 					new System.Drawing.Point(0, 0),
 					FrameworkPropertyMetadataOptions.AffectsMeasure |
 					FrameworkPropertyMetadataOptions.AffectsRender,
-					new PropertyChangedCallback(OnPositionChanged)));
+					new PropertyChangedCallback(OnPositionChanged))
+				{
+					BindsTwoWayByDefault = true
+				});
 
 		public static readonly DependencyProperty CellSizeProperty =
 			DependencyProperty.Register(
@@ -28,7 +30,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 					new System.Drawing.Size(0, 0),
 					FrameworkPropertyMetadataOptions.AffectsMeasure |
 					FrameworkPropertyMetadataOptions.AffectsRender,
-					new PropertyChangedCallback(OnCellSizeChanged)));
+					new PropertyChangedCallback(OnCellSizeChanged))
+				{
+					BindsTwoWayByDefault = true
+				});
 
 		public static readonly DependencyProperty CellCountProperty =
 			DependencyProperty.Register(
@@ -51,16 +56,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 					FrameworkPropertyMetadataOptions.AffectsRender,
 					new PropertyChangedCallback(OnBrushChanged)));
 
-		public static readonly DependencyProperty MainContentProperty =
-			DependencyProperty.Register(
-				"MainContent",
-				typeof(object),
-				typeof(LayoutTableView),
-				null);
-
-		private const double PositionerSize = 5.0;
+		private const double PositionerSize = 10.0;
 		private const double PositionerHalfSize = 0.5 * PositionerSize;
-		private const double SizerSize = 5.0;
+		private const double SizerSize = 10.0;
 
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
@@ -68,6 +66,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private Brush _brush;
 		private Pen _pen;
+
+		private Drag _positionerDrag = null;
+		private Drag _sizerDrag = null;
 
 		// Create a collection of child visual objects.
 		private readonly VisualCollection _visuals;
@@ -96,12 +97,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			set { SetValue(BrushProperty, value); }
 		}
 
-		public object MainContent
-		{
-			get { return GetValue(MainContentProperty); }
-			set { SetValue(MainContentProperty, value); }
-		}
-
 		public LayoutTableView()
 		{
 			_brush = Brushes.Red;
@@ -116,9 +111,99 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				new DrawingVisual(),
 				new DrawingVisual(),
 			};
+
+			MouseLeftButtonDown += LayoutTableView_MouseLeftButtonDown;
+			MouseMove += LayoutTableView_MouseMove;
+			MouseLeftButtonUp += LayoutTableView_MouseLeftButtonUp;
 		}
 
 		protected override int VisualChildrenCount => _visuals.Count;
+
+		// Capture the mouse event and hit test the coordinate point value against
+		// the child visual objects.
+		private void LayoutTableView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			Point mousePos = e.GetPosition((UIElement)Parent);
+
+			// Initiate the hit test by setting up a hit test result callback method.
+			VisualTreeHelper.HitTest(this, null, hitTestResult => HandleMouseDown(mousePos, hitTestResult), new PointHitTestParameters(mousePos));
+		}
+
+		private void LayoutTableView_MouseMove(object sender, MouseEventArgs e)
+		{
+			Point mousePos = e.GetPosition((UIElement)Parent);
+
+			if (_positionerDrag != null)
+			{
+				_positionerDrag.Update(mousePos);
+				Position = _positionerDrag.TargetEnd;
+			}
+			else if (_sizerDrag != null)
+			{
+				_sizerDrag.Update(mousePos);
+				CellSize = Util.Divide(Util.ToSize(_sizerDrag.TargetEnd), CellCount);
+			}
+		}
+
+		private void LayoutTableView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			Point mousePos = e.GetPosition((UIElement)Parent);
+
+			if (_positionerDrag != null)
+			{
+				_positionerDrag.Update(mousePos);
+				Position = _positionerDrag.TargetEnd;
+				_positionerDrag = null;
+			}
+			else if (_sizerDrag != null)
+			{
+				_sizerDrag.Update(mousePos);
+				CellSize = Util.Divide(Util.ToSize(_sizerDrag.TargetEnd), CellCount);
+				_sizerDrag = null;
+			}
+		}
+
+		// If a child visual object is hit, toggle its opacity to visually indicate a hit.
+		public HitTestResultBehavior HandleMouseDown(Point mousePos, HitTestResult result)
+		{
+			if (result.VisualHit is DrawingVisual drawingVisual)
+			{
+				if (ReferenceEquals(drawingVisual, _visuals[1]))
+				{
+					_positionerDrag = new Drag(mousePos, Position);
+					return HitTestResultBehavior.Stop;
+				}
+
+				if (ReferenceEquals(drawingVisual, _visuals[2]))
+				{
+					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
+					return HitTestResultBehavior.Stop;
+				}
+			}
+			return HitTestResultBehavior.Continue;
+		}
+
+		private HitTestFilterBehavior HandleMouseDown(Point mousePos, DependencyObject potentialHitTestTarget)
+		{
+			if (potentialHitTestTarget.GetType() == typeof(LayoutTableView))
+				return HitTestFilterBehavior.Continue;
+
+			if (potentialHitTestTarget is DrawingVisual drawingVisual)
+			{
+				if (ReferenceEquals(drawingVisual, _visuals[1]))
+				{
+					_positionerDrag = new Drag(mousePos, Position);
+					return HitTestFilterBehavior.Stop;
+				}
+
+				if (ReferenceEquals(drawingVisual, _visuals[2]))
+				{
+					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
+					return HitTestFilterBehavior.Stop;
+				}
+			}
+			return HitTestFilterBehavior.ContinueSkipSelfAndChildren;
+		}
 
 		private void RedrawGrid()
 		{
