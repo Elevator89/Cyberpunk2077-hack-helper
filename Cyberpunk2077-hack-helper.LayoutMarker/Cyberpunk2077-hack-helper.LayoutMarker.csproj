@@ -79,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SymbolMapView.cs" />
     <Compile Include="Tools\ITool.cs" />
     <Compile Include="LayoutTableView.cs" />
     <Compile Include="Tools\IToolManager.cs" />

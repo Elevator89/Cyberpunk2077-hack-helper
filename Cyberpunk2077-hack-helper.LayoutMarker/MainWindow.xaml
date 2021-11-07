@@ -6,127 +6,128 @@
         xmlns:local="clr-namespace:Cyberpunk2077_hack_helper.LayoutMarker"
         mc:Ignorable="d"
         Title="Layout Marker" Height="575.55" Width="1007.025" Loaded="WindowLoaded">
-	<Window.CommandBindings>
-		<CommandBinding Command="ApplicationCommands.Save" Executed="SaveCmdExecuted"/>
-		<CommandBinding Command="ApplicationCommands.Open" Executed="OpenCmdExecuted"/>
-		<CommandBinding Command="ApplicationCommands.Close" Executed="CloseCmdExecuted"/>
-	</Window.CommandBindings>
-	<Window.Resources>
-	</Window.Resources>
-	<DockPanel Margin="0">
-		<Menu VerticalAlignment="Top" DockPanel.Dock="Top">
-			<MenuItem Header="Layout">
-				<MenuItem Header="New"/>
-				<Separator/>
-				<MenuItem Header="Open" Command="ApplicationCommands.Open"/>
-				<MenuItem Header="Save" Command="ApplicationCommands.Save"/>
-				<Separator/>
-				<MenuItem Header="Exit" Command="ApplicationCommands.Close" />
-			</MenuItem>
-			<MenuItem Header="Image">
-				<MenuItem Header="Load"/>
-			</MenuItem>
-		</Menu>
-		<StatusBar DockPanel.Dock="Bottom" Height="22" MinHeight="22" Margin="0,0,0,0">
-			<StatusBarItem Content="Filler" />
-		</StatusBar>
-		<ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto"  MinWidth="150" >
-			<StackPanel >
-				<GroupBox Header="Matrix table" Margin="2,2,2,2">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="2*"/>
-							<ColumnDefinition Width="3*"/>
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="22"/>
-							<RowDefinition Height="22"/>
-							<RowDefinition />
-						</Grid.RowDefinitions>
-						<TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
-						<TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.Position}" Margin="0,2,0,0"/>
-						<TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
-						<TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.CellSize}" Margin="0,2,0,0"/>
-						<ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Matrix.SymbolMaps}">
-							<ListView.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Path=Symbol}" />
-								</DataTemplate>
-							</ListView.ItemTemplate>
-						</ListView>
-					</Grid>
-				</GroupBox>
-				<GroupBox Header="Sequences table" Margin="2,2,2,2">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="2*"/>
-							<ColumnDefinition Width="3*"/>
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="22"/>
-							<RowDefinition Height="22"/>
-							<RowDefinition Height="22"/>
-							<RowDefinition />
-							<RowDefinition />
-						</Grid.RowDefinitions>
-						<TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
-						<TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,0"/>
-						<TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
-						<TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,0"/>
-						<TextBlock Grid.Row="2" Grid.Column="0" Text="Cell count"/>
-						<TextBox Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellCount}" Margin="0,2,0,0"/>
-						<ListBox Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Sequences.SymbolMaps}" SelectedIndex="{Binding Path=Layout.Sequences.SelectedSymbolMapIndex}" >
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="1*"/>
-											<ColumnDefinition Width="5*"/>
-										</Grid.ColumnDefinitions>
-										<Grid.RowDefinitions>
-											<RowDefinition />
-											<RowDefinition />
-										</Grid.RowDefinitions>
-										<ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Source={StaticResource symbols}}" SelectedItem="{Binding Path=Symbol}" Width="50" Height="22" VerticalAlignment="Top" />
-										<ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Points}" SelectedIndex="{Binding Path=SelectedPointIndex}" >
-											<ListBox.ItemTemplate>
-												<DataTemplate>
-													<StackPanel Orientation="Horizontal">
-														<TextBox TextWrapping="Wrap" Text="{Binding Path=Point}" Width="100" />
-														<Button Content="*" Command="{Binding EditCommand}" />
-													</StackPanel>
-												</DataTemplate>
-											</ListBox.ItemTemplate>
-										</ListBox>
-										<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-											<Button Command="{Binding AddPointCommand}" Width="30">+</Button>
-											<Button Command="{Binding RemovePointCommand}" Width="30">-</Button>
-										</StackPanel>
-									</Grid>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-						<StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-							<Button Command="{Binding Path=Layout.Sequences.AddSymbolMapCommand}" Width="30">+</Button>
-							<Button Command="{Binding Path=Layout.Sequences.RemoveSymbolMapCommand}" Width="30">-</Button>
-							<Button Command="{Binding Path=Layout.Sequences.DebugCommand}" Width="30">?</Button>
-						</StackPanel>
-					</Grid>
-				</GroupBox>
-			</StackPanel>
-		</ScrollViewer>
-		<ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" CanContentScroll="True" VerticalAlignment="Stretch" Margin="0">
-			<Grid>
-				<Image Name="Image" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None" Source="Z:/Cyberpunk2077-hack-helper/Screenshots/Screenshot_1.png"/>
-				<Canvas Name="Canvas" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseEnter="Canvas_MouseEnter" MouseLeave="Canvas_MouseLeave" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" >
-					<Canvas.Background>
-						<ImageBrush/>
-					</Canvas.Background>
-					<Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
-					<local:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" Points="{Binding Path=Layout.Matrix.SelectedSymbolMapPoints}" />
-					<local:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" Points="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}" />
-				</Canvas>
-			</Grid>
-		</ScrollViewer>
-	</DockPanel>
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveCmdExecuted"/>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCmdExecuted"/>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCmdExecuted"/>
+    </Window.CommandBindings>
+    <Window.Resources>
+    </Window.Resources>
+    <DockPanel Margin="0">
+        <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
+            <MenuItem Header="Layout">
+                <MenuItem Header="New"/>
+                <Separator/>
+                <MenuItem Header="Open" Command="ApplicationCommands.Open"/>
+                <MenuItem Header="Save" Command="ApplicationCommands.Save"/>
+                <Separator/>
+                <MenuItem Header="Exit" Command="ApplicationCommands.Close" />
+            </MenuItem>
+            <MenuItem Header="Image">
+                <MenuItem Header="Load"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar DockPanel.Dock="Bottom" Height="22" MinHeight="22" Margin="0,0,0,0">
+            <StatusBarItem Content="Filler" />
+        </StatusBar>
+        <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto"  MinWidth="150" >
+            <StackPanel >
+                <GroupBox Header="Matrix table" Margin="2,2,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.Position}" Margin="0,2,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.CellSize}" Margin="0,2,0,0"/>
+                        <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Matrix.SymbolMaps}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=Symbol}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Sequences table" Margin="2,2,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,0"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Cell count"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellCount}" Margin="0,2,0,0"/>
+                        <ListBox Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Sequences.SymbolMaps}" SelectedIndex="{Binding Path=Layout.Sequences.SelectedSymbolMapIndex}" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Source={StaticResource symbols}}" SelectedItem="{Binding Path=Symbol}" Width="50" Height="22" VerticalAlignment="Top" />
+                                        <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Points}" SelectedIndex="{Binding Path=SelectedPointIndex}" >
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBox TextWrapping="Wrap" Text="{Binding Path=Point}" Width="100" />
+                                                        <Button Content="*" Command="{Binding EditCommand}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Command="{Binding AddPointCommand}" Width="30">+</Button>
+                                            <Button Command="{Binding RemovePointCommand}" Width="30">-</Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Command="{Binding Path=Layout.Sequences.AddSymbolMapCommand}" Width="30">+</Button>
+                            <Button Command="{Binding Path=Layout.Sequences.RemoveSymbolMapCommand}" Width="30">-</Button>
+                            <Button Command="{Binding Path=Layout.Sequences.DebugCommand}" Width="30">?</Button>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" CanContentScroll="True" VerticalAlignment="Stretch" Margin="0">
+            <Grid>
+                <Image Name="Image" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None" Source="Z:/Cyberpunk2077-hack-helper/Screenshots/Screenshot_1.png"/>
+                <Canvas Name="Canvas" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseEnter="Canvas_MouseEnter" MouseLeave="Canvas_MouseLeave" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" >
+                    <Canvas.Background>
+                        <ImageBrush/>
+                    </Canvas.Background>
+                    <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
+                    <local:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
+                    <local:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
+                    <local:SymbolMapView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" Points="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}"/>
+                </Canvas>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
 </Window>
