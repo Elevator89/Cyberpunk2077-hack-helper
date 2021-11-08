@@ -129,10 +129,34 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			VisualTreeHelper.HitTest(this, null, hitTestResult => HandleMouseDown(mousePos, hitTestResult), new PointHitTestParameters(mousePos));
 		}
 
+		// If a child visual object is hit, toggle its opacity to visually indicate a hit.
+		private HitTestResultBehavior HandleMouseDown(Point mousePos, HitTestResult result)
+		{
+			if (result.VisualHit is DrawingVisual drawingVisual)
+			{
+				if (ReferenceEquals(drawingVisual, _visuals[1]))
+				{
+					_positionerDrag = new Drag(mousePos, Position);
+					CaptureMouse();
+					return HitTestResultBehavior.Stop;
+				}
+
+				if (ReferenceEquals(drawingVisual, _visuals[2]))
+				{
+					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
+					CaptureMouse();
+					return HitTestResultBehavior.Stop;
+				}
+			}
+			return HitTestResultBehavior.Continue;
+		}
+
 		private void LayoutTableView_MouseMove(object sender, MouseEventArgs e)
 		{
-			Point mousePos = e.GetPosition((UIElement)Parent);
+			if (!IsMouseCaptured)
+				return;
 
+			Point mousePos = e.GetPosition((UIElement)Parent);
 			if (_positionerDrag != null)
 			{
 				_positionerDrag.Update(mousePos);
@@ -147,6 +171,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void LayoutTableView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
+			if (!IsMouseCaptured)
+				return;
+
 			Point mousePos = e.GetPosition((UIElement)Parent);
 
 			if (_positionerDrag != null)
@@ -154,55 +181,15 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				_positionerDrag.Update(mousePos);
 				Position = _positionerDrag.TargetEnd;
 				_positionerDrag = null;
+				ReleaseMouseCapture();
 			}
 			else if (_sizerDrag != null)
 			{
 				_sizerDrag.Update(mousePos);
 				CellSize = Util.Divide(Util.ToSize(_sizerDrag.TargetEnd), CellCount);
 				_sizerDrag = null;
+				ReleaseMouseCapture();
 			}
-		}
-
-		// If a child visual object is hit, toggle its opacity to visually indicate a hit.
-		public HitTestResultBehavior HandleMouseDown(Point mousePos, HitTestResult result)
-		{
-			if (result.VisualHit is DrawingVisual drawingVisual)
-			{
-				if (ReferenceEquals(drawingVisual, _visuals[1]))
-				{
-					_positionerDrag = new Drag(mousePos, Position);
-					return HitTestResultBehavior.Stop;
-				}
-
-				if (ReferenceEquals(drawingVisual, _visuals[2]))
-				{
-					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
-					return HitTestResultBehavior.Stop;
-				}
-			}
-			return HitTestResultBehavior.Continue;
-		}
-
-		private HitTestFilterBehavior HandleMouseDown(Point mousePos, DependencyObject potentialHitTestTarget)
-		{
-			if (potentialHitTestTarget.GetType() == typeof(LayoutTableView))
-				return HitTestFilterBehavior.Continue;
-
-			if (potentialHitTestTarget is DrawingVisual drawingVisual)
-			{
-				if (ReferenceEquals(drawingVisual, _visuals[1]))
-				{
-					_positionerDrag = new Drag(mousePos, Position);
-					return HitTestFilterBehavior.Stop;
-				}
-
-				if (ReferenceEquals(drawingVisual, _visuals[2]))
-				{
-					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
-					return HitTestFilterBehavior.Stop;
-				}
-			}
-			return HitTestFilterBehavior.ContinueSkipSelfAndChildren;
 		}
 
 		private void RedrawGrid()
