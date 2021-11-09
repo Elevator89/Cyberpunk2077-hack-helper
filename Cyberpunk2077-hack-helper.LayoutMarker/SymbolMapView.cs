@@ -136,10 +136,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private void RedrawPoint(int pointIndex)
 		{
-			DrawingVisual positionerVisual = (DrawingVisual)_visuals[pointIndex];
-			using (DrawingContext drawingContext = positionerVisual.RenderOpen())
+			RedrawPointVisual((DrawingVisual)_visuals[pointIndex], _pointsInternal[pointIndex]);
+		}
+
+		private void RedrawPointVisual(DrawingVisual pointVisual, System.Drawing.Point point)
+		{
+			using (DrawingContext drawingContext = pointVisual.RenderOpen())
 			{
-				System.Drawing.Point point = _pointsInternal[pointIndex];
 				Vector pointV = new Vector(point.X, point.Y);
 
 				for (int row = 0; row < _cellCount.Height; ++row)
@@ -176,14 +179,16 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				_pointsInternal.AddRange(newPoints.Select(pvm => pvm.Point));
 				_pointsNotifyCollectionChangedInternal = newPoints as INotifyCollectionChanged;
 
-				foreach (System.Drawing.Point point in _pointsInternal)
-					_visuals.Add(new DrawingVisual());
+				foreach (PointViewModel pointVm in newPoints)
+				{
+					DrawingVisual pointVisual = new DrawingVisual();
+					RedrawPointVisual(pointVisual, pointVm.Point);
+					_visuals.Add(pointVisual);
+				}
 
 				if (_pointsNotifyCollectionChangedInternal != null)
 					_pointsNotifyCollectionChangedInternal.CollectionChanged += HandlePointsCollectionChanged;
 			}
-
-			RedrawPoints();
 		}
 
 		private void HandlePointsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -193,7 +198,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				case NotifyCollectionChangedAction.Add:
 					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
 					for (int i = 0; i < e.NewItems.Count; ++i)
-						_visuals.Insert(e.NewStartingIndex + i, new DrawingVisual());
+					{
+						PointViewModel pointVm = (PointViewModel)e.NewItems[i];
+						DrawingVisual pointVisual = new DrawingVisual();
+						RedrawPointVisual(pointVisual, pointVm.Point);
+						_visuals.Insert(e.NewStartingIndex + i, pointVisual);
+					}
 					break;
 				case NotifyCollectionChangedAction.Remove:
 					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
@@ -204,14 +214,18 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 					_visuals.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
 					for (int i = 0; i < e.NewItems.Count; ++i)
-						_visuals.Insert(e.NewStartingIndex + i, new DrawingVisual());
+					{
+						PointViewModel pointVm = (PointViewModel)e.NewItems[i];
+						DrawingVisual pointVisual = new DrawingVisual();
+						RedrawPointVisual(pointVisual, pointVm.Point);
+						_visuals.Insert(e.NewStartingIndex + i, pointVisual);
+					}
 					break;
 				case NotifyCollectionChangedAction.Reset:
 					_pointsInternal.Clear();
 					_visuals.Clear();
 					break;
 			}
-			RedrawPoints();
 		}
 
 		// Provide a required override for the GetVisualChild method.
