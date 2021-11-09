@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker
 {
@@ -49,7 +50,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 			PointsProperty = DependencyProperty.Register(
 						"Points",
-						typeof(IEnumerable<PointViewModel>),
+						typeof(ObservableCollection<PointViewModel>),
 						typeof(SymbolMapView),
 						new FrameworkPropertyMetadata(
 							null,
@@ -66,6 +67,9 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 							FrameworkPropertyMetadataOptions.AffectsRender,
 							new PropertyChangedCallback(OnBrushChanged)));
 		}
+
+		private const double PointSize = 2f;
+		private const double PointHalfSize = 0.5 * PointSize;
 
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
@@ -110,6 +114,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			set { SetValue(BrushProperty, value); }
 		}
 
+		protected override int VisualChildrenCount => _visuals.Count;
+
 		public SymbolMapView()
 		{
 			_brush = Brushes.Red;
@@ -119,20 +125,37 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			_cellCount = new System.Drawing.Size(0, 0);
 			_pointsInternal = new List<System.Drawing.Point>();
 
-			_visuals = new VisualCollection(this)
-			{
-				new DrawingVisual()
-			};
+			_visuals = new VisualCollection(this);
 		}
-
-		protected override int VisualChildrenCount => _visuals.Count;
 
 		private void RedrawPoints()
 		{
-			DrawingVisual pointsVisual = (DrawingVisual)_visuals[0];
-			using (DrawingContext drawingContext = pointsVisual.RenderOpen())
+			for (int pointIndex = 0; pointIndex < _pointsInternal.Count; ++pointIndex)
+				RedrawPoint(pointIndex);
+		}
+
+		private void RedrawPoint(int pointIndex)
+		{
+			DrawingVisual positionerVisual = (DrawingVisual)_visuals[pointIndex];
+			using (DrawingContext drawingContext = positionerVisual.RenderOpen())
 			{
-				DrawPoints(drawingContext, _pen, _pointsInternal, _position, _cellSize, _cellCount);
+				System.Drawing.Point point = _pointsInternal[pointIndex];
+				Vector pointV = new Vector(point.X, point.Y);
+
+				for (int row = 0; row < _cellCount.Height; ++row)
+				{
+					for (int col = 0; col < _cellCount.Width; ++col)
+					{
+						Point cellPos = new Point(
+							_position.X + col * _cellSize.Width,
+							_position.Y + row * _cellSize.Height);
+
+						Point cellPointPos = cellPos + pointV;
+
+						Rect rect = new Rect(cellPointPos.X - PointHalfSize, cellPointPos.Y - PointHalfSize, PointSize, PointSize);
+						drawingContext.DrawRectangle(null, _pen, rect);
+					}
+				}
 				drawingContext.Close();
 			}
 		}
@@ -140,15 +163,21 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		private void SetPointsInternal(IEnumerable<PointViewModel> newPoints)
 		{
 			if (_pointsNotifyCollectionChangedInternal != null)
+			{
 				_pointsNotifyCollectionChangedInternal.CollectionChanged -= HandlePointsCollectionChanged;
+				_pointsNotifyCollectionChangedInternal = null;
+			}
 
-			_pointsNotifyCollectionChangedInternal = null;
 			_pointsInternal.Clear();
+			_visuals.Clear();
 
 			if (newPoints != null)
 			{
 				_pointsInternal.AddRange(newPoints.Select(pvm => pvm.Point));
 				_pointsNotifyCollectionChangedInternal = newPoints as INotifyCollectionChanged;
+
+				foreach (System.Drawing.Point point in _pointsInternal)
+					_visuals.Add(new DrawingVisual());
 
 				if (_pointsNotifyCollectionChangedInternal != null)
 					_pointsNotifyCollectionChangedInternal.CollectionChanged += HandlePointsCollectionChanged;
@@ -163,16 +192,23 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			{
 				case NotifyCollectionChangedAction.Add:
 					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
+					for (int i = 0; i < e.NewItems.Count; ++i)
+						_visuals.Insert(e.NewStartingIndex + i, new DrawingVisual());
 					break;
 				case NotifyCollectionChangedAction.Remove:
 					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+					_visuals.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					break;
 				case NotifyCollectionChangedAction.Replace:
 					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+					_visuals.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
+					for (int i = 0; i < e.NewItems.Count; ++i)
+						_visuals.Insert(e.NewStartingIndex + i, new DrawingVisual());
 					break;
 				case NotifyCollectionChangedAction.Reset:
 					_pointsInternal.Clear();
+					_visuals.Clear();
 					break;
 			}
 			RedrawPoints();
@@ -233,31 +269,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			thisObj._brush = brush;
 			thisObj._pen = new Pen(brush, 1.0);
 			thisObj.RedrawPoints();
-		}
-
-		private static void DrawPoints(DrawingContext drawingContext, Pen pen, IEnumerable<System.Drawing.Point> points, System.Drawing.Point position, System.Drawing.Size cellSize, System.Drawing.Size cellCount)
-		{
-			foreach (System.Drawing.Point point in points)
-			{
-				Vector pointV = new Vector(point.X, point.Y);
-				for (int row = 0; row < cellCount.Height; ++row)
-				{
-					for (int col = 0; col < cellCount.Width; ++col)
-					{
-						Point cellPos = new Point(
-							position.X + col * cellSize.Width,
-							position.Y + row * cellSize.Height);
-
-						DrawPoint(drawingContext, pen, cellPos + pointV);
-					}
-				}
-			}
-		}
-
-		private static void DrawPoint(DrawingContext drawingContext, Pen pen, Point point)
-		{
-			Rect rect = new Rect(point.X - 1, point.Y - 1, 3, 3);
-			drawingContext.DrawRectangle(null, pen, rect);
 		}
 	}
 }
