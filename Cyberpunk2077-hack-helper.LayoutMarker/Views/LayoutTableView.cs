@@ -70,8 +70,11 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		private Drag _positionerDrag = null;
 		private Drag _sizerDrag = null;
 
-		// Create a collection of child visual objects.
 		private readonly VisualCollection _visuals;
+
+		private readonly DrawingVisual _grid;
+		private readonly DrawingVisual _positioner;
+		private readonly DrawingVisual _sizer;
 
 		public System.Drawing.Point Position
 		{
@@ -105,19 +108,18 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 			_cellSize = new System.Drawing.Size(0, 0);
 			_cellCount = new System.Drawing.Size(0, 0);
 
-			_visuals = new VisualCollection(this)
-			{
-				new DrawingVisual(),
-				new DrawingVisual(),
-				new DrawingVisual(),
-			};
+			_grid = new DrawingVisual();
+			_positioner = new DrawingVisual();
+			_sizer = new DrawingVisual();
+
+			_visuals = new VisualCollection(this) { _grid, _positioner, _sizer };
 
 			MouseLeftButtonDown += LayoutTableView_MouseLeftButtonDown;
 			MouseMove += LayoutTableView_MouseMove;
 			MouseLeftButtonUp += LayoutTableView_MouseLeftButtonUp;
 		}
 
-		protected override int VisualChildrenCount => _visuals.Count;
+		protected override int VisualChildrenCount => 3;
 
 		// Capture the mouse event and hit test the coordinate point value against
 		// the child visual objects.
@@ -134,14 +136,14 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		{
 			if (result.VisualHit is DrawingVisual drawingVisual)
 			{
-				if (ReferenceEquals(drawingVisual, _visuals[1]))
+				if (ReferenceEquals(drawingVisual, _positioner))
 				{
 					_positionerDrag = new Drag(mousePos, Position);
 					CaptureMouse();
 					return HitTestResultBehavior.Stop;
 				}
 
-				if (ReferenceEquals(drawingVisual, _visuals[2]))
+				if (ReferenceEquals(drawingVisual, _sizer))
 				{
 					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
 					CaptureMouse();
@@ -194,18 +196,38 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 
 		private void RedrawGrid()
 		{
-			DrawingVisual gridVisual = (DrawingVisual)_visuals[0];
-			using (DrawingContext drawingContext = gridVisual.RenderOpen())
+			using (DrawingContext drawingContext = _grid.RenderOpen())
 			{
-				DrawGrid(drawingContext, _pen, _position, _cellSize, _cellCount);
+				for (int row = 0; row <= _cellCount.Height; ++row)
+				{
+					drawingContext.DrawLine(
+						_pen,
+						new Point(
+							_position.X,
+							_position.Y + row * _cellSize.Height),
+						new Point(
+							_position.X + _cellCount.Width * _cellSize.Width,
+							_position.Y + row * _cellSize.Height));
+				}
+
+				for (int col = 0; col <= _cellCount.Width; ++col)
+				{
+					drawingContext.DrawLine(
+						_pen,
+						new Point(
+							_position.X + col * _cellSize.Width,
+							_position.Y),
+						new Point(
+							_position.X + col * _cellSize.Width,
+							_position.Y + _cellCount.Height * _cellSize.Height));
+				}
 				drawingContext.Close();
 			}
 		}
 
 		private void RedrawPositioner()
 		{
-			DrawingVisual positionerVisual = (DrawingVisual)_visuals[1];
-			using (DrawingContext drawingContext = positionerVisual.RenderOpen())
+			using (DrawingContext drawingContext = _positioner.RenderOpen())
 			{
 				drawingContext.DrawRectangle(_pen.Brush, _pen, new Rect(_position.X - PositionerHalfSize, _position.Y - PositionerHalfSize, PositionerSize, PositionerSize));
 				drawingContext.Close();
@@ -214,8 +236,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 
 		private void RedrawSizer()
 		{
-			DrawingVisual sizerVisual = (DrawingVisual)_visuals[2];
-			using (DrawingContext drawingContext = sizerVisual.RenderOpen())
+			using (DrawingContext drawingContext = _sizer.RenderOpen())
 			{
 				drawingContext.DrawRectangle(_pen.Brush, _pen, new Rect(_position.X + _cellCount.Width * _cellSize.Width, _position.Y + _cellCount.Height * _cellSize.Height, SizerSize, SizerSize));
 				drawingContext.Close();
@@ -226,9 +247,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		protected override Visual GetVisualChild(int index)
 		{
 			if (index < 0 || index >= _visuals.Count)
-			{
 				throw new ArgumentOutOfRangeException();
-			}
 
 			return _visuals[index];
 		}
@@ -274,33 +293,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 			thisObj.RedrawGrid();
 			thisObj.RedrawPositioner();
 			thisObj.RedrawSizer();
-		}
-
-		private static void DrawGrid(DrawingContext drawingContext, Pen pen, System.Drawing.Point position, System.Drawing.Size cellSize, System.Drawing.Size cellCount)
-		{
-			for (int row = 0; row <= cellCount.Height; ++row)
-			{
-				drawingContext.DrawLine(
-					pen,
-					new Point(
-						position.X,
-						position.Y + row * cellSize.Height),
-					new Point(
-						position.X + cellCount.Width * cellSize.Width,
-						position.Y + row * cellSize.Height));
-			}
-
-			for (int col = 0; col <= cellCount.Width; ++col)
-			{
-				drawingContext.DrawLine(
-					pen,
-					new Point(
-						position.X + col * cellSize.Width,
-						position.Y),
-					new Point(
-						position.X + col * cellSize.Width,
-						position.Y + cellCount.Height * cellSize.Height));
-			}
 		}
 	}
 }
