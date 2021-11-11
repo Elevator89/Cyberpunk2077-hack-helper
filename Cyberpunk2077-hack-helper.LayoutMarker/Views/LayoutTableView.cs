@@ -67,8 +67,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		private Brush _brush;
 		private Pen _pen;
 
-		private Drag _positionerDrag = null;
-		private Drag _sizerDrag = null;
+		private Drag<int> _drag = null;
 
 		private readonly VisualCollection _visuals;
 
@@ -121,8 +120,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 
 		protected override int VisualChildrenCount => 3;
 
-		// Capture the mouse event and hit test the coordinate point value against
-		// the child visual objects.
 		private void LayoutTableView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			Point mousePos = e.GetPosition((UIElement)Parent);
@@ -131,21 +128,20 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 			VisualTreeHelper.HitTest(this, null, hitTestResult => HandleMouseDown(mousePos, hitTestResult), new PointHitTestParameters(mousePos));
 		}
 
-		// If a child visual object is hit, toggle its opacity to visually indicate a hit.
 		private HitTestResultBehavior HandleMouseDown(Point mousePos, HitTestResult result)
 		{
 			if (result.VisualHit is DrawingVisual drawingVisual)
 			{
 				if (ReferenceEquals(drawingVisual, _positioner))
 				{
-					_positionerDrag = new Drag(mousePos, Position);
+					_drag = new Drag<int>(1, mousePos, Position);
 					CaptureMouse();
 					return HitTestResultBehavior.Stop;
 				}
 
 				if (ReferenceEquals(drawingVisual, _sizer))
 				{
-					_sizerDrag = new Drag(mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
+					_drag = new Drag<int>(2, mousePos, Util.ToPoint(Util.Multiply(CellCount, CellSize)));
 					CaptureMouse();
 					return HitTestResultBehavior.Stop;
 				}
@@ -155,43 +151,43 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 
 		private void LayoutTableView_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (!IsMouseCaptured)
+			if (!IsMouseCaptured || _drag == null)
 				return;
 
 			Point mousePos = e.GetPosition((UIElement)Parent);
-			if (_positionerDrag != null)
+			_drag.Update(mousePos);
+
+			switch (_drag.TargetId)
 			{
-				_positionerDrag.Update(mousePos);
-				Position = _positionerDrag.TargetEnd;
-			}
-			else if (_sizerDrag != null)
-			{
-				_sizerDrag.Update(mousePos);
-				CellSize = Util.Divide(Util.ToSize(_sizerDrag.TargetEnd), CellCount);
+				case 1:
+					Position = _drag.TargetEnd;
+					break;
+				case 2:
+					CellSize = Util.Divide(Util.ToSize(_drag.TargetEnd), CellCount);
+					break;
 			}
 		}
 
 		private void LayoutTableView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			if (!IsMouseCaptured)
+			if (!IsMouseCaptured || _drag == null)
 				return;
 
 			Point mousePos = e.GetPosition((UIElement)Parent);
+			_drag.Update(mousePos);
 
-			if (_positionerDrag != null)
+			switch (_drag.TargetId)
 			{
-				_positionerDrag.Update(mousePos);
-				Position = _positionerDrag.TargetEnd;
-				_positionerDrag = null;
-				ReleaseMouseCapture();
+				case 1:
+					Position = _drag.TargetEnd;
+					break;
+				case 2:
+					CellSize = Util.Divide(Util.ToSize(_drag.TargetEnd), CellCount);
+					break;
 			}
-			else if (_sizerDrag != null)
-			{
-				_sizerDrag.Update(mousePos);
-				CellSize = Util.Divide(Util.ToSize(_sizerDrag.TargetEnd), CellCount);
-				_sizerDrag = null;
-				ReleaseMouseCapture();
-			}
+
+			_drag = null;
+			ReleaseMouseCapture();
 		}
 
 		private void RedrawGrid()
