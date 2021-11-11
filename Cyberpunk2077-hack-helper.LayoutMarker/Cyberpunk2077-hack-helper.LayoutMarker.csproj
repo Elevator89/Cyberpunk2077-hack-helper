@@ -80,6 +80,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Drag.cs" />
+    <Compile Include="PointVisual.cs" />
     <Compile Include="SymbolMapView.cs" />
     <Compile Include="Tools\ITool.cs" />
     <Compile Include="LayoutTableView.cs" />

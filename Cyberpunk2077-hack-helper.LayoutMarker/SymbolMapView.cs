@@ -68,18 +68,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 							new PropertyChangedCallback(OnBrushChanged)));
 		}
 
-		private const double PointSize = 2f;
-		private const double PointHalfSize = 0.5 * PointSize;
-
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
 		private System.Drawing.Size _cellCount;
 
-		private readonly List<System.Drawing.Point> _pointsInternal;
 		private INotifyCollectionChanged _pointsNotifyCollectionChangedInternal;
 
 		private Brush _brush;
-		private Pen _pen;
 
 		// Create a collection of child visual objects.
 		private readonly VisualCollection _visuals;
@@ -119,48 +114,11 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		public SymbolMapView()
 		{
 			_brush = Brushes.Red;
-			_pen = new Pen(_brush, 1.0);
 			_position = new System.Drawing.Point(0, 0);
 			_cellSize = new System.Drawing.Size(0, 0);
 			_cellCount = new System.Drawing.Size(0, 0);
-			_pointsInternal = new List<System.Drawing.Point>();
 
 			_visuals = new VisualCollection(this);
-		}
-
-		private void RedrawPoints()
-		{
-			for (int pointIndex = 0; pointIndex < _pointsInternal.Count; ++pointIndex)
-				RedrawPoint(pointIndex);
-		}
-
-		private void RedrawPoint(int pointIndex)
-		{
-			RedrawPointVisual((DrawingVisual)_visuals[pointIndex], _pointsInternal[pointIndex]);
-		}
-
-		private void RedrawPointVisual(DrawingVisual pointVisual, System.Drawing.Point point)
-		{
-			using (DrawingContext drawingContext = pointVisual.RenderOpen())
-			{
-				Vector pointV = new Vector(point.X, point.Y);
-
-				for (int row = 0; row < _cellCount.Height; ++row)
-				{
-					for (int col = 0; col < _cellCount.Width; ++col)
-					{
-						Point cellPos = new Point(
-							_position.X + col * _cellSize.Width,
-							_position.Y + row * _cellSize.Height);
-
-						Point cellPointPos = cellPos + pointV;
-
-						Rect rect = new Rect(cellPointPos.X - PointHalfSize, cellPointPos.Y - PointHalfSize, PointSize, PointSize);
-						drawingContext.DrawRectangle(null, _pen, rect);
-					}
-				}
-				drawingContext.Close();
-			}
 		}
 
 		private void SetPointsInternal(IEnumerable<PointViewModel> newPoints)
@@ -171,18 +129,15 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 				_pointsNotifyCollectionChangedInternal = null;
 			}
 
-			_pointsInternal.Clear();
 			_visuals.Clear();
 
 			if (newPoints != null)
 			{
-				_pointsInternal.AddRange(newPoints.Select(pvm => pvm.Point));
 				_pointsNotifyCollectionChangedInternal = newPoints as INotifyCollectionChanged;
 
 				foreach (PointViewModel pointVm in newPoints)
 				{
-					DrawingVisual pointVisual = new DrawingVisual();
-					RedrawPointVisual(pointVisual, pointVm.Point);
+					PointVisual pointVisual = new PointVisual(_position, _cellSize, _cellCount, pointVm.Point, _brush);
 					_visuals.Add(pointVisual);
 				}
 
@@ -196,33 +151,26 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			switch (e.Action)
 			{
 				case NotifyCollectionChangedAction.Add:
-					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
 					for (int i = 0; i < e.NewItems.Count; ++i)
 					{
 						PointViewModel pointVm = (PointViewModel)e.NewItems[i];
-						DrawingVisual pointVisual = new DrawingVisual();
-						RedrawPointVisual(pointVisual, pointVm.Point);
+						PointVisual pointVisual = new PointVisual(_position, _cellSize, _cellCount, pointVm.Point, _brush);
 						_visuals.Insert(e.NewStartingIndex + i, pointVisual);
 					}
 					break;
 				case NotifyCollectionChangedAction.Remove:
-					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					_visuals.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					break;
 				case NotifyCollectionChangedAction.Replace:
-					_pointsInternal.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
 					_visuals.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
-					_pointsInternal.InsertRange(e.NewStartingIndex, e.NewItems.Cast<PointViewModel>().Select(vm => vm.Point));
 					for (int i = 0; i < e.NewItems.Count; ++i)
 					{
 						PointViewModel pointVm = (PointViewModel)e.NewItems[i];
-						DrawingVisual pointVisual = new DrawingVisual();
-						RedrawPointVisual(pointVisual, pointVm.Point);
+						PointVisual pointVisual = new PointVisual(_position, _cellSize, _cellCount, pointVm.Point, _brush);
 						_visuals.Insert(e.NewStartingIndex + i, pointVisual);
 					}
 					break;
 				case NotifyCollectionChangedAction.Reset:
-					_pointsInternal.Clear();
 					_visuals.Clear();
 					break;
 			}
@@ -245,25 +193,28 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 			System.Drawing.Point position = (System.Drawing.Point)e.NewValue;
 
 			thisObj._position = position;
-			thisObj.RedrawPoints();
+			foreach (PointVisual pointVisual in thisObj._visuals)
+				pointVisual.TablePosition = position;
 		}
 
 		private static void OnCellSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			SymbolMapView thisObj = (SymbolMapView)d;
+			SymbolMapView symbolMapView = (SymbolMapView)d;
 			System.Drawing.Size cellSize = (System.Drawing.Size)e.NewValue;
 
-			thisObj._cellSize = cellSize;
-			thisObj.RedrawPoints();
+			symbolMapView._cellSize = cellSize;
+			foreach (PointVisual pointVisual in symbolMapView._visuals)
+				pointVisual.TableCellSize = cellSize;
 		}
 
 		private static void OnCellCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			SymbolMapView thisObj = (SymbolMapView)d;
+			SymbolMapView symbolMapView = (SymbolMapView)d;
 			System.Drawing.Size cellCount = (System.Drawing.Size)e.NewValue;
 
-			thisObj._cellCount = cellCount;
-			thisObj.RedrawPoints();
+			symbolMapView._cellCount = cellCount;
+			foreach (PointVisual pointVisual in symbolMapView._visuals)
+				pointVisual.TableCellCount = cellCount;
 		}
 
 		private static void OnPointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -277,12 +228,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		private static void OnBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			SymbolMapView thisObj = (SymbolMapView)d;
+			SymbolMapView symbolMapView = (SymbolMapView)d;
 			Brush brush = (Brush)e.NewValue;
 
-			thisObj._brush = brush;
-			thisObj._pen = new Pen(brush, 1.0);
-			thisObj.RedrawPoints();
+			symbolMapView._brush = brush;
+			foreach (PointVisual pointVisual in symbolMapView._visuals)
+				pointVisual.Brush = brush;
 		}
 	}
 }
