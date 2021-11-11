@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Cyberpunk2077_hack_helper.LayoutMarker
+namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 {
 	public class ApplicationViewModel
 	{

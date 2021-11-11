@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Drawing;
 using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
 
-namespace Cyberpunk2077_hack_helper.LayoutMarker
+namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 {
 	public class PointViewModel : INotifyPropertyChanged
 	{

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Cyberpunk2077_hack_helper.LayoutMarker
+namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 {
 	public class Drag
 	{

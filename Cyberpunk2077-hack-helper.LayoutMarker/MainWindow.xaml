@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cyberpunk2077_hack_helper.LayoutMarker"
+        xmlns:v="clr-namespace:Cyberpunk2077_hack_helper.LayoutMarker.Views"
         mc:Ignorable="d"
         Title="Layout Marker" Height="575.55" Width="1007.025" Loaded="WindowLoaded">
     <Window.CommandBindings>
@@ -123,9 +124,9 @@
                         <ImageBrush/>
                     </Canvas.Background>
                     <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
-                    <local:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
-                    <local:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
-                    <local:SymbolMapView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" Points="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}"/>
+                    <v:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
+                    <v:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
+                    <v:SymbolMapView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" Points="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}"/>
                 </Canvas>
             </Grid>
         </ScrollViewer>
