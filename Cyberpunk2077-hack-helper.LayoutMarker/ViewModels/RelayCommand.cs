@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Cyberpunk2077_hack_helper.LayoutMarker
+namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 {
 	public class RelayCommand : ICommand
 	{
@@ -22,12 +22,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 
 		public bool CanExecute(object parameter)
 		{
-			return this.canExecute == null || this.canExecute(parameter);
+			return canExecute == null || canExecute(parameter);
 		}
 
 		public void Execute(object parameter)
 		{
-			this.execute(parameter);
+			execute(parameter);
 		}
 	}
 }

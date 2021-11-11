@@ -1,4 +1,5 @@
 ﻿using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
+using Cyberpunk2077_hack_helper.LayoutMarker.ViewModels;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 

@@ -5,8 +5,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
+using Cyberpunk2077_hack_helper.LayoutMarker.ViewModels;
 
-namespace Cyberpunk2077_hack_helper.LayoutMarker
+namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 {
 	public class SymbolMapView : FrameworkElement
 	{

@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Cyberpunk2077_hack_helper.LayoutMarker
+namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 {
 	public class LayoutTableView : FrameworkElement
 	{
