@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using Cyberpunk2077_hack_helper.LayoutMarker.ViewModels;
+using System.Windows.Input;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 {
@@ -80,6 +81,8 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		// Create a collection of child visual objects.
 		private readonly VisualCollection _visuals;
 
+		private Drag<int> _drag = null;
+
 		public System.Drawing.Point Position
 		{
 			get { return (System.Drawing.Point)GetValue(PositionProperty); }
@@ -120,6 +123,55 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 			_cellCount = new System.Drawing.Size(0, 0);
 
 			_visuals = new VisualCollection(this);
+
+			MouseLeftButtonDown += HandleMouseLeftButtonDown;
+			MouseMove += HandleMouseMove;
+			MouseLeftButtonUp += HandleMouseLeftButtonUp;
+		}
+
+		private void HandleMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			Point mousePos = e.GetPosition((UIElement)Parent);
+
+			// Initiate the hit test by setting up a hit test result callback method.
+			VisualTreeHelper.HitTest(this, null, hitTestResult => ProcessMouseBuddonDownHitTestResult(mousePos, hitTestResult), new PointHitTestParameters(mousePos));
+		}
+
+		// If a child visual object is hit, toggle its opacity to visually indicate a hit.
+		private HitTestResultBehavior ProcessMouseBuddonDownHitTestResult(Point mousePos, HitTestResult result)
+		{
+			if (result.VisualHit is PointVisual pointVisual)
+			{
+				_drag = new Drag<int>(_visuals.IndexOf(pointVisual), mousePos, Position);
+				CaptureMouse();
+				return HitTestResultBehavior.Stop;
+			}
+			return HitTestResultBehavior.Continue;
+		}
+
+		private void HandleMouseMove(object sender, MouseEventArgs e)
+		{
+			if (!IsMouseCaptured || _drag == null)
+				return;
+
+			Point mousePos = e.GetPosition((UIElement)Parent);
+			_drag.Update(mousePos);
+
+			// Call point move command
+		}
+
+		private void HandleMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			if (!IsMouseCaptured || _drag == null)
+				return;
+
+			Point mousePos = e.GetPosition((UIElement)Parent);
+			_drag.Update(mousePos);
+
+			// Call point move command
+
+			_drag = null;
+			ReleaseMouseCapture();
 		}
 
 		private void SetPointsInternal(IEnumerable<PointViewModel> newPoints)
