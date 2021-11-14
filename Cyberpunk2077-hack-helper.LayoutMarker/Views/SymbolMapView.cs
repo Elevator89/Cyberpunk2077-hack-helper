@@ -12,63 +12,54 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 {
 	public class SymbolMapView : FrameworkElement
 	{
-		public static readonly DependencyProperty PositionProperty;
-		public static readonly DependencyProperty CellSizeProperty;
-		public static readonly DependencyProperty CellCountProperty;
-		public static readonly DependencyProperty PointsProperty;
-		public static readonly DependencyProperty BrushProperty;
+		public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
+			"Position",
+			typeof(System.Drawing.Point),
+			typeof(SymbolMapView),
+			new FrameworkPropertyMetadata(
+				new System.Drawing.Point(0, 0),
+				FrameworkPropertyMetadataOptions.AffectsMeasure |
+				FrameworkPropertyMetadataOptions.AffectsRender,
+				new PropertyChangedCallback(OnPositionChanged)));
 
-		static SymbolMapView()
-		{
-			PositionProperty = DependencyProperty.Register(
-						"Position",
-						typeof(System.Drawing.Point),
-						typeof(SymbolMapView),
-						new FrameworkPropertyMetadata(
-							new System.Drawing.Point(0, 0),
-							FrameworkPropertyMetadataOptions.AffectsMeasure |
-							FrameworkPropertyMetadataOptions.AffectsRender,
-							new PropertyChangedCallback(OnPositionChanged)));
+		public static readonly DependencyProperty CellSizeProperty = DependencyProperty.Register(
+			"CellSize",
+			typeof(System.Drawing.Size),
+			typeof(SymbolMapView),
+			new FrameworkPropertyMetadata(
+				new System.Drawing.Size(0, 0),
+				FrameworkPropertyMetadataOptions.AffectsMeasure |
+				FrameworkPropertyMetadataOptions.AffectsRender,
+				new PropertyChangedCallback(OnCellSizeChanged)));
 
-			CellSizeProperty = DependencyProperty.Register(
-						"CellSize",
-						typeof(System.Drawing.Size),
-						typeof(SymbolMapView),
-						new FrameworkPropertyMetadata(
-							new System.Drawing.Size(0, 0),
-							FrameworkPropertyMetadataOptions.AffectsMeasure |
-							FrameworkPropertyMetadataOptions.AffectsRender,
-							new PropertyChangedCallback(OnCellSizeChanged)));
+		public static readonly DependencyProperty CellCountProperty = DependencyProperty.Register(
+			"CellCount",
+			typeof(System.Drawing.Size),
+			typeof(SymbolMapView),
+			new FrameworkPropertyMetadata(
+				new System.Drawing.Size(0, 0),
+				FrameworkPropertyMetadataOptions.AffectsMeasure |
+				FrameworkPropertyMetadataOptions.AffectsRender,
+				new PropertyChangedCallback(OnCellCountChanged)));
 
-			CellCountProperty = DependencyProperty.Register(
-						"CellCount",
-						typeof(System.Drawing.Size),
-						typeof(SymbolMapView),
-						new FrameworkPropertyMetadata(
-							new System.Drawing.Size(0, 0),
-							FrameworkPropertyMetadataOptions.AffectsMeasure |
-							FrameworkPropertyMetadataOptions.AffectsRender,
-							new PropertyChangedCallback(OnCellCountChanged)));
+		public static readonly DependencyProperty PointsProperty = DependencyProperty.Register(
+			"Points",
+			typeof(ObservableCollection<PointViewModel>),
+			typeof(SymbolMapView),
+			new FrameworkPropertyMetadata(
+				null,
+				FrameworkPropertyMetadataOptions.AffectsMeasure |
+				FrameworkPropertyMetadataOptions.AffectsRender,
+				new PropertyChangedCallback(OnPointsChanged)));
 
-			PointsProperty = DependencyProperty.Register(
-						"Points",
-						typeof(ObservableCollection<PointViewModel>),
-						typeof(SymbolMapView),
-						new FrameworkPropertyMetadata(
-							null,
-							FrameworkPropertyMetadataOptions.AffectsMeasure |
-							FrameworkPropertyMetadataOptions.AffectsRender,
-							new PropertyChangedCallback(OnPointsChanged)));
-
-			BrushProperty = DependencyProperty.Register(
-						"Brush",
-						typeof(Brush),
-						typeof(SymbolMapView),
-						new FrameworkPropertyMetadata(
-							Brushes.White,
-							FrameworkPropertyMetadataOptions.AffectsRender,
-							new PropertyChangedCallback(OnBrushChanged)));
-		}
+		public static readonly DependencyProperty BrushProperty = DependencyProperty.Register(
+			"Brush",
+			typeof(Brush),
+			typeof(SymbolMapView),
+			new FrameworkPropertyMetadata(
+				Brushes.White,
+				FrameworkPropertyMetadataOptions.AffectsRender,
+				new PropertyChangedCallback(OnBrushChanged)));
 
 		private System.Drawing.Point _position;
 		private System.Drawing.Size _cellSize;
