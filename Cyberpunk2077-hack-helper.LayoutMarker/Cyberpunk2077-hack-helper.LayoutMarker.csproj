@@ -108,6 +108,7 @@
     <Compile Include="Services\IDialogService.cs" />
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Services\JsonFileService.cs" />
+    <Compile Include="Services\XmlFileService.cs" />
     <Compile Include="ViewModels\LayoutTableViewModel.cs" />
     <Compile Include="ViewModels\LayoutViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
