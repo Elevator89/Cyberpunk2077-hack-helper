@@ -114,22 +114,10 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 
 		private void HandleMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			Point mousePos = e.GetPosition((UIElement)Parent);
+			Point mousePos = e.GetPosition((UIElement)sender);
+			_drag = new Drag<int>(0, mousePos, Position);
+			bool captured = CaptureMouse();
 
-			// Initiate the hit test by setting up a hit test result callback method.
-			VisualTreeHelper.HitTest(this, null, hitTestResult => ProcessMouseBuddonDownHitTestResult(mousePos, hitTestResult), new PointHitTestParameters(mousePos));
-		}
-
-		// If a child visual object is hit, toggle its opacity to visually indicate a hit.
-		private HitTestResultBehavior ProcessMouseBuddonDownHitTestResult(Point mousePos, HitTestResult result)
-		{
-			if (result.VisualHit is PointVisual pointVisual)
-			{
-				_drag = new Drag<int>(_visuals.IndexOf(pointVisual), mousePos, Position);
-				CaptureMouse();
-				return HitTestResultBehavior.Stop;
-			}
-			return HitTestResultBehavior.Continue;
 		}
 
 		private void HandleMouseMove(object sender, MouseEventArgs e)
@@ -137,7 +125,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 			if (!IsMouseCaptured || _drag == null)
 				return;
 
-			Point mousePos = e.GetPosition((UIElement)Parent);
+			Point mousePos = e.GetPosition((UIElement)sender);
 			_drag.Update(mousePos);
 			Position = _drag.TargetEnd;
 		}
@@ -147,7 +135,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 			if (!IsMouseCaptured || _drag == null)
 				return;
 
-			Point mousePos = e.GetPosition((UIElement)Parent);
+			Point mousePos = e.GetPosition((UIElement)sender);
 			_drag.Update(mousePos);
 			Position = _drag.TargetEnd;
 

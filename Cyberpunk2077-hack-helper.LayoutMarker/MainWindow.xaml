@@ -126,8 +126,13 @@
                     <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
                     <v:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
                     <v:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
-                    <!--<v:SymbolMapView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" Points="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}"/>-->
-                    <v:PointView Brush="Coral" TablePosition="{Binding Path=Layout.Sequences.Position}" TableCellSize="{Binding Path=Layout.Sequences.CellSize}" TableCellCount="{Binding Path=Layout.Sequences.CellCount}" Position="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints[0].Point}"/>
+                    <ItemsControl x:Name="SymbolPoints" ItemsSource="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <v:PointView Brush="Coral" TablePosition="{Binding Path=DataContext.Layout.Sequences.Position, ElementName=SymbolPoints}" TableCellSize="{Binding Path=DataContext.Layout.Sequences.CellSize, ElementName=SymbolPoints}" TableCellCount="{Binding Path=DataContext.Layout.Sequences.CellCount, ElementName=SymbolPoints}" Position="{Binding Path=Point}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Canvas>
             </Grid>
         </ScrollViewer>
