@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Drawing;
 using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
+using System.Collections.ObjectModel;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 {
@@ -60,7 +61,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 			}
 		}
 
-		public TrulyObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
+		public ObservableCollection<SymbolMapViewModel> SymbolMaps { get; }
 
 		public int SelectedSymbolMapIndex
 		{
@@ -85,7 +86,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 			}
 		}
 
-		public TrulyObservableCollection<PointViewModel> SelectedSymbolMapPoints
+		public ObservableCollection<PointViewModel> SelectedSymbolMapPoints
 		{
 			get { return SelectedSymbolMap?.Points; }
 		}
@@ -142,7 +143,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 		public LayoutTableViewModel(IToolManager toolManager)
 		{
 			_toolManager = toolManager;
-			SymbolMaps = new TrulyObservableCollection<SymbolMapViewModel>();
+			SymbolMaps = new ObservableCollection<SymbolMapViewModel>();
 			_selectedSymbolMapIndex = -1;
 		}
 
