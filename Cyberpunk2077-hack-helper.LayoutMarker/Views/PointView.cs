@@ -68,6 +68,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		private System.Drawing.Size _tableCellCount;
 		private System.Drawing.Point _pointPosition;
 
+		private Brush _brush;
 		private Pen _pen;
 
 		private readonly DrawingVisual _visual;
@@ -193,7 +194,12 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		private static void OnBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			PointView thisObj = (PointView)d;
-			thisObj._pen.Brush = (Brush)e.NewValue;
+			Brush brush = (Brush)e.NewValue;
+			thisObj._pen.Brush = brush;
+
+			Brush transparentBrush = brush.Clone();
+			transparentBrush.Opacity = 0.1;
+			thisObj._brush = transparentBrush;
 			thisObj.RefreshDrawing();
 		}
 
@@ -214,7 +220,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 						Point cellPointPos = cellPos + pointV;
 
 						Rect rect = new Rect(cellPointPos.X - PointHalfSize, cellPointPos.Y - PointHalfSize, PointSize, PointSize);
-						drawingContext.DrawRectangle(_pen.Brush, _pen, rect);
+						drawingContext.DrawRectangle(_brush, _pen, rect);
 					}
 				}
 				drawingContext.Close();
