@@ -82,7 +82,6 @@
     <Compile Include="Views\Drag.cs" />
     <Compile Include="Views\PointView.cs" />
     <Compile Include="Views\PointVisual.cs" />
-    <Compile Include="Views\SymbolMapView.cs" />
     <Compile Include="Tools\ITool.cs" />
     <Compile Include="Views\LayoutTableView.cs" />
     <Compile Include="Tools\IToolManager.cs" />
