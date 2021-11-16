@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Drawing;
 using Cyberpunk2077_hack_helper.Common;
 using Cyberpunk2077_hack_helper.LayoutMarker.Tools;
+using System.Collections.ObjectModel;
 
 namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 {
@@ -73,14 +74,14 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 			}
 		}
 
-		public TrulyObservableCollection<PointViewModel> Points { get; }
+		public ObservableCollection<PointViewModel> Points { get; }
 
 		public SymbolMapViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager)
 		{
 			_layoutTableViewModel = layoutTableViewModel;
 			_toolManager = toolManager;
 			_symbol = Symbol._1C;
-			Points = new TrulyObservableCollection<PointViewModel>();
+			Points = new ObservableCollection<PointViewModel>();
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
