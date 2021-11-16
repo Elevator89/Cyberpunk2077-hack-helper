@@ -79,6 +79,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="LayoutTableControl.xaml.cs">
+      <DependentUpon>LayoutTableControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Drag.cs" />
     <Compile Include="Views\PointView.cs" />
     <Compile Include="Views\PointVisual.cs" />
@@ -94,6 +97,10 @@
     <Compile Include="Tools\ToolManager.cs" />
     <Compile Include="ViewModels\TrulyObservableCollection.cs" />
     <Compile Include="Util.cs" />
+    <Page Include="LayoutTableControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
