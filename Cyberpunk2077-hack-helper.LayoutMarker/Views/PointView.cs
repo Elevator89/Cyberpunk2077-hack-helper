@@ -59,7 +59,18 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 				FrameworkPropertyMetadataOptions.AffectsRender,
 				new PropertyChangedCallback(OnBrushChanged)));
 
-		private readonly PointVisual _visual;
+		private const double PointSize = 2f;
+		private const double PointHalfSize = 0.5 * PointSize;
+		private const double Thickness = 1.0;
+
+		private System.Drawing.Point _tablePosition;
+		private System.Drawing.Size _tableCellSize;
+		private System.Drawing.Size _tableCellCount;
+		private System.Drawing.Point _pointPosition;
+
+		private Pen _pen;
+
+		private readonly DrawingVisual _visual;
 		private readonly VisualCollection _visuals;
 
 		private Drag<int> _drag = null;
@@ -98,13 +109,13 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 
 		public PointView()
 		{
-			_visual = new PointVisual(
-				new System.Drawing.Point(0, 0),
-				new System.Drawing.Size(0, 0),
-				new System.Drawing.Size(0, 0),
-				new System.Drawing.Point(0, 0),
-				Brushes.Red);
+			_tablePosition = new System.Drawing.Point(0, 0);
+			_tableCellSize = new System.Drawing.Size(0, 0);
+			_tableCellCount = new System.Drawing.Size(0, 0);
+			_pointPosition = new System.Drawing.Point(0, 0);
+			_pen = new Pen(Brushes.Red, Thickness);
 
+			_visual = new DrawingVisual();
 			_visuals = new VisualCollection(this) { _visual };
 
 			MouseLeftButtonDown += HandleMouseLeftButtonDown;
@@ -116,8 +127,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		{
 			Point mousePos = e.GetPosition((UIElement)sender);
 			_drag = new Drag<int>(0, mousePos, Position);
-			bool captured = CaptureMouse();
-
+			CaptureMouse();
 		}
 
 		private void HandleMouseMove(object sender, MouseEventArgs e)
@@ -155,31 +165,60 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.Views
 		private static void OnTablePositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			PointView thisObj = (PointView)d;
-			thisObj._visual.TablePosition = (System.Drawing.Point)e.NewValue;
+			thisObj._tablePosition = (System.Drawing.Point)e.NewValue;
+			thisObj.RefreshDrawing();
 		}
 
 		private static void OnTableCellSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			PointView thisObj = (PointView)d;
-			thisObj._visual.TableCellSize = (System.Drawing.Size)e.NewValue;
+			thisObj._tableCellSize = (System.Drawing.Size)e.NewValue;
+			thisObj.RefreshDrawing();
 		}
 
 		private static void OnTableCellCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			PointView thisObj = (PointView)d;
-			thisObj._visual.TableCellCount = (System.Drawing.Size)e.NewValue;
+			thisObj._tableCellCount = (System.Drawing.Size)e.NewValue;
+			thisObj.RefreshDrawing();
 		}
 
 		private static void OnPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			PointView thisObj = (PointView)d;
-			thisObj._visual.PointPosition = (System.Drawing.Point)e.NewValue;
+			thisObj._pointPosition = (System.Drawing.Point)e.NewValue;
+			thisObj.RefreshDrawing();
 		}
 
 		private static void OnBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
 			PointView thisObj = (PointView)d;
-			thisObj._visual.Brush = (Brush)e.NewValue;
+			thisObj._pen.Brush = (Brush)e.NewValue;
+			thisObj.RefreshDrawing();
+		}
+
+		private void RefreshDrawing()
+		{
+			using (DrawingContext drawingContext = _visual.RenderOpen())
+			{
+				Vector pointV = new Vector(_pointPosition.X, _pointPosition.Y);
+
+				for (int row = 0; row < _tableCellCount.Height; ++row)
+				{
+					for (int col = 0; col < _tableCellCount.Width; ++col)
+					{
+						Point cellPos = new Point(
+							_tablePosition.X + col * _tableCellSize.Width,
+							_tablePosition.Y + row * _tableCellSize.Height);
+
+						Point cellPointPos = cellPos + pointV;
+
+						Rect rect = new Rect(cellPointPos.X - PointHalfSize, cellPointPos.Y - PointHalfSize, PointSize, PointSize);
+						drawingContext.DrawRectangle(_pen.Brush, _pen, rect);
+					}
+				}
+				drawingContext.Close();
+			}
 		}
 	}
 }
