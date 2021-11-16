@@ -58,61 +58,7 @@
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Sequences table" Margin="2,2,2,2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="3*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="22"/>
-                            <RowDefinition Height="22"/>
-                            <RowDefinition Height="22"/>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
-                        <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.Position}" Margin="0,2,0,0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellSize}" Margin="0,2,0,0"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Cell count"/>
-                        <TextBox Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Sequences.CellCount}" Margin="0,2,0,0"/>
-                        <ListBox Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Sequences.SymbolMaps}" SelectedIndex="{Binding Path=Layout.Sequences.SelectedSymbolMapIndex}" >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="5*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Source={StaticResource symbols}}" SelectedItem="{Binding Path=Symbol}" Width="50" Height="22" VerticalAlignment="Top" />
-                                        <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Points}" SelectedIndex="{Binding Path=SelectedPointIndex}" >
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBox TextWrapping="Wrap" Text="{Binding Path=Point}" Width="100" />
-                                                        <Button Content="*" Command="{Binding EditCommand}" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Button Command="{Binding AddPointCommand}" Width="30">+</Button>
-                                            <Button Command="{Binding RemovePointCommand}" Width="30">-</Button>
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Command="{Binding Path=Layout.Sequences.AddSymbolMapCommand}" Width="30">+</Button>
-                            <Button Command="{Binding Path=Layout.Sequences.RemoveSymbolMapCommand}" Width="30">-</Button>
-                            <Button Command="{Binding Path=Layout.Sequences.DebugCommand}" Width="30">?</Button>
-                        </StackPanel>
-                    </Grid>
+                    <local:LayoutTableControl TablePosition="{Binding Path=Layout.Sequences.Position}" TableCellSize="{Binding Path=Layout.Sequences.CellSize}"  TableCellCount="{Binding Path=Layout.Sequences.CellCount}" />
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>
