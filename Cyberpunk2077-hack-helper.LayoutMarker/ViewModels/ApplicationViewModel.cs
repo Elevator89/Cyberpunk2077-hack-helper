@@ -44,8 +44,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 				{
 					Layout layout = _fileService.Open(_dialogService.FilePath);
 					FillViewModelFromLayout(_toolManager, layout, _layoutViewModel);
-
-					_dialogService.ShowMessage("Файл открыт");
 				}
 			}
 			catch (Exception ex)
@@ -62,7 +60,6 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker.ViewModels
 				{
 					Layout layout = GetLayoutFromViewModel(_layoutViewModel);
 					_fileService.Save(_dialogService.FilePath, layout);
-					_dialogService.ShowMessage("Файл сохранён");
 				}
 			}
 			catch (Exception ex)
