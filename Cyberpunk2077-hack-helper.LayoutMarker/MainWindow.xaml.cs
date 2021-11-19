@@ -35,7 +35,7 @@ namespace Cyberpunk2077_hack_helper.LayoutMarker
 		public MainWindow()
 		{
 			_dialogService = new DefaultDialogService();
-			_fileService = new XmlFileService();
+			_fileService = new JsonFileService();
 			_applicationViewModel = new ApplicationViewModel(_dialogService, _fileService, _toolManager);
 
 			InitializeComponent();
