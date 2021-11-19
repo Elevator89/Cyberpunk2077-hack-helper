@@ -82,6 +82,9 @@
     <Compile Include="LayoutTableControl.xaml.cs">
       <DependentUpon>LayoutTableControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LayoutTableVmControl.xaml.cs">
+      <DependentUpon>LayoutTableVmControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Drag.cs" />
     <Compile Include="Views\PointView.cs" />
     <Compile Include="Views\PointVisual.cs" />
@@ -98,6 +101,10 @@
     <Compile Include="ViewModels\TrulyObservableCollection.cs" />
     <Compile Include="Util.cs" />
     <Page Include="LayoutTableControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LayoutTableVmControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

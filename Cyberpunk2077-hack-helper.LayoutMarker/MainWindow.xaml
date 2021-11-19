@@ -34,31 +34,10 @@
         <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto"  MinWidth="150" >
             <StackPanel >
                 <GroupBox Header="Matrix table" Margin="2,2,2,2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="3*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="22"/>
-                            <RowDefinition Height="22"/>
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
-                        <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.Position}" Margin="0,2,0,0"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Layout.Matrix.CellSize}" Margin="0,2,0,0"/>
-                        <ListView Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Layout.Matrix.SymbolMaps}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Path=Symbol}" />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
+                    <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Matrix}" />
                 </GroupBox>
                 <GroupBox Header="Sequences table" Margin="2,2,2,2">
-                    <local:LayoutTableControl TablePosition="{Binding Path=Layout.Sequences.Position}" TableCellSize="{Binding Path=Layout.Sequences.CellSize}"  TableCellCount="{Binding Path=Layout.Sequences.CellCount}" />
+                    <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Sequences}" />
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>
@@ -70,12 +49,31 @@
                         <ImageBrush/>
                     </Canvas.Background>
                     <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
+                    
                     <v:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
-                    <v:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
-                    <ItemsControl x:Name="SymbolPoints" ItemsSource="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}" >
+                    <ItemsControl x:Name="MatrixSymbolPoints" ItemsSource="{Binding Path=Layout.Matrix.SelectedSymbolMapPoints}" >
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v:PointView Brush="Coral" TablePosition="{Binding Path=DataContext.Layout.Sequences.Position, ElementName=SymbolPoints}" TableCellSize="{Binding Path=DataContext.Layout.Sequences.CellSize, ElementName=SymbolPoints}" TableCellCount="{Binding Path=DataContext.Layout.Sequences.CellCount, ElementName=SymbolPoints}" Position="{Binding Path=Point}"/>
+                                <v:PointView 
+                                    Brush="SeaGreen" 
+                                    TablePosition="{Binding Path=DataContext.Layout.Matrix.Position, ElementName=MatrixSymbolPoints}" 
+                                    TableCellSize="{Binding Path=DataContext.Layout.Matrix.CellSize, ElementName=MatrixSymbolPoints}" 
+                                    TableCellCount="{Binding Path=DataContext.Layout.Matrix.CellCount, ElementName=MatrixSymbolPoints}" 
+                                    Position="{Binding Path=Point}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <v:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
+                    <ItemsControl x:Name="SequencesSymbolPoints" ItemsSource="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <v:PointView 
+                                    Brush="Coral" 
+                                    TablePosition="{Binding Path=DataContext.Layout.Sequences.Position, ElementName=SequencesSymbolPoints}" 
+                                    TableCellSize="{Binding Path=DataContext.Layout.Sequences.CellSize, ElementName=SequencesSymbolPoints}" 
+                                    TableCellCount="{Binding Path=DataContext.Layout.Sequences.CellCount, ElementName=SequencesSymbolPoints}" 
+                                    Position="{Binding Path=Point}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
