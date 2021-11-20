@@ -45,8 +45,12 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.2.1.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrabbingTests.cs" />
@@ -56,9 +60,28 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\TestScreenshots\Matrix6x6_1.png" />
-    <None Include="..\TestScreenshots\Matrix6x6_2.png" />
-    <None Include="..\TestScreenshots\Matrix7x7.png" />
+    <None Include="..\TestData\Matrix6x6_1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestData\Matrix6x6_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestData\Matrix7x7.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestData\Matrix7x7.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cyberpunk2077HackHelper.Common\Cyberpunk2077HackHelper.Common.csproj">
+      <Project>{517af8d1-7573-4c24-9e83-63d401fd7475}</Project>
+      <Name>Cyberpunk2077HackHelper.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cyberpunk2077HackHelper.Grabbing\Cyberpunk2077HackHelper.Grabbing.csproj">
+      <Project>{35fafb4b-64d3-40da-8151-b5b775b95ac7}</Project>
+      <Name>Cyberpunk2077HackHelper.Grabbing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
