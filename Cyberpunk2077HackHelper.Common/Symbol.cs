@@ -2,6 +2,7 @@
 {
 	public enum Symbol
 	{
+		Unknown,
 		_55,
 		_FF,
 		_1C,
