@@ -1,0 +1,15 @@
+﻿<Application x:Class="Cyberpunk2077HackHelper.LayoutMarker.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:common="clr-namespace:Cyberpunk2077HackHelper.Common;assembly=Cyberpunk2077_hack_helper.Common"
+             xmlns:local="clr-namespace:Cyberpunk2077HackHelper.LayoutMarker"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ObjectDataProvider x:Key="symbols" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="common:Symbol"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Application.Resources>
+</Application>

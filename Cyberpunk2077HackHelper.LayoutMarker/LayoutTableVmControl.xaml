@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Cyberpunk2077HackHelper.LayoutMarker.LayoutTableVmControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Cyberpunk2077HackHelper.LayoutMarker"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="200">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition Height="22"/>
+            <RowDefinition />
+            <RowDefinition Height="22"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Position"/>
+        <TextBox Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.Position}" Margin="0,2,0,0"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Cell size"/>
+        <TextBox Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.CellSize}" Margin="0,2,0,0"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Cell count"/>
+        <TextBox Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.CellCount}" Margin="0,2,0,0"/>
+        <ListBox Grid.Row="3" Grid.ColumnSpan="2" 
+                 ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.SymbolMaps}" 
+                 SelectedIndex="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.SelectedSymbolMapIndex}" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Source={StaticResource symbols}}" SelectedItem="{Binding Path=Symbol}" Width="50" Height="22" VerticalAlignment="Top" />
+                        <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Points}" SelectedIndex="{Binding Path=SelectedPointIndex}" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox TextWrapping="Wrap" Text="{Binding Path=Point}" Width="100" />
+                                        <Button Content="*" Command="{Binding EditCommand}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Command="{Binding AddPointCommand}" Width="30">+</Button>
+                            <Button Command="{Binding RemovePointCommand}" Width="30">-</Button>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.AddSymbolMapCommand}" Width="30">+</Button>
+            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.RemoveSymbolMapCommand}" Width="30">-</Button>
+            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:LayoutTableVmControl}}, Path=LayoutTable.DebugCommand}" Width="30">?</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
