@@ -1,0 +1,84 @@
+﻿<Window x:Class="Cyberpunk2077HackHelper.LayoutMarker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cyberpunk2077HackHelper.LayoutMarker"
+        xmlns:v="clr-namespace:Cyberpunk2077HackHelper.LayoutMarker.Views"
+        mc:Ignorable="d"
+        Title="Layout Marker" Height="575.55" Width="1007.025" Loaded="WindowLoaded">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="SaveCmdExecuted"/>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="OpenCmdExecuted"/>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="CloseCmdExecuted"/>
+    </Window.CommandBindings>
+    <Window.Resources>
+    </Window.Resources>
+    <DockPanel Margin="0">
+        <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
+            <MenuItem Header="Layout">
+                <MenuItem Header="New"/>
+                <Separator/>
+                <MenuItem Header="Open" Command="ApplicationCommands.Open"/>
+                <MenuItem Header="Save" Command="ApplicationCommands.Save"/>
+                <Separator/>
+                <MenuItem Header="Exit" Command="ApplicationCommands.Close" />
+            </MenuItem>
+            <MenuItem Header="Image">
+                <MenuItem Header="Load"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar DockPanel.Dock="Bottom" Height="22" MinHeight="22" Margin="0,0,0,0">
+            <StatusBarItem Content="Filler" />
+        </StatusBar>
+        <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto"  MinWidth="150" >
+            <StackPanel >
+                <GroupBox Header="Matrix table" Margin="2,2,2,2">
+                    <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Matrix}" />
+                </GroupBox>
+                <GroupBox Header="Sequences table" Margin="2,2,2,2">
+                    <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Sequences}" />
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" CanContentScroll="True" VerticalAlignment="Stretch" Margin="0">
+            <Grid>
+                <Image Name="Image" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None" Source="Z:/Cyberpunk2077-hack-helper/Screenshots/2021-11-17_0103_1.png"/>
+                <Canvas Name="Canvas" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseEnter="Canvas_MouseEnter" MouseLeave="Canvas_MouseLeave" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" >
+                    <Canvas.Background>
+                        <ImageBrush/>
+                    </Canvas.Background>
+                    <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
+                    
+                    <v:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
+                    <ItemsControl x:Name="MatrixSymbolPoints" ItemsSource="{Binding Path=Layout.Matrix.SelectedSymbolMapPoints}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <v:PointView 
+                                    Brush="SeaGreen" 
+                                    TablePosition="{Binding Path=DataContext.Layout.Matrix.Position, ElementName=MatrixSymbolPoints}" 
+                                    TableCellSize="{Binding Path=DataContext.Layout.Matrix.CellSize, ElementName=MatrixSymbolPoints}" 
+                                    TableCellCount="{Binding Path=DataContext.Layout.Matrix.CellCount, ElementName=MatrixSymbolPoints}" 
+                                    Position="{Binding Path=Point}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <v:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
+                    <ItemsControl x:Name="SequencesSymbolPoints" ItemsSource="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <v:PointView 
+                                    Brush="Coral" 
+                                    TablePosition="{Binding Path=DataContext.Layout.Sequences.Position, ElementName=SequencesSymbolPoints}" 
+                                    TableCellSize="{Binding Path=DataContext.Layout.Sequences.CellSize, ElementName=SequencesSymbolPoints}" 
+                                    TableCellCount="{Binding Path=DataContext.Layout.Sequences.CellCount, ElementName=SequencesSymbolPoints}" 
+                                    Position="{Binding Path=Point}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Canvas>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
