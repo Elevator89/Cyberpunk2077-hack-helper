@@ -18,7 +18,7 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			{
 				{ Symbol._FF, Symbol._FF, Symbol._55, Symbol._1C, Symbol._55, Symbol._BD, Symbol._FF },
 				{ Symbol._FF, Symbol._1C, Symbol._FF, Symbol._1C, Symbol._55, Symbol._1C, Symbol._E9 },
-				{ Symbol._E9, Symbol._1C, Symbol._FF, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
+				{ Symbol._E9, Symbol._E9, Symbol._55, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
 				{ Symbol._1C, Symbol._FF, Symbol._55, Symbol._7A, Symbol._55, Symbol._55, Symbol._1C },
 				{ Symbol._BD, Symbol._55, Symbol._7A, Symbol._1C, Symbol._55, Symbol._55, Symbol._BD },
 				{ Symbol._7A, Symbol._55, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C, Symbol._55 },
@@ -48,19 +48,22 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 		{
 			Assert.AreEqual(actual.Matrix.GetLength(0), expected.Matrix.GetLength(0));
 			Assert.AreEqual(actual.Matrix.GetLength(1), expected.Matrix.GetLength(1));
-			Assert.AreEqual(actual.DaemonSequences.GetLength(0), expected.DaemonSequences.GetLength(0));
+			Assert.AreEqual(actual.DaemonSequences.Count, expected.DaemonSequences.Count);
 
 			for (int row = 0; row < actual.Matrix.GetLength(0); ++row)
 				for (int col = 0; col < actual.Matrix.GetLength(1); ++col)
 				{
-					Assert.AreEqual(expected.Matrix[row, col], actual.Matrix[row, col]);
+					Assert.AreEqual(expected.Matrix[row, col], actual.Matrix[row, col], $"Matrix row={row}, col={col}");
 				}
 
-			for (int row = 0; row < actual.DaemonSequences.GetLength(0); ++row)
-				for (int col = 0; col < actual.DaemonSequences[row].Length; ++col)
+			for (int row = 0; row < actual.DaemonSequences.Count; ++row)
+			{
+				Assert.AreEqual(actual.DaemonSequences[row].Count, expected.DaemonSequences[row].Count);
+				for (int col = 0; col < actual.DaemonSequences[row].Count; ++col)
 				{
-					Assert.AreEqual(expected.DaemonSequences[row][col], actual.DaemonSequences[row][col]);
+					Assert.AreEqual(expected.DaemonSequences[row][col], actual.DaemonSequences[row][col], $"Sequences row={row}, col={col}");
 				}
+			}
 		}
 	}
 }
