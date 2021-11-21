@@ -1,10 +1,9 @@
-﻿using Cyberpunk2077HackHelper.Common;
-using Cyberpunk2077HackHelper.Grabbing;
-using Cyberpunk2077HackHelper.LayoutMarker.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Cyberpunk2077HackHelper.Common;
+using Cyberpunk2077HackHelper.Grabbing;
 
 namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 {
@@ -12,38 +11,38 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 	{
 		private readonly IDialogService _dialogService;
 		private readonly IFileService _fileService;
-		private readonly IToolManager _toolManager;
 
-		private readonly LayoutViewModel _layoutViewModel;
+		public LayoutViewModel Layout { get; }
+		public SymbolMapsViewModel MatrixSymbolMaps { get; }
+		public SymbolMapsViewModel SequenceSymbolMaps { get; }
 
-		public LayoutViewModel Layout
-		{
-			get { return _layoutViewModel; }
-		}
-
-		public ApplicationViewModel(IDialogService dialogService, IFileService fileService, IToolManager toolManager)
+		public ApplicationViewModel(IDialogService dialogService, IFileService fileService)
 		{
 			_dialogService = dialogService;
 			_fileService = fileService;
-			_toolManager = toolManager;
 
-			_layoutViewModel = new LayoutViewModel(_toolManager);
+			Layout = new LayoutViewModel();
+			MatrixSymbolMaps = new SymbolMapsViewModel();
+			SequenceSymbolMaps = new SymbolMapsViewModel();
+
 			New();
 		}
 
 		public void New()
 		{
-			FillViewModelFromLayout(_toolManager, CreateDefaultLayout(), _layoutViewModel);
+			FillViewModelFromLayout(CreateDefaultLayout(), Layout);
+			FillViewModelFromSymbolMaps(CreateDefaultSymbolMaps(), MatrixSymbolMaps);
+			FillViewModelFromSymbolMaps(CreateDefaultSymbolMaps(), SequenceSymbolMaps);
 		}
 
-		public void Open()
+		public void LoadLayout()
 		{
 			try
 			{
-				if (_dialogService.OpenFileDialog() == true)
+				if (_dialogService.OpenFileDialog())
 				{
-					Layout layout = _fileService.Open(_dialogService.FilePath);
-					FillViewModelFromLayout(_toolManager, layout, _layoutViewModel);
+					Layout layout = _fileService.LoadLayout(_dialogService.FilePath);
+					FillViewModelFromLayout(layout, Layout);
 				}
 			}
 			catch (Exception ex)
@@ -52,20 +51,78 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 			}
 		}
 
-		public void Save()
+		public void SaveLayout()
 		{
 			try
 			{
-				if (_dialogService.SaveFileDialog() == true)
+				if (_dialogService.SaveFileDialog())
 				{
-					Layout layout = GetLayoutFromViewModel(_layoutViewModel);
-					_fileService.Save(_dialogService.FilePath, layout);
+					Layout layout = GetLayoutFromViewModel(Layout);
+					_fileService.SaveLayout(_dialogService.FilePath, layout);
 				}
 			}
 			catch (Exception ex)
 			{
 				_dialogService.ShowMessage(ex.Message);
 			}
+		}
+
+		public void LoadMatrixSymbolMaps()
+		{
+			LoadSymbolMaps(MatrixSymbolMaps);
+		}
+
+		public void LoadSequenceSymbolMaps()
+		{
+			LoadSymbolMaps(SequenceSymbolMaps);
+		}
+
+		public void SaveMatrixSymbolMaps()
+		{
+			SaveSymbolMaps(MatrixSymbolMaps);
+		}
+
+		public void SaveSequenceSymbolMaps()
+		{
+			SaveSymbolMaps(SequenceSymbolMaps);
+		}
+
+		private void SaveSymbolMaps(SymbolMapsViewModel symbolMapsViewModel)
+		{
+			try
+			{
+				if (_dialogService.SaveFileDialog())
+				{
+					List<SymbolMap> symbolMaps = GetSymbolMapsFromViewModel(symbolMapsViewModel);
+					_fileService.SaveSymbolMaps(_dialogService.FilePath, symbolMaps);
+				}
+			}
+			catch (Exception ex)
+			{
+				_dialogService.ShowMessage(ex.Message);
+			}
+		}
+
+
+		private void LoadSymbolMaps(SymbolMapsViewModel symbolMapsViewModel)
+		{
+			try
+			{
+				if (_dialogService.OpenFileDialog())
+				{
+					List<SymbolMap> symbolMaps = _fileService.LoadSymbolMaps(_dialogService.FilePath);
+					FillViewModelFromSymbolMaps(symbolMaps, symbolMapsViewModel);
+				}
+			}
+			catch (Exception ex)
+			{
+				_dialogService.ShowMessage(ex.Message);
+			}
+		}
+
+		private static List<SymbolMap> GetSymbolMapsFromViewModel(SymbolMapsViewModel symbolMapsViewModel)
+		{
+			return symbolMapsViewModel.SymbolMaps.Select(GetSymbolMapFromViewModel).ToList();
 		}
 
 		private static Layout GetLayoutFromViewModel(LayoutViewModel layoutViewModel)
@@ -80,7 +137,6 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 				Position = layoutTableViewModel.Position,
 				CellSize = layoutTableViewModel.CellSize,
 				CellCount = layoutTableViewModel.CellCount,
-				SymbolMaps = layoutTableViewModel.SymbolMaps.Select(GetSymbolMapFromViewModel).ToList()
 			};
 		}
 
@@ -89,34 +145,37 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 			return new SymbolMap(symbolMapViewModel.Symbol, symbolMapViewModel.Points.Select(pointVm => pointVm.Point).ToList());
 		}
 
-		private static void FillViewModelFromLayout(IToolManager toolManager, Layout layout, LayoutViewModel layoutViewModel)
+		private static void FillViewModelFromSymbolMaps(IReadOnlyList<SymbolMap> symbolMaps, SymbolMapsViewModel symbolMapsViewModel)
 		{
-			FillLayoutTableViewModel(toolManager, layout.Matrix, layoutViewModel.Matrix);
-			FillLayoutTableViewModel(toolManager, layout.Sequences, layoutViewModel.Sequences);
+			symbolMapsViewModel.SelectedSymbolMapIndex = -1;
+
+			symbolMapsViewModel.SymbolMaps.Clear();
+			foreach (SymbolMap symbolMap in symbolMaps)
+			{
+				symbolMapsViewModel.SymbolMaps.Add(CreateSymbolMapViewModel(symbolMap));
+			}
+		}
+
+		private static void FillViewModelFromLayout(Layout layout, LayoutViewModel layoutViewModel)
+		{
+			FillLayoutTableViewModel(layout.Matrix, layoutViewModel.Matrix);
+			FillLayoutTableViewModel(layout.Sequences, layoutViewModel.Sequences);
 			layoutViewModel.SelectedTableIndex = -1;
 		}
 
-		private static void FillLayoutTableViewModel(IToolManager toolManager, LayoutTable layoutTable, LayoutTableViewModel layoutTableViewModel)
+		private static void FillLayoutTableViewModel(LayoutTable layoutTable, LayoutTableViewModel layoutTableViewModel)
 		{
 			layoutTableViewModel.Position = layoutTable.Position;
 			layoutTableViewModel.CellSize = layoutTable.CellSize;
 			layoutTableViewModel.CellCount = layoutTable.CellCount;
-			layoutTableViewModel.SelectedSymbolMapIndex = -1;
-
-			layoutTableViewModel.SymbolMaps.Clear();
-			foreach (SymbolMap symbolMap in layoutTable.SymbolMaps)
-			{
-				layoutTableViewModel.SymbolMaps.Add(CreateSymbolMapViewModel(layoutTableViewModel, toolManager, symbolMap));
-			}
 		}
 
-		private static SymbolMapViewModel CreateSymbolMapViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager, SymbolMap symbolMap)
+		private static SymbolMapViewModel CreateSymbolMapViewModel(SymbolMap symbolMap)
 		{
-			SymbolMapViewModel symbolMapViewModel = new SymbolMapViewModel(layoutTableViewModel, toolManager);
-			symbolMapViewModel.Symbol = symbolMap.Symbol;
+			SymbolMapViewModel symbolMapViewModel = new SymbolMapViewModel { Symbol = symbolMap.Symbol };
 
 			foreach (Point point in symbolMap.Points)
-				symbolMapViewModel.Points.Add(new PointViewModel(layoutTableViewModel, toolManager, point));
+				symbolMapViewModel.Points.Add(new PointViewModel(point));
 
 			return symbolMapViewModel;
 		}
@@ -129,37 +188,29 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 					Position = new Point(100, 100),
 					CellSize = new Size(10, 10),
 					CellCount = new Size(6, 6),
-					SymbolMaps = new List<SymbolMap>() {
-						new SymbolMap(Symbol._1C, new List<Point>(){
-							new Point(1,1),
-							new Point(2,2),
-							new Point(3,3),
-						}),
-						new SymbolMap(Symbol._55, new List<Point>(){
-							new Point(1,5),
-							new Point(2,5),
-							new Point(3,5),
-						})
-					}
 				},
 				sequences: new LayoutTable()
 				{
 					Position = new Point(400, 200),
 					CellSize = new Size(20, 20),
 					CellCount = new Size(8, 2),
-					SymbolMaps = new List<SymbolMap>() {
-						new SymbolMap(Symbol._7A, new List<Point>(){
-							new Point(7,1),
-							new Point(7,2),
-							new Point(7,3),
-						}),
-						new SymbolMap(Symbol._BD, new List<Point>(){
-							new Point(8,5),
-							new Point(8,5),
-							new Point(8,5),
-						})
-					}
 				});
+		}
+
+		private static List<SymbolMap> CreateDefaultSymbolMaps()
+		{
+			return new List<SymbolMap>() {
+				new SymbolMap(Symbol._1C, new List<Point>(){
+					new Point(1,1),
+					new Point(2,2),
+					new Point(3,3),
+				}),
+				new SymbolMap(Symbol._55, new List<Point>(){
+					new Point(1,5),
+					new Point(2,5),
+					new Point(3,5),
+				})
+			};
 		}
 	}
 }

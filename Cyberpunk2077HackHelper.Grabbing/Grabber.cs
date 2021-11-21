@@ -7,12 +7,23 @@ namespace Cyberpunk2077HackHelper.Grabbing
 {
 	public class Grabber
 	{
-		public Problem Grab(Bitmap bitmap, Layout layout)
+		private readonly IEnumerable<SymbolMap> _matrixSymbolMaps;
+		private readonly IEnumerable<SymbolMap> _sequenceSymbolMaps;
+
+		public Grabber(IEnumerable<SymbolMap> matrixSymbolMaps, IEnumerable<SymbolMap> sequenceSymbolMaps)
 		{
-			return new Problem(GrabMatrix(bitmap, layout.Matrix), GrabSequences(bitmap, layout.Sequences), -1);
+			_matrixSymbolMaps = matrixSymbolMaps;
+			_sequenceSymbolMaps = sequenceSymbolMaps;
 		}
 
-		private IReadOnlyList<IReadOnlyList<Symbol>> GrabSequences(Bitmap bitmap, LayoutTable sequencesTable)
+		public Problem Grab(Bitmap bitmap, Layout layout)
+		{
+			return new Problem(
+				GrabMatrix(bitmap, layout.Matrix, _matrixSymbolMaps),
+				GrabSequences(bitmap, layout.Sequences, _sequenceSymbolMaps), -1);
+		}
+
+		private IReadOnlyList<IReadOnlyList<Symbol>> GrabSequences(Bitmap bitmap, LayoutTable sequencesTable, IEnumerable<SymbolMap> sequenceSymbolMaps)
 		{
 			List<IReadOnlyList<Symbol>> result = new List<IReadOnlyList<Symbol>>();
 
@@ -21,8 +32,7 @@ namespace Cyberpunk2077HackHelper.Grabbing
 				int baseY = sequencesTable.Position.Y + row * sequencesTable.CellSize.Height;
 				int baseX = sequencesTable.Position.X;
 
-				Symbol symbol0;
-				if (!TryGrabSymbol(bitmap, new Point(baseX, baseY), sequencesTable.SymbolMaps, out symbol0))
+				if (!TryGrabSymbol(bitmap, new Point(baseX, baseY), sequenceSymbolMaps, out Symbol symbol0))
 					break;
 
 				List<Symbol> rowSymbols = new List<Symbol>() { symbol0 };
@@ -30,8 +40,7 @@ namespace Cyberpunk2077HackHelper.Grabbing
 				{
 					baseX += sequencesTable.CellSize.Width;
 
-					Symbol symbol;
-					if (TryGrabSymbol(bitmap, new Point(baseX, baseY), sequencesTable.SymbolMaps, out symbol))
+					if (TryGrabSymbol(bitmap, new Point(baseX, baseY), sequenceSymbolMaps, out Symbol symbol))
 						rowSymbols.Add(symbol);
 					else
 						break;
@@ -41,7 +50,7 @@ namespace Cyberpunk2077HackHelper.Grabbing
 			return result;
 		}
 
-		private Symbol[,] GrabMatrix(Bitmap bitmap, LayoutTable matrixTable)
+		private Symbol[,] GrabMatrix(Bitmap bitmap, LayoutTable matrixTable, IEnumerable<SymbolMap> matrixSymbolMaps)
 		{
 			Symbol[,] result = new Symbol[matrixTable.CellCount.Width, matrixTable.CellCount.Height];
 
@@ -52,8 +61,7 @@ namespace Cyberpunk2077HackHelper.Grabbing
 						matrixTable.Position.X + col * matrixTable.CellSize.Width,
 						matrixTable.Position.Y + row * matrixTable.CellSize.Height);
 
-					Symbol symbol;
-					if (TryGrabSymbol(bitmap, basePoint, matrixTable.SymbolMaps, out symbol))
+					if (TryGrabSymbol(bitmap, basePoint, matrixSymbolMaps, out Symbol symbol))
 						result[row, col] = symbol;
 					else
 						throw new Exception($"Unable to parse symbol of row={row}, col={col}, basePoint={basePoint}");
@@ -61,7 +69,7 @@ namespace Cyberpunk2077HackHelper.Grabbing
 			return result;
 		}
 
-		private bool TryGrabSymbol(Bitmap bitmap, Point basePoint, List<SymbolMap> symbolMaps, out Symbol symbol)
+		private bool TryGrabSymbol(Bitmap bitmap, Point basePoint, IEnumerable<SymbolMap> symbolMaps, out Symbol symbol)
 		{
 			foreach (SymbolMap symbolMap in symbolMaps)
 			{
@@ -71,7 +79,7 @@ namespace Cyberpunk2077HackHelper.Grabbing
 					return true;
 				}
 			}
-			symbol = default(Symbol);
+			symbol = default;
 			return false;
 		}
 

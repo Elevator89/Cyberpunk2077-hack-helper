@@ -3,12 +3,26 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
 using System.IO;
 using Cyberpunk2077HackHelper.Common;
+using System.Collections.Generic;
 
 namespace Cyberpunk2077HackHelper.Grabbing.Test
 {
 	[TestClass]
 	public class GrabbingTests
 	{
+		private Grabber _grabber;
+
+		[TestInitialize]
+		public void Init()
+		{
+			string layoutContents = File.ReadAllText("matrixSymbolMaps.json");
+			string sequenceContents = File.ReadAllText("sequenceSymbolMaps.json");
+
+			List<SymbolMap> matrixSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(layoutContents);
+			List<SymbolMap> sequenceSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(sequenceContents);
+			_grabber = new Grabber(matrixSymbolMaps, sequenceSymbolMaps);
+		}
+
 		[TestMethod]
 		public void Grabs7x7()
 		{
@@ -90,8 +104,7 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			string layoutContents = File.ReadAllText(layoutFileName);
 
 			Layout layout = JsonConvert.DeserializeObject<Layout>(layoutContents);
-			Grabber grabber = new Grabber();
-			return grabber.Grab(bitmap, layout);
+			return _grabber.Grab(bitmap, layout);
 		}
 
 		private void CompareProblems(Problem actual, Problem expected)

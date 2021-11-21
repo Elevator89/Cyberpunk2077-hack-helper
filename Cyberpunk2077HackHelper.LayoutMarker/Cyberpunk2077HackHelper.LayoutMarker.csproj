@@ -85,19 +85,17 @@
     <Compile Include="LayoutTableVmControl.xaml.cs">
       <DependentUpon>LayoutTableVmControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SymbolMapsControl.xaml.cs">
+      <DependentUpon>SymbolMapsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\SymbolMapsViewModel.cs" />
     <Compile Include="Views\Drag.cs" />
     <Compile Include="Views\PointView.cs" />
     <Compile Include="Views\PointVisual.cs" />
-    <Compile Include="Tools\ITool.cs" />
     <Compile Include="Views\LayoutTableView.cs" />
-    <Compile Include="Tools\IToolManager.cs" />
-    <Compile Include="Tools\PointTool.cs" />
     <Compile Include="ViewModels\PointViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
-    <Compile Include="Tools\PointVmTool.cs" />
-    <Compile Include="Tools\SizeTool.cs" />
     <Compile Include="ViewModels\SymbolMapViewModel.cs" />
-    <Compile Include="Tools\ToolManager.cs" />
     <Compile Include="ViewModels\TrulyObservableCollection.cs" />
     <Compile Include="Util.cs" />
     <Page Include="LayoutTableControl.xaml">
@@ -128,6 +126,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SymbolMapsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

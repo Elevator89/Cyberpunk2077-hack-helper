@@ -1,11 +1,10 @@
-﻿using Cyberpunk2077HackHelper.Common;
-using Cyberpunk2077HackHelper.Grabbing;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using Cyberpunk2077HackHelper.Common;
+using Cyberpunk2077HackHelper.Grabbing;
 
 namespace Cyberpunk2077HackHelper.LayoutMarker
 {
@@ -57,7 +56,7 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 
 		private readonly XmlSerializer _serializer = new XmlSerializer(typeof(LayoutDto));
 
-		public Layout Open(string filename)
+		public Layout LoadLayout(string filename)
 		{
 			using (FileStream stream = File.OpenRead(filename))
 			{
@@ -68,13 +67,35 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 			}
 		}
 
-		public void Save(string filename, Layout layout)
+		public void SaveLayout(string filename, Layout layout)
 		{
 			LayoutDto dto = ToDto(layout);
 
 			using (FileStream stream = File.Create(filename))
 			{
 				_serializer.Serialize(stream, dto);
+				stream.Close();
+			}
+		}
+
+		public List<SymbolMap> LoadSymbolMaps(string filename)
+		{
+			using (FileStream stream = File.OpenRead(filename))
+			{
+				List<SymbolMapDto> deserializedSymbolMaps = (List<SymbolMapDto>)_serializer.Deserialize(stream);
+				stream.Close();
+
+				return deserializedSymbolMaps.Select(FromDto).ToList();
+			}
+		}
+
+		public void SaveSymbolMaps(string filename, List<SymbolMap> symbolMaps)
+		{
+			List<SymbolMapDto> symbolMapsToSerialize = symbolMaps.Select(ToDto).ToList();
+
+			using (FileStream stream = File.Create(filename))
+			{
+				_serializer.Serialize(stream, symbolMapsToSerialize);
 				stream.Close();
 			}
 		}
@@ -95,7 +116,6 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 				Position = ToDto(layoutTable.Position),
 				CellCount = ToDto(layoutTable.CellCount),
 				CellSize = ToDto(layoutTable.CellSize),
-				SymbolMaps = layoutTable.SymbolMaps.Select(ToDto).ToList()
 			};
 		}
 
@@ -130,7 +150,6 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 				Position = FromDto(layoutTable.Position),
 				CellCount = FromDto(layoutTable.CellCount),
 				CellSize = FromDto(layoutTable.CellSize),
-				SymbolMaps = layoutTable.SymbolMaps.Select(FromDto).ToList()
 			};
 		}
 

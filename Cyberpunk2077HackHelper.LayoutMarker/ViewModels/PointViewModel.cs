@@ -1,17 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
-using Cyberpunk2077HackHelper.LayoutMarker.Tools;
 
 namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 {
 	public class PointViewModel : INotifyPropertyChanged
 	{
-		private readonly LayoutTableViewModel _layoutTableViewModel;
-		private readonly IToolManager _toolManager;
-
 		private Point _point;
-		private RelayCommand _editCommand;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -58,22 +53,8 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 			}
 		}
 
-		public RelayCommand EditCommand
+		public PointViewModel(Point point)
 		{
-			get
-			{
-				return _editCommand ??
-				  (_editCommand = new RelayCommand(obj =>
-				  {
-					  _toolManager.ActivateTool(new PointVmTool(_layoutTableViewModel.Position, this));
-				  }));
-			}
-		}
-
-		public PointViewModel(LayoutTableViewModel layoutTableViewModel, IToolManager toolManager, Point point)
-		{
-			_layoutTableViewModel = layoutTableViewModel;
-			_toolManager = toolManager;
 			_point = point;
 		}
 
