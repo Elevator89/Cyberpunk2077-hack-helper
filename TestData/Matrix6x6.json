@@ -1,8 +1,8 @@
 {
   "Matrix": {
-    "Position": "250, 362",
+    "Position": "282, 362",
     "CellSize": "64, 64",
-    "CellCount": "7, 7",
+    "CellCount": "6, 6",
     "SymbolMaps": [
       {
         "Symbol": 3,
@@ -54,7 +54,7 @@
     ]
   },
   "Sequences": {
-    "Position": "892, 346",
+    "Position": "860, 346",
     "CellSize": "42, 68",
     "CellCount": "6, 6",
     "SymbolMaps": [
@@ -93,7 +93,7 @@
       {
         "Symbol": 4,
         "Points": [
-          "25, 18",
+          "25, 17",
           "35, 12"
         ]
       }

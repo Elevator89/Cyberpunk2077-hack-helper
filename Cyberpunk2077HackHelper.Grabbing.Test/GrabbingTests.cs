@@ -10,8 +10,6 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 	public class GrabbingTests
 	{
 		[TestMethod]
-		[DeploymentItem("Matrix7x7.png")]
-		[DeploymentItem("Matrix7x7.json")]
 		public void Grabs7x7()
 		{
 			Symbol[,] expectedMatrix = new Symbol[,]
@@ -33,15 +31,67 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			};
 
 			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
+			Problem actualProblem = LoadProblem("Matrix7x7.png", "Matrix7x7.json");
 
-			Bitmap bitmap = new Bitmap("Matrix7x7.png");
-			string layoutContents = File.ReadAllText("Matrix7x7.json");
+			CompareProblems(actualProblem, expectedProblem);
+		}
+
+		[TestMethod]
+		public void Grabs6x6_1()
+		{
+			Symbol[,] expectedMatrix = new Symbol[,]
+			{
+				{ Symbol._1C, Symbol._E9, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C },
+				{ Symbol._E9, Symbol._55, Symbol._1C, Symbol._55, Symbol._1C, Symbol._55 },
+				{ Symbol._7A, Symbol._1C, Symbol._1C, Symbol._1C, Symbol._BD, Symbol._7A },
+				{ Symbol._BD, Symbol._7A, Symbol._55, Symbol._55, Symbol._7A, Symbol._1C },
+				{ Symbol._7A, Symbol._1C, Symbol._E9, Symbol._E9, Symbol._55, Symbol._7A },
+				{ Symbol._1C, Symbol._7A, Symbol._7A, Symbol._7A, Symbol._1C, Symbol._55 },
+			};
+
+			Symbol[][] expectedSequences = new Symbol[][]
+			{
+				new Symbol[] { Symbol._55, Symbol._1C, Symbol._7A },
+			};
+
+			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
+			Problem actualProblem = LoadProblem("Matrix6x6_1.png", "Matrix6x6.json");
+
+			CompareProblems(actualProblem, expectedProblem);
+		}
+
+		[TestMethod]
+		public void Grabs6x6_2()
+		{
+			Symbol[,] expectedMatrix = new Symbol[,]
+			{
+				{ Symbol._1C, Symbol._BD, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._BD },
+				{ Symbol._55, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._55, Symbol._BD },
+				{ Symbol._55, Symbol._55, Symbol._55, Symbol._7A, Symbol._7A, Symbol._1C },
+				{ Symbol._55, Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C, Symbol._1C },
+				{ Symbol._E9, Symbol._E9, Symbol._7A, Symbol._55, Symbol._7A, Symbol._55 },
+				{ Symbol._55, Symbol._E9, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
+			};
+
+			Symbol[][] expectedSequences = new Symbol[][]
+			{
+				new Symbol[] { Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C },
+			};
+
+			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
+			Problem actualProblem = LoadProblem("Matrix6x6_2.png", "Matrix6x6.json");
+
+			CompareProblems(actualProblem, expectedProblem);
+		}
+
+		private Problem LoadProblem(string screenshotFileName, string layoutFileName)
+		{
+			Bitmap bitmap = new Bitmap(screenshotFileName);
+			string layoutContents = File.ReadAllText(layoutFileName);
 
 			Layout layout = JsonConvert.DeserializeObject<Layout>(layoutContents);
 			Grabber grabber = new Grabber();
-			Problem actualProblem = grabber.Grab(bitmap, layout);
-
-			CompareProblems(actualProblem, expectedProblem);
+			return grabber.Grab(bitmap, layout);
 		}
 
 		private void CompareProblems(Problem actual, Problem expected)

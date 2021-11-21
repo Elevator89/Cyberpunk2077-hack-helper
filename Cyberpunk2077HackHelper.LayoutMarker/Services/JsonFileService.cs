@@ -14,7 +14,7 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 
 		public void Save(string filename, Layout layout)
 		{
-			string contents = JsonConvert.SerializeObject(layout);
+			string contents = JsonConvert.SerializeObject(layout, Formatting.Indented);
 			File.WriteAllText(filename, contents);
 		}
 	}
