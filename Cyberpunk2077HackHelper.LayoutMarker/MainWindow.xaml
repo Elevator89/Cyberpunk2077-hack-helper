@@ -41,7 +41,7 @@
             <StatusBarItem Content="Filler" />
         </StatusBar>
         <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto"  MinWidth="150" >
-            <StackPanel >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <GroupBox Header="Matrix table" Margin="2,2,2,2">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
                         <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Matrix}" />
