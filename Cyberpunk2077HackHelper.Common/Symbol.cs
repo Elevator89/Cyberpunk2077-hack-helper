@@ -2,12 +2,12 @@
 {
 	public enum Symbol
 	{
-		Unknown,
-		_55,
-		_FF,
-		_1C,
-		_E9,
-		_7A,
-		_BD,
+		Unknown = 0,
+		_55 = 0x55,
+		_FF = 0xFF,
+		_1C = 0x1C,
+		_E9 = 0xE9,
+		_7A = 0x7A,
+		_BD = 0xBD,
 	}
 }

@@ -29,15 +29,15 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 		[DataRow(74, "TestData/Matrix7_4.png", "TestData/Matrix7.json")]
 		public void Grabs(int caseId, string screenshotFileName, string layoutFileName)
 		{
-			Symbol[,] expectedMatrix = GetExpectedMatrix(caseId);
-			Symbol[][] expectedSequences = GetExpectedSequences(caseId);
+			int[,] expectedMatrix = GetExpectedMatrix(caseId);
+			int[][] expectedSequences = GetExpectedSequences(caseId);
 
 			Grabs(expectedMatrix, expectedSequences, screenshotFileName, layoutFileName);
 		}
 
-		private void Grabs(Symbol[,] expectedMatrix, Symbol[][] expectedSequences, string screenshotFileName, string layoutFileName)
+		private void Grabs(int[,] expectedMatrix, int[][] expectedSequences, string screenshotFileName, string layoutFileName)
 		{
-			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
+			Problem expectedProblem = Problem.FromHex(expectedMatrix, expectedSequences, -1);
 			Problem actualProblem = LoadProblem(screenshotFileName, layoutFileName);
 
 			CompareProblems(actualProblem, expectedProblem);
@@ -74,70 +74,70 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			}
 		}
 
-		private Symbol[,] GetExpectedMatrix(int caseId)
+		private int[,] GetExpectedMatrix(int caseId)
 		{
 			switch (caseId)
 			{
 				case 61:
-					return new Symbol[,]
+					return new int[,]
 					{
-						{ Symbol._1C, Symbol._E9, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C },
-						{ Symbol._E9, Symbol._55, Symbol._1C, Symbol._55, Symbol._1C, Symbol._55 },
-						{ Symbol._7A, Symbol._1C, Symbol._1C, Symbol._1C, Symbol._BD, Symbol._7A },
-						{ Symbol._BD, Symbol._7A, Symbol._55, Symbol._55, Symbol._7A, Symbol._1C },
-						{ Symbol._7A, Symbol._1C, Symbol._E9, Symbol._E9, Symbol._55, Symbol._7A },
-						{ Symbol._1C, Symbol._7A, Symbol._7A, Symbol._7A, Symbol._1C, Symbol._55 },
+						{ 0x1C, 0xE9, 0x1C, 0x55, 0x55, 0x1C },
+						{ 0xE9, 0x55, 0x1C, 0x55, 0x1C, 0x55 },
+						{ 0x7A, 0x1C, 0x1C, 0x1C, 0xBD, 0x7A },
+						{ 0xBD, 0x7A, 0x55, 0x55, 0x7A, 0x1C },
+						{ 0x7A, 0x1C, 0xE9, 0xE9, 0x55, 0x7A },
+						{ 0x1C, 0x7A, 0x7A, 0x7A, 0x1C, 0x55 },
 					};
 
 				case 62:
-					return new Symbol[,]
+					return new int[,]
 					{
-						{ Symbol._1C, Symbol._BD, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._BD },
-						{ Symbol._55, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._55, Symbol._BD },
-						{ Symbol._55, Symbol._55, Symbol._55, Symbol._7A, Symbol._7A, Symbol._1C },
-						{ Symbol._55, Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C, Symbol._1C },
-						{ Symbol._E9, Symbol._E9, Symbol._7A, Symbol._55, Symbol._7A, Symbol._55 },
-						{ Symbol._55, Symbol._E9, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
+						{ 0x1C, 0xBD, 0x1C, 0x1C, 0xE9, 0xBD },
+						{ 0x55, 0x1C, 0x1C, 0xE9, 0x55, 0xBD },
+						{ 0x55, 0x55, 0x55, 0x7A, 0x7A, 0x1C },
+						{ 0x55, 0x7A, 0xE9, 0xE9, 0x1C, 0x1C },
+						{ 0xE9, 0xE9, 0x7A, 0x55, 0x7A, 0x55 },
+						{ 0x55, 0xE9, 0x1C, 0x7A, 0x7A, 0xE9 },
 					};
 
 				case 74:
-					return new Symbol[,]
+					return new int[,]
 					{
-						{ Symbol._FF, Symbol._FF, Symbol._55, Symbol._1C, Symbol._55, Symbol._BD, Symbol._FF },
-						{ Symbol._FF, Symbol._1C, Symbol._FF, Symbol._1C, Symbol._55, Symbol._1C, Symbol._E9 },
-						{ Symbol._E9, Symbol._E9, Symbol._55, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
-						{ Symbol._1C, Symbol._FF, Symbol._55, Symbol._7A, Symbol._55, Symbol._55, Symbol._1C },
-						{ Symbol._BD, Symbol._55, Symbol._7A, Symbol._1C, Symbol._55, Symbol._55, Symbol._BD },
-						{ Symbol._7A, Symbol._55, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C, Symbol._55 },
-						{ Symbol._FF, Symbol._1C, Symbol._55, Symbol._55, Symbol._E9, Symbol._7A, Symbol._1C },
+						{ 0xFF, 0xFF, 0x55, 0x1C, 0x55, 0xBD, 0xFF },
+						{ 0xFF, 0x1C, 0xFF, 0x1C, 0x55, 0x1C, 0xE9 },
+						{ 0xE9, 0xE9, 0x55, 0x1C, 0x7A, 0x7A, 0xE9 },
+						{ 0x1C, 0xFF, 0x55, 0x7A, 0x55, 0x55, 0x1C },
+						{ 0xBD, 0x55, 0x7A, 0x1C, 0x55, 0x55, 0xBD },
+						{ 0x7A, 0x55, 0x1C, 0x55, 0x55, 0x1C, 0x55 },
+						{ 0xFF, 0x1C, 0x55, 0x55, 0xE9, 0x7A, 0x1C },
 					};
 				default:
 					return null;
 			}
 		}
 
-		private Symbol[][] GetExpectedSequences(int caseId)
+		private int[][] GetExpectedSequences(int caseId)
 		{
 			switch (caseId)
 			{
 				case 61:
-					return new Symbol[][]
+					return new int[][]
 					{
-						new Symbol[] { Symbol._55, Symbol._1C, Symbol._7A },
+						new int[] { 0x55, 0x1C, 0x7A },
 					};
 
 				case 62:
-					return new Symbol[][]
+					return new int[][]
 					{
-						new Symbol[] { Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C },
+						new int[] { 0x7A, 0xE9, 0xE9, 0x1C },
 					};
 
 				case 74:
-					return new Symbol[][]
+					return new int[][]
 					{
-						new Symbol[] { Symbol._7A, Symbol._55, Symbol._7A },
-						new Symbol[] { Symbol._1C, Symbol._1C, Symbol._7A },
-						new Symbol[] { Symbol._BD, Symbol._55, Symbol._1C },
+						new int[] { 0x7A, 0x55, 0x7A },
+						new int[] { 0x1C, 0x1C, 0x7A },
+						new int[] { 0xBD, 0x55, 0x1C },
 					};
 				default:
 					return null;
