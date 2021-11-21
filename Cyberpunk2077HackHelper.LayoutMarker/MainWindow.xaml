@@ -24,6 +24,15 @@
                 <Separator/>
                 <MenuItem Header="Exit" Command="ApplicationCommands.Close" />
             </MenuItem>
+            <MenuItem Header="SymbolMaps">
+                <MenuItem Header="New"/>
+                <Separator/>
+                <MenuItem Header="Load Matrix" Click="MartixSymbolMapsLoadMenuItem_Click"/>
+                <MenuItem Header="Save Matrix" Click="MartixSymbolMapsSaveMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Load Sequences" Click="SequenceSymbolMapsLoadMenuItem_Click"/>
+                <MenuItem Header="Save Sequences" Click="SequenceSymbolMapsSaveMenuItem_Click"/>
+            </MenuItem>
             <MenuItem Header="Image">
                 <MenuItem Header="Load" Click="ImageLoadMenuItem_Click" />
             </MenuItem>
@@ -34,10 +43,16 @@
         <ScrollViewer DockPanel.Dock="Right" VerticalScrollBarVisibility="Auto"  MinWidth="150" >
             <StackPanel >
                 <GroupBox Header="Matrix table" Margin="2,2,2,2">
-                    <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Matrix}" />
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+                        <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Matrix}" />
+                        <local:SymbolMapsControl SymbolMaps="{Binding Path=MatrixSymbolMaps}" />
+                    </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Sequences table" Margin="2,2,2,2">
-                    <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Sequences}" />
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
+                        <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Sequences}" />
+                        <local:SymbolMapsControl SymbolMaps="{Binding Path=SequenceSymbolMaps}" />
+                    </StackPanel>
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>
@@ -49,9 +64,9 @@
                         <ImageBrush/>
                     </Canvas.Background>
                     <Rectangle Name="Cursor" Fill="LightBlue" Width="50" Height="50" Margin="10" IsHitTestVisible="False" Visibility="Hidden"/>
-                    
+
                     <v:LayoutTableView Brush="SeaGreen" Position="{Binding Path=Layout.Matrix.Position}" CellSize="{Binding Path=Layout.Matrix.CellSize}" CellCount="{Binding Path=Layout.Matrix.CellCount}" />
-                    <ItemsControl x:Name="MatrixSymbolPoints" ItemsSource="{Binding Path=Layout.Matrix.SelectedSymbolMapPoints}" >
+                    <ItemsControl x:Name="MatrixSymbolPoints" ItemsSource="{Binding Path=MatrixSymbolMaps.SelectedSymbolMapPoints}" >
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <v:PointView 
@@ -65,7 +80,7 @@
                     </ItemsControl>
 
                     <v:LayoutTableView Brush="Coral" Position="{Binding Path=Layout.Sequences.Position}" CellSize="{Binding Path=Layout.Sequences.CellSize}" CellCount="{Binding Path=Layout.Sequences.CellCount}" />
-                    <ItemsControl x:Name="SequencesSymbolPoints" ItemsSource="{Binding Path=Layout.Sequences.SelectedSymbolMapPoints}" >
+                    <ItemsControl x:Name="SequencesSymbolPoints" ItemsSource="{Binding Path=SequenceSymbolMaps.SelectedSymbolMapPoints}" >
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <v:PointView 

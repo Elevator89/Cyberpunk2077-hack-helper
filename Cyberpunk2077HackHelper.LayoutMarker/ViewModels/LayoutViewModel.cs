@@ -1,5 +1,4 @@
-﻿using Cyberpunk2077HackHelper.LayoutMarker.Tools;
-using Cyberpunk2077HackHelper.LayoutMarker.ViewModels;
+﻿using Cyberpunk2077HackHelper.LayoutMarker.ViewModels;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -7,23 +6,12 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 {
 	public class LayoutViewModel : INotifyPropertyChanged
 	{
-		private readonly IToolManager _toolManager;
-		private LayoutTableViewModel _matrixViewModel;
-		private LayoutTableViewModel _sequencesViewModel;
-
 		private int _selectedTableIndex = 1;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public LayoutTableViewModel Matrix
-		{
-			get { return _matrixViewModel; }
-		}
-
-		public LayoutTableViewModel Sequences
-		{
-			get { return _sequencesViewModel; }
-		}
+		public LayoutTableViewModel Matrix { get; }
+		public LayoutTableViewModel Sequences { get; }
 
 		public int SelectedTableIndex
 		{
@@ -37,17 +25,15 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 			}
 		}
 
-		public LayoutViewModel(IToolManager toolManager)
+		public LayoutViewModel()
 		{
-			_toolManager = toolManager;
-			_matrixViewModel = new LayoutTableViewModel(_toolManager);
-			_sequencesViewModel = new LayoutTableViewModel(_toolManager);
+			Matrix = new LayoutTableViewModel();
+			Sequences = new LayoutTableViewModel();
 		}
 
 		private void OnPropertyChanged([CallerMemberName] string prop = "")
 		{
-			if (PropertyChanged != null)
-				PropertyChanged(this, new PropertyChangedEventArgs(prop));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 		}
 	}
 }

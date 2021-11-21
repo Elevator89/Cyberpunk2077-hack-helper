@@ -1,21 +1,9 @@
-﻿using Cyberpunk2077HackHelper.Grabbing;
-using Cyberpunk2077HackHelper.LayoutMarker.Tools;
-using Cyberpunk2077HackHelper.LayoutMarker.ViewModels;
+﻿using Cyberpunk2077HackHelper.LayoutMarker.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Cyberpunk2077HackHelper.LayoutMarker
 {
@@ -24,19 +12,17 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private IDialogService _dialogService;
-		private IFileService _fileService;
-		private ApplicationViewModel _applicationViewModel;
+		private readonly IDialogService _dialogService;
+		private readonly IFileService _fileService;
+		private readonly ApplicationViewModel _applicationViewModel;
 
-		private SolidColorBrush _probeBrush = new SolidColorBrush();
-
-		private IToolManager _toolManager = new ToolManager();
+		private readonly SolidColorBrush _probeBrush = new SolidColorBrush();
 
 		public MainWindow()
 		{
 			_dialogService = new DefaultDialogService();
 			_fileService = new JsonFileService();
-			_applicationViewModel = new ApplicationViewModel(_dialogService, _fileService, _toolManager);
+			_applicationViewModel = new ApplicationViewModel(_dialogService, _fileService);
 
 			InitializeComponent();
 			DataContext = _applicationViewModel;
@@ -49,12 +35,32 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 
 		private void OpenCmdExecuted(object target, ExecutedRoutedEventArgs e)
 		{
-			_applicationViewModel.Open();
+			_applicationViewModel.LoadLayout();
 		}
 
 		private void SaveCmdExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			_applicationViewModel.Save();
+			_applicationViewModel.SaveLayout();
+		}
+
+		private void MartixSymbolMapsLoadMenuItem_Click(object target, RoutedEventArgs e)
+		{
+			_applicationViewModel.LoadMatrixSymbolMaps();
+		}
+
+		private void MartixSymbolMapsSaveMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			_applicationViewModel.SaveMatrixSymbolMaps();
+		}
+
+		private void SequenceSymbolMapsLoadMenuItem_Click(object target, RoutedEventArgs e)
+		{
+			_applicationViewModel.LoadSequenceSymbolMaps();
+		}
+
+		private void SequenceSymbolMapsSaveMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			_applicationViewModel.SaveSequenceSymbolMaps();
 		}
 
 		private void CloseCmdExecuted(object target, ExecutedRoutedEventArgs e)
@@ -77,6 +83,21 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 			}
 		}
 
+		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e) { }
+		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e) { }
+		private void Canvas_MouseEnter(object sender, MouseEventArgs e) { }
+		private void Canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			Point mousePos = e.GetPosition(Screenshot);
+			ImageSource imageSource = Screenshot.Source;
+			BitmapSource bitmap = (BitmapSource)imageSource;
+
+			Color color = GetPixel(bitmap, mousePos);
+			_probeBrush.Color = color;
+		}
+		private void Canvas_MouseLeave(object sender, MouseEventArgs e) { }
+		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e) { }
+
 		private Color GetPixel(BitmapSource source, Point position)
 		{
 			if (source.Format != PixelFormats.Bgra32)
@@ -94,45 +115,6 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 			source.CopyPixels(rect, pixel, stride, 0);
 
 			return Color.FromRgb(pixel[2], pixel[1], pixel[0]);
-		}
-
-		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
-		{
-			_toolManager.ActiveTool?.MouseUp(Util.ToDrawingPoint(e.GetPosition(Screenshot)), e.ChangedButton);
-		}
-
-		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			_toolManager.ActiveTool?.MouseDown(Util.ToDrawingPoint(e.GetPosition(Screenshot)), e.ChangedButton);
-		}
-
-		private void Canvas_MouseEnter(object sender, MouseEventArgs e)
-		{
-			_toolManager.ActiveTool?.MouseEnter(Util.ToDrawingPoint(e.GetPosition(Screenshot)));
-		}
-
-		private void Canvas_MouseMove(object sender, MouseEventArgs e)
-		{
-			Point mousePos = e.GetPosition(Screenshot);
-			System.Drawing.Point drawingPoint = Util.ToDrawingPoint(mousePos);
-
-			_toolManager.ActiveTool?.MouseMove(drawingPoint);
-
-			ImageSource imageSource = Screenshot.Source;
-			BitmapSource bitmap = (BitmapSource)imageSource;
-
-			Color color = GetPixel(bitmap, mousePos);
-			_probeBrush.Color = color;
-		}
-
-		private void Canvas_MouseLeave(object sender, MouseEventArgs e)
-		{
-			_toolManager.ActiveTool?.MouseLeave(Util.ToDrawingPoint(e.GetPosition(Screenshot)));
-		}
-
-		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
-		{
-			_toolManager.ActiveTool?.MouseWheel(Util.ToDrawingPoint(e.GetPosition(Screenshot)), e.Delta);
 		}
 
 	}

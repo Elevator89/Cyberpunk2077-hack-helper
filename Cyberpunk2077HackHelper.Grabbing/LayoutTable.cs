@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Cyberpunk2077HackHelper.Grabbing
 {
@@ -8,6 +7,5 @@ namespace Cyberpunk2077HackHelper.Grabbing
 		public Point Position { get; set; }
 		public Size CellSize { get; set; }
 		public Size CellCount { get; set; }
-		public List<SymbolMap> SymbolMaps { get; set; }
 	}
 }
