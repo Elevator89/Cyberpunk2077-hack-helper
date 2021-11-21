@@ -62,6 +62,20 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 			Close();
 		}
 
+		private void ImageLoadMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (_dialogService.OpenFileDialog() == true)
+				{
+					Screenshot.Source = new BitmapImage(new Uri(_dialogService.FilePath));
+				}
+			}
+			catch (Exception ex)
+			{
+				_dialogService.ShowMessage(ex.Message);
+			}
+		}
 
 		private Color GetPixel(BitmapSource source, Point position)
 		{
@@ -84,27 +98,27 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 
 		private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			_toolManager.ActiveTool?.MouseUp(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
+			_toolManager.ActiveTool?.MouseUp(Util.ToDrawingPoint(e.GetPosition(Screenshot)), e.ChangedButton);
 		}
 
 		private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			_toolManager.ActiveTool?.MouseDown(Util.ToDrawingPoint(e.GetPosition(Image)), e.ChangedButton);
+			_toolManager.ActiveTool?.MouseDown(Util.ToDrawingPoint(e.GetPosition(Screenshot)), e.ChangedButton);
 		}
 
 		private void Canvas_MouseEnter(object sender, MouseEventArgs e)
 		{
-			_toolManager.ActiveTool?.MouseEnter(Util.ToDrawingPoint(e.GetPosition(Image)));
+			_toolManager.ActiveTool?.MouseEnter(Util.ToDrawingPoint(e.GetPosition(Screenshot)));
 		}
 
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
-			Point mousePos = e.GetPosition(Image);
+			Point mousePos = e.GetPosition(Screenshot);
 			System.Drawing.Point drawingPoint = Util.ToDrawingPoint(mousePos);
 
 			_toolManager.ActiveTool?.MouseMove(drawingPoint);
 
-			ImageSource imageSource = Image.Source;
+			ImageSource imageSource = Screenshot.Source;
 			BitmapSource bitmap = (BitmapSource)imageSource;
 
 			Color color = GetPixel(bitmap, mousePos);
@@ -113,12 +127,13 @@ namespace Cyberpunk2077HackHelper.LayoutMarker
 
 		private void Canvas_MouseLeave(object sender, MouseEventArgs e)
 		{
-			_toolManager.ActiveTool?.MouseLeave(Util.ToDrawingPoint(e.GetPosition(Image)));
+			_toolManager.ActiveTool?.MouseLeave(Util.ToDrawingPoint(e.GetPosition(Screenshot)));
 		}
 
 		private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
-			_toolManager.ActiveTool?.MouseWheel(Util.ToDrawingPoint(e.GetPosition(Image)), e.Delta);
+			_toolManager.ActiveTool?.MouseWheel(Util.ToDrawingPoint(e.GetPosition(Screenshot)), e.Delta);
 		}
+
 	}
 }
