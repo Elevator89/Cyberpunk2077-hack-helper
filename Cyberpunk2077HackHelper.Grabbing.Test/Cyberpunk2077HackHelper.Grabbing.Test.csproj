@@ -57,29 +57,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\TestData\matrixSymbolMaps.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestData\sequenceSymbolMaps.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestData\Matrix6x6_1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestData\Matrix6x6_2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestData\Matrix6x6.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestData\Matrix7x7.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\TestData\Matrix7x7.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Cyberpunk2077HackHelper.Common\Cyberpunk2077HackHelper.Common.csproj">
       <Project>{517af8d1-7573-4c24-9e83-63d401fd7475}</Project>
       <Name>Cyberpunk2077HackHelper.Common</Name>
@@ -88,6 +65,50 @@
       <Project>{35fafb4b-64d3-40da-8151-b5b775b95ac7}</Project>
       <Name>Cyberpunk2077HackHelper.Grabbing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\TestData\Matrix6.json">
+      <Link>TestData\Matrix6.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestData\Matrix7.json">
+      <Link>TestData\Matrix7.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestData\matrixSymbolMaps.json">
+      <Link>TestData\matrixSymbolMaps.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\TestData\sequenceSymbolMaps.json">
+      <Link>TestData\sequenceSymbolMaps.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\TestData\Matrix6_1.png">
+      <Link>TestData\Matrix6_1.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestData\Matrix6_2.png">
+      <Link>TestData\Matrix6_2.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestData\Matrix7_1.png">
+      <Link>TestData\Matrix7_1.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestData\Matrix7_2.png">
+      <Link>TestData\Matrix7_2.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestData\Matrix7_3.png">
+      <Link>TestData\Matrix7_3.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\TestData\Matrix7_4.png">
+      <Link>TestData\Matrix7_4.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
