@@ -23,77 +23,22 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			_grabber = new Grabber(matrixSymbolMaps, sequenceSymbolMaps);
 		}
 
-		[TestMethod]
-		public void Grabs7x7()
+		[DataTestMethod]
+		[DataRow(61, "TestData/Matrix6_1.png", "TestData/Matrix6.json")]
+		[DataRow(62, "TestData/Matrix6_2.png", "TestData/Matrix6.json")]
+		[DataRow(74, "TestData/Matrix7_4.png", "TestData/Matrix7.json")]
+		public void Grabs(int caseId, string screenshotFileName, string layoutFileName)
 		{
-			Symbol[,] expectedMatrix = new Symbol[,]
-			{
-				{ Symbol._FF, Symbol._FF, Symbol._55, Symbol._1C, Symbol._55, Symbol._BD, Symbol._FF },
-				{ Symbol._FF, Symbol._1C, Symbol._FF, Symbol._1C, Symbol._55, Symbol._1C, Symbol._E9 },
-				{ Symbol._E9, Symbol._E9, Symbol._55, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
-				{ Symbol._1C, Symbol._FF, Symbol._55, Symbol._7A, Symbol._55, Symbol._55, Symbol._1C },
-				{ Symbol._BD, Symbol._55, Symbol._7A, Symbol._1C, Symbol._55, Symbol._55, Symbol._BD },
-				{ Symbol._7A, Symbol._55, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C, Symbol._55 },
-				{ Symbol._FF, Symbol._1C, Symbol._55, Symbol._55, Symbol._E9, Symbol._7A, Symbol._1C },
-			};
+			Symbol[,] expectedMatrix = GetExpectedMatrix(caseId);
+			Symbol[][] expectedSequences = GetExpectedSequences(caseId);
 
-			Symbol[][] expectedSequences = new Symbol[][]
-			{
-				new Symbol[] { Symbol._7A, Symbol._55, Symbol._7A },
-				new Symbol[] { Symbol._1C, Symbol._1C, Symbol._7A },
-				new Symbol[] { Symbol._BD, Symbol._55, Symbol._1C },
-			};
-
-			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem("TestData/Matrix7_4.png", "TestData/Matrix7.json");
-
-			CompareProblems(actualProblem, expectedProblem);
+			Grabs(expectedMatrix, expectedSequences, screenshotFileName, layoutFileName);
 		}
 
-		[TestMethod]
-		public void Grabs6x6_1()
+		private void Grabs(Symbol[,] expectedMatrix, Symbol[][] expectedSequences, string screenshotFileName, string layoutFileName)
 		{
-			Symbol[,] expectedMatrix = new Symbol[,]
-			{
-				{ Symbol._1C, Symbol._E9, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C },
-				{ Symbol._E9, Symbol._55, Symbol._1C, Symbol._55, Symbol._1C, Symbol._55 },
-				{ Symbol._7A, Symbol._1C, Symbol._1C, Symbol._1C, Symbol._BD, Symbol._7A },
-				{ Symbol._BD, Symbol._7A, Symbol._55, Symbol._55, Symbol._7A, Symbol._1C },
-				{ Symbol._7A, Symbol._1C, Symbol._E9, Symbol._E9, Symbol._55, Symbol._7A },
-				{ Symbol._1C, Symbol._7A, Symbol._7A, Symbol._7A, Symbol._1C, Symbol._55 },
-			};
-
-			Symbol[][] expectedSequences = new Symbol[][]
-			{
-				new Symbol[] { Symbol._55, Symbol._1C, Symbol._7A },
-			};
-
 			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem("TestData/Matrix6_1.png", "TestData/Matrix6.json");
-
-			CompareProblems(actualProblem, expectedProblem);
-		}
-
-		[TestMethod]
-		public void Grabs6x6_2()
-		{
-			Symbol[,] expectedMatrix = new Symbol[,]
-			{
-				{ Symbol._1C, Symbol._BD, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._BD },
-				{ Symbol._55, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._55, Symbol._BD },
-				{ Symbol._55, Symbol._55, Symbol._55, Symbol._7A, Symbol._7A, Symbol._1C },
-				{ Symbol._55, Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C, Symbol._1C },
-				{ Symbol._E9, Symbol._E9, Symbol._7A, Symbol._55, Symbol._7A, Symbol._55 },
-				{ Symbol._55, Symbol._E9, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
-			};
-
-			Symbol[][] expectedSequences = new Symbol[][]
-			{
-				new Symbol[] { Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C },
-			};
-
-			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem("TestData/Matrix6_2.png", "TestData/Matrix6.json");
+			Problem actualProblem = LoadProblem(screenshotFileName, layoutFileName);
 
 			CompareProblems(actualProblem, expectedProblem);
 		}
@@ -126,6 +71,76 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 				{
 					Assert.AreEqual(expected.DaemonSequences[row][col], actual.DaemonSequences[row][col], $"Sequences row={row}, col={col}");
 				}
+			}
+		}
+
+		private Symbol[,] GetExpectedMatrix(int caseId)
+		{
+			switch (caseId)
+			{
+				case 61:
+					return new Symbol[,]
+					{
+						{ Symbol._1C, Symbol._E9, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C },
+						{ Symbol._E9, Symbol._55, Symbol._1C, Symbol._55, Symbol._1C, Symbol._55 },
+						{ Symbol._7A, Symbol._1C, Symbol._1C, Symbol._1C, Symbol._BD, Symbol._7A },
+						{ Symbol._BD, Symbol._7A, Symbol._55, Symbol._55, Symbol._7A, Symbol._1C },
+						{ Symbol._7A, Symbol._1C, Symbol._E9, Symbol._E9, Symbol._55, Symbol._7A },
+						{ Symbol._1C, Symbol._7A, Symbol._7A, Symbol._7A, Symbol._1C, Symbol._55 },
+					};
+
+				case 62:
+					return new Symbol[,]
+					{
+						{ Symbol._1C, Symbol._BD, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._BD },
+						{ Symbol._55, Symbol._1C, Symbol._1C, Symbol._E9, Symbol._55, Symbol._BD },
+						{ Symbol._55, Symbol._55, Symbol._55, Symbol._7A, Symbol._7A, Symbol._1C },
+						{ Symbol._55, Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C, Symbol._1C },
+						{ Symbol._E9, Symbol._E9, Symbol._7A, Symbol._55, Symbol._7A, Symbol._55 },
+						{ Symbol._55, Symbol._E9, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
+					};
+
+				case 74:
+					return new Symbol[,]
+					{
+						{ Symbol._FF, Symbol._FF, Symbol._55, Symbol._1C, Symbol._55, Symbol._BD, Symbol._FF },
+						{ Symbol._FF, Symbol._1C, Symbol._FF, Symbol._1C, Symbol._55, Symbol._1C, Symbol._E9 },
+						{ Symbol._E9, Symbol._E9, Symbol._55, Symbol._1C, Symbol._7A, Symbol._7A, Symbol._E9 },
+						{ Symbol._1C, Symbol._FF, Symbol._55, Symbol._7A, Symbol._55, Symbol._55, Symbol._1C },
+						{ Symbol._BD, Symbol._55, Symbol._7A, Symbol._1C, Symbol._55, Symbol._55, Symbol._BD },
+						{ Symbol._7A, Symbol._55, Symbol._1C, Symbol._55, Symbol._55, Symbol._1C, Symbol._55 },
+						{ Symbol._FF, Symbol._1C, Symbol._55, Symbol._55, Symbol._E9, Symbol._7A, Symbol._1C },
+					};
+				default:
+					return null;
+			}
+		}
+
+		private Symbol[][] GetExpectedSequences(int caseId)
+		{
+			switch (caseId)
+			{
+				case 61:
+					return new Symbol[][]
+					{
+						new Symbol[] { Symbol._55, Symbol._1C, Symbol._7A },
+					};
+
+				case 62:
+					return new Symbol[][]
+					{
+						new Symbol[] { Symbol._7A, Symbol._E9, Symbol._E9, Symbol._1C },
+					};
+
+				case 74:
+					return new Symbol[][]
+					{
+						new Symbol[] { Symbol._7A, Symbol._55, Symbol._7A },
+						new Symbol[] { Symbol._1C, Symbol._1C, Symbol._7A },
+						new Symbol[] { Symbol._BD, Symbol._55, Symbol._1C },
+					};
+				default:
+					return null;
 			}
 		}
 	}
