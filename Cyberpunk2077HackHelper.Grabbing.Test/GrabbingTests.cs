@@ -15,8 +15,8 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 		[TestInitialize]
 		public void Init()
 		{
-			string layoutContents = File.ReadAllText("matrixSymbolMaps.json");
-			string sequenceContents = File.ReadAllText("sequenceSymbolMaps.json");
+			string layoutContents = File.ReadAllText("TestData/matrixSymbolMaps.json");
+			string sequenceContents = File.ReadAllText("TestData/sequenceSymbolMaps.json");
 
 			List<SymbolMap> matrixSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(layoutContents);
 			List<SymbolMap> sequenceSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(sequenceContents);
@@ -45,7 +45,7 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			};
 
 			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem("Matrix7x7.png", "Matrix7x7.json");
+			Problem actualProblem = LoadProblem("TestData/Matrix7_4.png", "TestData/Matrix7.json");
 
 			CompareProblems(actualProblem, expectedProblem);
 		}
@@ -69,7 +69,7 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			};
 
 			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem("Matrix6x6_1.png", "Matrix6x6.json");
+			Problem actualProblem = LoadProblem("TestData/Matrix6_1.png", "TestData/Matrix6.json");
 
 			CompareProblems(actualProblem, expectedProblem);
 		}
@@ -93,7 +93,7 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			};
 
 			Problem expectedProblem = new Problem(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem("Matrix6x6_2.png", "Matrix6x6.json");
+			Problem actualProblem = LoadProblem("TestData/Matrix6_2.png", "TestData/Matrix6.json");
 
 			CompareProblems(actualProblem, expectedProblem);
 		}

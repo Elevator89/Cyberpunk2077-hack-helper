@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Cyberpunk2077HackHelper.Common;
 using Cyberpunk2077HackHelper.Grabbing;
 
 namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 {
 	public class ApplicationViewModel
 	{
-		private const string DefaultMatrixSymbolMapsFileName = "matrixSymbolMaps.json";
-		private const string DefaultSequenceSymbolMapsFileName = "sequenceSymbolMaps.json";
+		private const string DefaultLayoutPath = "DefaultData/Matrix7.json";
+		private const string DefaultMatrixSymbolMapsPath = "DefaultData/matrixSymbolMaps.json";
+		private const string DefaultSequenceSymbolMapsPath = "DefaultData/sequenceSymbolMaps.json";
 
 		private readonly IDialogService _dialogService;
 		private readonly IFileService _fileService;
@@ -29,40 +29,57 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 			SequenceSymbolMaps = new SymbolMapsViewModel();
 
 			New();
-			LoadSymbolMaps(MatrixSymbolMaps, DefaultMatrixSymbolMapsFileName);
-			LoadSymbolMaps(SequenceSymbolMaps, DefaultSequenceSymbolMapsFileName);
+			LoadSymbolMaps(MatrixSymbolMaps, DefaultMatrixSymbolMapsPath);
+			LoadSymbolMaps(SequenceSymbolMaps, DefaultSequenceSymbolMapsPath);
 		}
 
 		public void New()
 		{
-			FillViewModelFromLayout(CreateDefaultLayout(), Layout);
+			LoadLayout(Layout, DefaultLayoutPath);
 		}
 
 		public void LoadLayout()
 		{
-			try
-			{
-				if (_dialogService.OpenFileDialog())
-				{
-					Layout layout = _fileService.LoadLayout(_dialogService.FilePath);
-					FillViewModelFromLayout(layout, Layout);
-				}
-			}
-			catch (Exception ex)
-			{
-				_dialogService.ShowMessage(ex.Message);
-			}
+			if (_dialogService.OpenFileDialog())
+				LoadLayout(Layout, _dialogService.FilePath);
 		}
 
 		public void SaveLayout()
 		{
+			if (_dialogService.SaveFileDialog())
+				SaveLayout(Layout, _dialogService.FilePath);
+		}
+
+		public void LoadMatrixSymbolMaps()
+		{
+			if (_dialogService.OpenFileDialog())
+				LoadSymbolMaps(MatrixSymbolMaps, _dialogService.FilePath);
+		}
+
+		public void LoadSequenceSymbolMaps()
+		{
+			if (_dialogService.OpenFileDialog())
+				LoadSymbolMaps(SequenceSymbolMaps, _dialogService.FilePath);
+		}
+
+		public void SaveMatrixSymbolMaps()
+		{
+			if (_dialogService.SaveFileDialog())
+				SaveSymbolMaps(MatrixSymbolMaps, _dialogService.FilePath);
+		}
+
+		public void SaveSequenceSymbolMaps()
+		{
+			if (_dialogService.SaveFileDialog())
+				SaveSymbolMaps(SequenceSymbolMaps, _dialogService.FilePath);
+		}
+
+		private void SaveLayout(LayoutViewModel layoutViewModel, string fileName)
+		{
 			try
 			{
-				if (_dialogService.SaveFileDialog())
-				{
-					Layout layout = GetLayoutFromViewModel(Layout);
-					_fileService.SaveLayout(_dialogService.FilePath, layout);
-				}
+				Layout layout = GetLayoutFromViewModel(layoutViewModel);
+				_fileService.SaveLayout(fileName, layout);
 			}
 			catch (Exception ex)
 			{
@@ -70,36 +87,17 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 			}
 		}
 
-		public void LoadMatrixSymbolMaps()
+		private void LoadLayout(LayoutViewModel layoutViewModel, string fileName)
 		{
-			LoadSymbolMaps(MatrixSymbolMaps);
-		}
-
-		public void LoadSequenceSymbolMaps()
-		{
-			LoadSymbolMaps(SequenceSymbolMaps);
-		}
-
-		public void SaveMatrixSymbolMaps()
-		{
-			SaveSymbolMaps(MatrixSymbolMaps);
-		}
-
-		public void SaveSequenceSymbolMaps()
-		{
-			SaveSymbolMaps(SequenceSymbolMaps);
-		}
-
-		private void SaveSymbolMaps(SymbolMapsViewModel symbolMapsViewModel)
-		{
-			if (_dialogService.SaveFileDialog())
-				SaveSymbolMaps(symbolMapsViewModel, _dialogService.FilePath);
-		}
-
-		private void LoadSymbolMaps(SymbolMapsViewModel symbolMapsViewModel)
-		{
-			if (_dialogService.OpenFileDialog())
-				LoadSymbolMaps(symbolMapsViewModel, _dialogService.FilePath);
+			try
+			{
+				Layout layout = _fileService.LoadLayout(fileName);
+				FillViewModelFromLayout(layout, layoutViewModel);
+			}
+			catch (Exception ex)
+			{
+				_dialogService.ShowMessage(ex.Message);
+			}
 		}
 
 		private void SaveSymbolMaps(SymbolMapsViewModel symbolMapsViewModel, string fileName)
@@ -186,23 +184,6 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 				symbolMapViewModel.Points.Add(new PointViewModel(point));
 
 			return symbolMapViewModel;
-		}
-
-		private static Layout CreateDefaultLayout()
-		{
-			return new Layout(
-				matrix: new LayoutTable()
-				{
-					Position = new Point(250, 362),
-					CellSize = new Size(64, 64),
-					CellCount = new Size(7, 7),
-				},
-				sequences: new LayoutTable()
-				{
-					Position = new Point(892, 346),
-					CellSize = new Size(42, 68),
-					CellCount = new Size(6, 6),
-				});
 		}
 	}
 }
