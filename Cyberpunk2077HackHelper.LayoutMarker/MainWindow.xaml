@@ -24,15 +24,6 @@
                 <Separator/>
                 <MenuItem Header="Exit" Command="ApplicationCommands.Close" />
             </MenuItem>
-            <MenuItem Header="SymbolMaps">
-                <MenuItem Header="New"/>
-                <Separator/>
-                <MenuItem Header="Load Matrix" Click="MartixSymbolMapsLoadMenuItem_Click"/>
-                <MenuItem Header="Save Matrix" Click="MartixSymbolMapsSaveMenuItem_Click"/>
-                <Separator/>
-                <MenuItem Header="Load Sequences" Click="SequenceSymbolMapsLoadMenuItem_Click"/>
-                <MenuItem Header="Save Sequences" Click="SequenceSymbolMapsSaveMenuItem_Click"/>
-            </MenuItem>
             <MenuItem Header="Image">
                 <MenuItem Header="Load" Click="ImageLoadMenuItem_Click" />
             </MenuItem>
@@ -46,12 +37,20 @@
                     <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
                         <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Matrix}" />
                         <local:SymbolMapsControl SymbolMaps="{Binding Path=MatrixSymbolMaps}" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Button Click="MartixSymbolMapsLoadMenuItem_Click" Width="40">Load</Button>
+                            <Button Click="MartixSymbolMapsSaveMenuItem_Click" Width="40">Save</Button>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Sequences table" Margin="2,2,2,2">
                     <StackPanel Orientation="Vertical" VerticalAlignment="Stretch">
                         <local:LayoutTableVmControl LayoutTable="{Binding Path=Layout.Sequences}" />
                         <local:SymbolMapsControl SymbolMaps="{Binding Path=SequenceSymbolMaps}" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Button Click="SequenceSymbolMapsLoadMenuItem_Click" Width="40">Load</Button>
+                            <Button Click="SequenceSymbolMapsSaveMenuItem_Click" Width="40">Save</Button>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
