@@ -57,9 +57,9 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 
 		private void CompareProblems(Problem actual, Problem expected)
 		{
-			Assert.AreEqual(actual.Matrix.GetLength(0), expected.Matrix.GetLength(0));
-			Assert.AreEqual(actual.Matrix.GetLength(1), expected.Matrix.GetLength(1));
-			Assert.AreEqual(actual.DaemonSequences.Count, expected.DaemonSequences.Count);
+			Assert.AreEqual(expected.Matrix.GetLength(0), actual.Matrix.GetLength(0));
+			Assert.AreEqual(expected.Matrix.GetLength(1), actual.Matrix.GetLength(1));
+			Assert.AreEqual(expected.DaemonSequences.Count, actual.DaemonSequences.Count);
 
 			for (int row = 0; row < actual.Matrix.GetLength(0); ++row)
 				for (int col = 0; col < actual.Matrix.GetLength(1); ++col)
