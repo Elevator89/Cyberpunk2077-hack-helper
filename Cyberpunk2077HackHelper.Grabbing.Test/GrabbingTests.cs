@@ -32,21 +32,16 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 		[DataRow(74, "TestData/Matrix7_4.png", "TestData/Matrix7.json")]
 		public void Grabs(int caseId, string screenshotFileName, string layoutFileName)
 		{
-			int[,] expectedMatrix = GetExpectedMatrix(caseId);
-			int[][] expectedSequences = GetExpectedSequences(caseId);
-
-			Grabs(expectedMatrix, expectedSequences, screenshotFileName, layoutFileName);
+			Grabs(screenshotFileName, layoutFileName, GetExpectedProblem(caseId));
 		}
 
-		private void Grabs(int[,] expectedMatrix, int[][] expectedSequences, string screenshotFileName, string layoutFileName)
+		private void Grabs(string screenshotFileName, string layoutFileName, Problem expectedProblem)
 		{
-			Problem expectedProblem = Problem.FromHex(expectedMatrix, expectedSequences, -1);
-			Problem actualProblem = LoadProblem(screenshotFileName, layoutFileName);
-
+			Problem actualProblem = GrabProblem(screenshotFileName, layoutFileName);
 			CompareProblems(actualProblem, expectedProblem);
 		}
 
-		private Problem LoadProblem(string screenshotFileName, string layoutFileName)
+		private Problem GrabProblem(string screenshotFileName, string layoutFileName)
 		{
 			Bitmap bitmap = new Bitmap(screenshotFileName);
 			string layoutContents = File.ReadAllText(layoutFileName);
@@ -77,12 +72,12 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 			}
 		}
 
-		private int[,] GetExpectedMatrix(int caseId)
+		private Problem GetExpectedProblem(int caseId)
 		{
 			switch (caseId)
 			{
 				case 61:
-					return new int[,]
+					return Problem.FromHex(new int[,]
 					{
 						{ 0x1C, 0xE9, 0x1C, 0x55, 0x55, 0x1C },
 						{ 0xE9, 0x55, 0x1C, 0x55, 0x1C, 0x55 },
@@ -90,10 +85,15 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 						{ 0xBD, 0x7A, 0x55, 0x55, 0x7A, 0x1C },
 						{ 0x7A, 0x1C, 0xE9, 0xE9, 0x55, 0x7A },
 						{ 0x1C, 0x7A, 0x7A, 0x7A, 0x1C, 0x55 },
-					};
+					},
+					new int[][]
+					{
+						new int[] { 0x55, 0x1C, 0x7A },
+					},
+					-1);
 
 				case 62:
-					return new int[,]
+					return Problem.FromHex(new int[,]
 					{
 						{ 0x1C, 0xBD, 0x1C, 0x1C, 0xE9, 0xBD },
 						{ 0x55, 0x1C, 0x1C, 0xE9, 0x55, 0xBD },
@@ -101,10 +101,15 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 						{ 0x55, 0x7A, 0xE9, 0xE9, 0x1C, 0x1C },
 						{ 0xE9, 0xE9, 0x7A, 0x55, 0x7A, 0x55 },
 						{ 0x55, 0xE9, 0x1C, 0x7A, 0x7A, 0xE9 },
-					};
+					},
+					new int[][]
+					{
+						new int[] { 0x7A, 0xE9, 0xE9, 0x1C },
+					},
+					-1);
 
 				case 71:
-					return new int[,]
+					return Problem.FromHex(new int[,]
 					{
 						{ 0x1C, 0x7A, 0xE9, 0x55, 0x55, 0xE9, 0x7A },
 						{ 0x1C, 0x1C, 0xE9, 0x7A, 0xFF, 0x7A, 0x7A },
@@ -113,10 +118,17 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 						{ 0x55, 0x55, 0x55, 0xE9, 0x55, 0x7A, 0x7A },
 						{ 0xBD, 0x1C, 0x55, 0x1C, 0xBD, 0xFF, 0x1C },
 						{ 0x7A, 0x7A, 0xE9, 0x55, 0xBD, 0x7A, 0x55 },
-					};
+					},
+					new int[][]
+					{
+						new int[] { 0x55, 0xBD },
+						new int[] { 0xBD, 0x55, 0xE9, 0x7A },
+						new int[] { 0x7A, 0x7A, 0x7A, 0x55 },
+					},
+					-1);
 
 				case 72:
-					return new int[,]
+					return Problem.FromHex(new int[,]
 					{
 						{ 0xBD, 0x7A, 0xFF, 0xBD, 0x55, 0x1C, 0x1C },
 						{ 0x55, 0xFF, 0xFF, 0x55, 0x55, 0x7A, 0x7A },
@@ -125,10 +137,17 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 						{ 0xE9, 0xE9, 0x1C, 0xBD, 0x7A, 0xE9, 0xFF },
 						{ 0x7A, 0x1C, 0x7A, 0xFF, 0xBD, 0xE9, 0xFF },
 						{ 0x1C, 0xE9, 0xE9, 0x55, 0x1C, 0x7A, 0x55 },
-					};
+					},
+					new int[][]
+					{
+						new int[] { 0xE9, 0x1C, 0xE9 },
+						new int[] { 0xE9, 0xE9, 0xFF },
+						new int[] { 0xFF, 0x55, 0xFF },
+					},
+					-1);
 
 				case 73:
-					return new int[,]
+					return Problem.FromHex(new int[,]
 					{
 						{ 0x1C, 0x55, 0xE9, 0x1C, 0xFF, 0xFF, 0x7A },
 						{ 0x7A, 0x7A, 0x55, 0x7A, 0x55, 0x55, 0xBD },
@@ -137,10 +156,17 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 						{ 0x7A, 0xBD, 0x1C, 0xBD, 0x1C, 0xBD, 0x7A },
 						{ 0x55, 0x1C, 0x1C, 0x7A, 0x55, 0x7A, 0xFF },
 						{ 0x55, 0xBD, 0x7A, 0x7A, 0x7A, 0xBD, 0xFF },
-					};
+					},
+					new int[][]
+					{
+						new int[] { 0x1C, 0x7A, 0x7A },
+						new int[] { 0xE9, 0x7A, 0xFF, 0x1C },
+						new int[] { 0x1C, 0x1C, 0xBD, 0x1C },
+					},
+					-1);
 
 				case 74:
-					return new int[,]
+					return Problem.FromHex(new int[,]
 					{
 						{ 0xFF, 0xFF, 0x55, 0x1C, 0x55, 0xBD, 0xFF },
 						{ 0xFF, 0x1C, 0xFF, 0x1C, 0x55, 0x1C, 0xE9 },
@@ -149,59 +175,14 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 						{ 0xBD, 0x55, 0x7A, 0x1C, 0x55, 0x55, 0xBD },
 						{ 0x7A, 0x55, 0x1C, 0x55, 0x55, 0x1C, 0x55 },
 						{ 0xFF, 0x1C, 0x55, 0x55, 0xE9, 0x7A, 0x1C },
-					};
-				default:
-					return null;
-			}
-		}
-
-		private int[][] GetExpectedSequences(int caseId)
-		{
-			switch (caseId)
-			{
-				case 61:
-					return new int[][]
-					{
-						new int[] { 0x55, 0x1C, 0x7A },
-					};
-
-				case 62:
-					return new int[][]
-					{
-						new int[] { 0x7A, 0xE9, 0xE9, 0x1C },
-					};
-
-				case 71:
-					return new int[][]
-					{
-						new int[] { 0x55, 0xBD },
-						new int[] { 0xBD, 0x55, 0xE9, 0x7A },
-						new int[] { 0x7A, 0x7A, 0x7A, 0x55 },
-					};
-
-				case 72:
-					return new int[][]
-					{
-						new int[] { 0xE9, 0x1C, 0xE9 },
-						new int[] { 0xE9, 0xE9, 0xFF },
-						new int[] { 0xFF, 0x55, 0xFF },
-					};
-
-				case 73:
-					return new int[][]
-					{
-						new int[] { 0x1C, 0x7A, 0x7A },
-						new int[] { 0xE9, 0x7A, 0xFF, 0x1C },
-						new int[] { 0x1C, 0x1C, 0xBD, 0x1C },
-					};
-
-				case 74:
-					return new int[][]
+					},
+					new int[][]
 					{
 						new int[] { 0x7A, 0x55, 0x7A },
 						new int[] { 0x1C, 0x1C, 0x7A },
 						new int[] { 0xBD, 0x55, 0x1C },
-					};
+					},
+					-1);
 
 				default:
 					return null;
