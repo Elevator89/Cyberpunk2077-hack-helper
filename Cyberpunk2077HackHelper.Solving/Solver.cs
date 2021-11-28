@@ -28,7 +28,7 @@ namespace Cyberpunk2077HackHelper.Solving
 
 				for (int seqIndex = 1; seqIndex < orderedSequences.Length; ++seqIndex)
 				{
-					IEnumerable<IReadOnlyList<Symbol>> possibleCombinations = _combiner.GetPossibleCombinations(possibleSequence, orderedSequences[seqIndex], Symbol.Unknown, 0);
+					IEnumerable<IReadOnlyList<Symbol>> possibleCombinations = _combiner.GetPossibleCombinations(possibleSequence, orderedSequences[seqIndex], 6, Symbol.Unknown, 0);
 				}
 
 				orderIsValid = PermutationNarayana.NextPermutation(sequenceIndices, (a, b) => a < b);

@@ -62,38 +62,50 @@ namespace Cyberpunk2077HackHelper.Solving
 			_listComparer = new ListComparer(_comparer);
 		}
 
-		public IEnumerable<IReadOnlyList<T>> GetPossibleCombinations(IReadOnlyList<IReadOnlyList<T>> sequences, T wildValue, int wildMaxCount)
+		public IEnumerable<IReadOnlyList<T>> GetPossibleCombinations(IReadOnlyList<IReadOnlyList<T>> sequences, int maxCombinationLength, T wildValue, int wildMaxCount)
 		{
-			foreach (IReadOnlyList<T> fullCombination in GetPossibleCombinationsRecursively(sequences[0], sequences, 1, wildValue, wildMaxCount).Distinct(_listComparer))
+			for (int wildCount = 0; wildCount <= wildMaxCount && wildCount + sequences[0].Count <= maxCombinationLength; ++wildCount)
 			{
-				for (int wildCount = 0; wildCount < wildMaxCount; ++wildCount)
-					yield return Enumerable.Repeat(wildValue, wildCount).Concat(fullCombination).ToArray();
+				IReadOnlyList<T> initialSequence = Enumerable.Repeat(wildValue, wildCount).Concat(sequences[0]).ToArray();
+				foreach (IReadOnlyList<T> fullCombination in GetPossibleCombinationsRecursively(initialSequence, sequences, 1, maxCombinationLength, wildValue, wildMaxCount).Distinct(_listComparer))
+					yield return fullCombination;
 			}
 		}
 
-		private IEnumerable<IReadOnlyList<T>> GetPossibleCombinationsRecursively(IReadOnlyList<T> currentCombination, IReadOnlyList<IReadOnlyList<T>> sequences, int startFrom, T wildValue, int wildMaxCount)
+		private IEnumerable<IReadOnlyList<T>> GetPossibleCombinationsRecursively(IReadOnlyList<T> currentCombination, IReadOnlyList<IReadOnlyList<T>> sequences, int startFrom, int maxCombinationLength, T wildValue, int wildMaxCount)
 		{
 			if (startFrom == sequences.Count)
 				yield return currentCombination;
 			else
-				foreach (IReadOnlyList<T> newCombination in GetPossibleCombinations(currentCombination, sequences[startFrom], wildValue, wildMaxCount).Distinct(_listComparer))
+				foreach (IReadOnlyList<T> newCombination in GetPossibleCombinations(currentCombination, sequences[startFrom], maxCombinationLength, wildValue, wildMaxCount).Distinct(_listComparer))
 				{
-					foreach (IReadOnlyList<T> fullCombination in GetPossibleCombinationsRecursively(newCombination, sequences, startFrom + 1, wildValue, wildMaxCount).Distinct(_listComparer))
+					foreach (IReadOnlyList<T> fullCombination in GetPossibleCombinationsRecursively(newCombination, sequences, startFrom + 1, maxCombinationLength, wildValue, wildMaxCount).Distinct(_listComparer))
 						yield return fullCombination;
 				}
 		}
 
-		public IEnumerable<IReadOnlyList<T>> GetPossibleCombinations(IReadOnlyList<T> seqA, IReadOnlyList<T> seqB, T wildValue, int wildMaxCount)
+		public IEnumerable<IReadOnlyList<T>> GetPossibleCombinations(IReadOnlyList<T> seqA, IReadOnlyList<T> seqB, int maxCombinationLength, T wildValue, int wildMaxCount)
 		{
+			if (seqA.Count > maxCombinationLength || seqB.Count > maxCombinationLength)
+				yield break;
+
 			int intersectionStart = 0;
 			do
 			{
-				yield return GetCombination(seqA, seqB, intersectionStart, out intersectionStart);
-				intersectionStart++;
+				IReadOnlyList<T> combination = GetCombination(seqA, seqB, intersectionStart, out intersectionStart);
+				if (combination.Count <= maxCombinationLength)
+				{
+					yield return combination;
+					intersectionStart++;
+				}
+				else
+				{
+					yield break;
+				}
 			}
 			while (intersectionStart <= seqA.Count);
 
-			for (int wildCount = 1; wildCount < wildMaxCount; ++wildCount)
+			for (int wildCount = 1; wildCount <= wildMaxCount && seqA.Count + wildCount + seqB.Count <= maxCombinationLength; ++wildCount)
 				yield return seqA.Concat(Enumerable.Repeat(wildValue, wildCount)).Concat(seqB).ToArray();
 		}
 
