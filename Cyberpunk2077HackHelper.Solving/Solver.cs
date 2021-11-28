@@ -9,12 +9,14 @@ namespace Cyberpunk2077HackHelper.Solving
 
 	public class Solver
 	{
+		private Combiner<Symbol> _combiner = new Combiner<Symbol>(EqualityComparer<Symbol>.Default);
+
 		public Point[] Solve(Problem problem)
 		{
 			throw new NotImplementedException();
 		}
 
-		private static List<Symbol[]> GetPossibleSequenceCombinations(IReadOnlyList<IReadOnlyList<Symbol>> sequences)
+		private List<Symbol[]> GetPossibleSequenceCombinations(IReadOnlyList<IReadOnlyList<Symbol>> sequences)
 		{
 			int[] sequenceIndices = Enumerable.Range(0, sequences.Count).ToArray();
 			bool orderIsValid = true;
@@ -26,7 +28,7 @@ namespace Cyberpunk2077HackHelper.Solving
 
 				for (int seqIndex = 1; seqIndex < orderedSequences.Length; ++seqIndex)
 				{
-					IEnumerable<IReadOnlyList<Symbol>> possibleCombinations = Combiner.GetPossibleCombinations(possibleSequence, orderedSequences[seqIndex], (a, b) => a == b, Symbol.Unknown, 0);
+					IEnumerable<IReadOnlyList<Symbol>> possibleCombinations = _combiner.GetPossibleCombinations(possibleSequence, orderedSequences[seqIndex], Symbol.Unknown, 0);
 				}
 
 				orderIsValid = PermutationNarayana.NextPermutation(sequenceIndices, (a, b) => a < b);
