@@ -50,30 +50,31 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 		[DataRow(2)]
 		public void GetPossibleCombinations(int caseId)
 		{
-			(IReadOnlyList<int> seqA, IReadOnlyList<int> seqB, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) = GetSequencesAndCombinations(caseId);
+			(IReadOnlyList<int> seqA, IReadOnlyList<int> seqB, int maxCombinationLength, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) = GetSequencesAndCombinations(caseId);
 
-			IReadOnlyList<int>[] combinations = _combiner.GetPossibleCombinations(seqA, seqB, wildValue, wildMaxCount).ToArray();
+			IReadOnlyList<int>[] combinations = _combiner.GetPossibleCombinations(seqA, seqB, maxCombinationLength, wildValue, wildMaxCount).ToArray();
+
+			Assert.AreEqual(expectedCombinations.Length, combinations.Length);
 			for (int i = 0; i < combinations.Length; ++i)
-			{
 				CollectionAssert.AreEqual(expectedCombinations[i].ToArray(), combinations[i].ToArray());
-			}
 		}
 
 		[DataTestMethod]
 		[DataRow(0)]
 		[DataRow(1)]
+		[DataRow(2)]
 		public void GetAllPossibleCombinations(int caseId)
 		{
-			(IReadOnlyList<int>[] sequences, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) = GetAllSequencesAndCombinations(caseId);
+			(IReadOnlyList<int>[] sequences, int maxCombinationLength, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) = GetAllSequencesAndCombinations(caseId);
 
-			IReadOnlyList<int>[] combinations = _combiner.GetPossibleCombinations(sequences, wildValue, wildMaxCount).ToArray();
+			IReadOnlyList<int>[] combinations = _combiner.GetPossibleCombinations(sequences, maxCombinationLength, wildValue, wildMaxCount).ToArray();
+
+			Assert.AreEqual(expectedCombinations.Length, combinations.Length);
 			for (int i = 0; i < combinations.Length; ++i)
-			{
 				CollectionAssert.AreEqual(expectedCombinations[i].ToArray(), combinations[i].ToArray());
-			}
 		}
 
-		private (IReadOnlyList<int> seqA, IReadOnlyList<int> seqB, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) GetSequencesAndCombinations(int caseId)
+		private (IReadOnlyList<int> seqA, IReadOnlyList<int> seqB, int maxCombinationLength, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) GetSequencesAndCombinations(int caseId)
 		{
 			switch (caseId)
 			{
@@ -81,7 +82,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 					return (
 						new[] { 1, 2 },
 						new[] { 1, 2 },
-						-1, 0,
+						100, -1, 0,
 						new[] {
 							new[] { 1, 2 },
 							new[] { 1, 2, 1, 2 }
@@ -90,7 +91,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 					return (
 						new[] { 1, 2 },
 						new[] { 1, 2 },
-						-1, 1,
+						100, -1, 1,
 						new[] {
 							new[] { 1, 2 },
 							new[] { 1, 2, 1, 2 },
@@ -100,7 +101,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 					return (
 						new[] { 1, 2 },
 						new[] { 1, 2 },
-						-1, 2,
+						100, -1, 2,
 						new[] {
 							new[] { 1, 2 },
 							new[] { 1, 2, 1, 2 },
@@ -112,7 +113,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 			}
 		}
 
-		private (IReadOnlyList<int>[] sequences, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) GetAllSequencesAndCombinations(int caseId)
+		private (IReadOnlyList<int>[] sequences, int maxCombinationLength, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) GetAllSequencesAndCombinations(int caseId)
 		{
 			switch (caseId)
 			{
@@ -123,7 +124,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 							new[] { 1, 2 },
 							new[] { 1, 2 },
 						},
-						-1, 0,
+						100, -1, 0,
 						new[] {
 							new[] { 1, 2 },
 							new[] { 1, 2, 1, 2 },
@@ -136,16 +137,30 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 							new[] { 3, 4 },
 							new[] { 5, 6 },
 						},
-						-1, 1,
+						100, -1, 1,
 						new[] {
 							new[] { 1, 2, 3, 4, 5, 6 },
-							new[] { -1, 1, 2, 3, 4, 5, 6 },
 							new[] { 1, 2, 3, 4, -1, 5, 6 },
-							new[] { -1, 1, 2, 3, 4, -1, 5, 6 },
 							new[] { 1, 2, -1, 3, 4, 5, 6 },
-							new[] { -1, 1, 2, -1, 3, 4, 5, 6 },
 							new[] { 1, 2, -1, 3, 4, -1, 5, 6 },
+							new[] { -1, 1, 2, 3, 4, 5, 6 },
+							new[] { -1, 1, 2, 3, 4, -1, 5, 6 },
+							new[] { -1, 1, 2, -1, 3, 4, 5, 6 },
 							new[] { -1, 1, 2, -1, 3, 4, -1, 5, 6 },
+						});
+				case 2:
+					return (
+						new[] {
+							new[] { 1, 2 },
+							new[] { 3, 4 },
+							new[] { 5, 6 },
+						},
+						7, -1, 1,
+						new[] {
+							new[] { 1, 2, 3, 4, 5, 6 },
+							new[] { 1, 2, 3, 4, -1, 5, 6 },
+							new[] { 1, 2, -1, 3, 4, 5, 6 },
+							new[] { -1, 1, 2, 3, 4, 5, 6 },
 						});
 				default:
 					throw new NotImplementedException();
