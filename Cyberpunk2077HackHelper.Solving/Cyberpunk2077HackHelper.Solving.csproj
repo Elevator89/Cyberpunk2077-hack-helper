@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Combiner.cs" />
+    <Compile Include="PermutationNarayana.cs" />
+    <Compile Include="PermutationPascal.cs" />
     <Compile Include="Solver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
