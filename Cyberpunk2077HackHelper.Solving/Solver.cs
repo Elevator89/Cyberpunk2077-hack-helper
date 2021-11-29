@@ -1,40 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using Cyberpunk2077HackHelper.Common;
+using Cyberpunk2077HackHelper.Solving.Wave;
 
 namespace Cyberpunk2077HackHelper.Solving
 {
-
 	public class Solver
 	{
-		private Combiner<Symbol> _combiner = new Combiner<Symbol>(EqualityComparer<Symbol>.Default);
+		private readonly Combiner<Symbol> _combiner = new Combiner<Symbol>(EqualityComparer<Symbol>.Default);
 
-		public Point[] Solve(Problem problem)
+		public IEnumerable<IReadOnlyList<Point>> Solve(Problem problem)
 		{
-			throw new NotImplementedException();
+			foreach (IReadOnlyList<Symbol> possibleCombination in GetPossibleSequenceCombinations(problem.DaemonSequences, problem.BufferLength))
+			{
+				MatrixCellEnumerator matrixCellEnumerator = new MatrixCellEnumerator(problem.Matrix, possibleCombination);
+				MatrixCellProcessor matrixCellProcessor = new MatrixCellProcessor();
+				Wave<MatrixSequencePoint, MatrixSequencePoint> wave = new Wave<MatrixSequencePoint, MatrixSequencePoint>(matrixCellEnumerator, matrixCellProcessor);
+
+				MatrixSequencePoint[] result = wave.Run().ToArray();
+
+				if (result[result.Length - 1].Index == possibleCombination.Count - 1)
+					yield return result.Select(point => point.Point).ToArray();
+			}
 		}
 
-		private List<Symbol[]> GetPossibleSequenceCombinations(IReadOnlyList<IReadOnlyList<Symbol>> sequences)
+		private IEnumerable<IReadOnlyList<Symbol>> GetPossibleSequenceCombinations(IReadOnlyList<IReadOnlyList<Symbol>> sequences, int maxCombinationLength)
 		{
 			int[] sequenceIndices = Enumerable.Range(0, sequences.Count).ToArray();
 			bool orderIsValid = true;
 			do
 			{
 				IReadOnlyList<Symbol>[] orderedSequences = sequenceIndices.Select(i => sequences[i]).ToArray();
-
-				IReadOnlyList<Symbol> possibleSequence = orderedSequences[0];
-
-				for (int seqIndex = 1; seqIndex < orderedSequences.Length; ++seqIndex)
-				{
-					IEnumerable<IReadOnlyList<Symbol>> possibleCombinations = _combiner.GetPossibleCombinations(possibleSequence, orderedSequences[seqIndex], 6, Symbol.Unknown, 0);
-				}
+				foreach (IReadOnlyList<Symbol> possibleCombination in _combiner.GetPossibleCombinations(orderedSequences, maxCombinationLength, Symbol.Unknown, 1))
+					yield return possibleCombination;
 
 				orderIsValid = PermutationNarayana.NextPermutation(sequenceIndices, (a, b) => a < b);
-			} while (orderIsValid);
 
-			throw new NotImplementedException();
+			} while (orderIsValid);
 		}
 
 	}

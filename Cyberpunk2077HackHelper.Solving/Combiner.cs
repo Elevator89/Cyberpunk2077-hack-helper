@@ -10,7 +10,7 @@ namespace Cyberpunk2077HackHelper.Solving
 	{
 		private class ListComparer : IEqualityComparer<IReadOnlyList<T>>
 		{
-			private IEqualityComparer<T> _comparer;
+			private readonly IEqualityComparer<T> _comparer;
 
 			public ListComparer(IEqualityComparer<T> comparer)
 			{

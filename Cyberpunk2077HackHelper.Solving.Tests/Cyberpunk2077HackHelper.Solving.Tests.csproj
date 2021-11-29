@@ -47,11 +47,13 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CombinerTests.cs" />
     <Compile Include="PermutationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SolverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
