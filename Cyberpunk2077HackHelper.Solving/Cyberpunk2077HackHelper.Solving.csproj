@@ -47,6 +47,8 @@
     <Compile Include="MatrixCellProcessor.cs" />
     <Compile Include="MatrixExtensions.cs" />
     <Compile Include="MatrixLineDirection.cs" />
+    <Compile Include="MatrixSequencePoint.cs" />
+    <Compile Include="MatrixSequencePointComparer.cs" />
     <Compile Include="PermutationNarayana.cs" />
     <Compile Include="PermutationPascal.cs" />
     <Compile Include="Solver.cs" />
