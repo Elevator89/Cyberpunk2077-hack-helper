@@ -12,11 +12,13 @@ namespace Cyberpunk2077HackHelper.Solving.Wave
 	{
 		private readonly IWaveItemsEnumerator<TItem> _enumerator;
 		private readonly IWaveItemProcessor<TItem, TResult> _processor;
+		private readonly IEqualityComparer<TItem> _itemComparer;
 
-		public Wave(IWaveItemsEnumerator<TItem> enumerator, IWaveItemProcessor<TItem, TResult> processor)
+		public Wave(IWaveItemsEnumerator<TItem> enumerator, IWaveItemProcessor<TItem, TResult> processor, IEqualityComparer<TItem> itemComparer)
 		{
 			_enumerator = enumerator;
 			_processor = processor;
+			_itemComparer = itemComparer;
 		}
 
 		/// <summary>
@@ -28,7 +30,7 @@ namespace Cyberpunk2077HackHelper.Solving.Wave
 		/// <returns></returns>
 		public IEnumerable<TResult> Run()
 		{
-			HashSet<TItem> visitedItems = new HashSet<TItem>();
+			HashSet<TItem> visitedItems = new HashSet<TItem>(_itemComparer);
 			Queue<TItem> queue = new Queue<TItem>();
 
 			// Enumerable.Exclude is not used because it works slower than HashSet

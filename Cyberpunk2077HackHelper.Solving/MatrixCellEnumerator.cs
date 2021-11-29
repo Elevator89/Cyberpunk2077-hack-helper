@@ -5,22 +5,8 @@ using Cyberpunk2077HackHelper.Solving.Wave;
 
 namespace Cyberpunk2077HackHelper.Solving
 {
-	public readonly struct MatrixSequencePoint
-	{
-		public readonly Point Point;
-		public readonly int Index;
-
-		public MatrixSequencePoint(Point point, int index) : this()
-		{
-			Point = point;
-			Index = index;
-		}
-	}
-
 	public class MatrixCellEnumerator : IWaveItemsEnumerator<MatrixSequencePoint>
 	{
-		private static readonly MatrixSequencePoint InitialPoint = new MatrixSequencePoint(new Point(-1, 0), -1); // GetOtherCellsInLine will return the whole first row for this
-
 		private readonly Symbol[,] _matrix;
 		private readonly IReadOnlyList<Symbol> _combination;
 
@@ -32,7 +18,16 @@ namespace Cyberpunk2077HackHelper.Solving
 
 		public IEnumerable<MatrixSequencePoint> GetInitialItems()
 		{
-			return GetNextItems(InitialPoint);
+			int nextSymbolIndex = 0;
+
+			MatrixLineDirection nextItemLineDirection = GetSymbolDirection(nextSymbolIndex);
+			Symbol nextCombinationSymbol = _combination[nextSymbolIndex];
+
+			foreach (Point firstPoint in _matrix.GetOtherCellsInLine(nextItemLineDirection, new Point(-1, 0)))
+			{
+				if (nextCombinationSymbol == Symbol.Unknown || _matrix.Get(firstPoint) == nextCombinationSymbol)
+					yield return new MatrixSequencePoint(firstPoint, nextSymbolIndex, null);
+			}
 		}
 
 		public IEnumerable<MatrixSequencePoint> GetNextItems(MatrixSequencePoint currrentPoint)
@@ -44,10 +39,10 @@ namespace Cyberpunk2077HackHelper.Solving
 			MatrixLineDirection nextItemLineDirection = GetSymbolDirection(nextSymbolIndex);
 			Symbol nextCombinationSymbol = _combination[nextSymbolIndex];
 
-			foreach (Point possibleNextPoint in _matrix.GetOtherCellsInLine(nextItemLineDirection, currrentPoint.Point))
+			foreach (Point nextPoint in _matrix.GetOtherCellsInLine(nextItemLineDirection, currrentPoint.Point))
 			{
-				if (nextCombinationSymbol == Symbol.Unknown || _matrix.Get(possibleNextPoint) == nextCombinationSymbol)
-					yield return new MatrixSequencePoint(possibleNextPoint, nextSymbolIndex);
+				if (nextCombinationSymbol == Symbol.Unknown || _matrix.Get(nextPoint) == nextCombinationSymbol)
+					yield return new MatrixSequencePoint(nextPoint, nextSymbolIndex, currrentPoint);
 			}
 		}
 
