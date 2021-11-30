@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077HackHelper.Sol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077HackHelper.Solving.Tests", "Cyberpunk2077HackHelper.Solving.Tests\Cyberpunk2077HackHelper.Solving.Tests.csproj", "{FB0F9719-848D-444D-BC57-67A222615020}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077HackHelper.Overlay", "Cyberpunk2077HackHelper.Overlay\Cyberpunk2077HackHelper.Overlay.csproj", "{A7198825-EBB4-4E04-9023-321A3C2AA770}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,14 @@ Global
 		{FB0F9719-848D-444D-BC57-67A222615020}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB0F9719-848D-444D-BC57-67A222615020}.Release|x64.ActiveCfg = Release|Any CPU
 		{FB0F9719-848D-444D-BC57-67A222615020}.Release|x64.Build.0 = Release|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Debug|x64.Build.0 = Debug|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Release|x64.ActiveCfg = Release|Any CPU
+		{A7198825-EBB4-4E04-9023-321A3C2AA770}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
