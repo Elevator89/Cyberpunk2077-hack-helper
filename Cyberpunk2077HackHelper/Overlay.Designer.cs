@@ -48,6 +48,8 @@ namespace Cyberpunk2077HackHelper
 			this.Text = "Game Overlay";
 			this.TopMost = true;
 			this.TransparencyKey = System.Drawing.Color.Black;
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Overlay_FormClosed);
+			this.Load += new System.EventHandler(this.Overlay_Load);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Overlay_Paint);
 			this.ResumeLayout(false);
 

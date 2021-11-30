@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Cyberpunk2077HackHelper.Grabbing;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +15,12 @@ namespace Cyberpunk2077HackHelper
 {
 	public partial class Overlay : Form
 	{
+		private readonly Hotkey _hk = new Hotkey() { Control = true, KeyCode = Keys.D1 };
+
+		private List<SymbolMap> _matrixSymbolMaps;
+		private List<SymbolMap> _sequenceSymbolMaps;
+		private readonly List<Layout> _layouts = new List<Layout>();
+
 		public Overlay()
 		{
 			InitializeComponent();
@@ -41,6 +50,39 @@ namespace Cyberpunk2077HackHelper
 								 bmpScreenCapture.Size,
 								 CopyPixelOperation.SourceCopy);
 			}
+
+
+		}
+
+		private void Overlay_Load(object sender, EventArgs e)
+		{
+			string matrixSymbolMapsContents = File.ReadAllText("Layouts/matrixSymbolMaps.json");
+			string sequenceSymbolMapsContents = File.ReadAllText("Layouts/sequenceSymbolMaps.json");
+
+			_matrixSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(matrixSymbolMapsContents);
+			_sequenceSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(sequenceSymbolMapsContents);
+
+			_hk.Pressed += ProcessHotKeyPressed;
+
+			if (_hk.GetCanRegister(this))
+				_hk.Register(this.Handle);
+			else
+				Console.WriteLine("Whoops, looks like attempts to register will fail or throw an exception, show an error / visual user feedback");
+		}
+
+		private void Overlay_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			_hk.Pressed -= ProcessHotKeyPressed;
+
+			if (_hk.Registered)
+				_hk.Unregister();
+		}
+
+		private void ProcessHotKeyPressed(object sender, HandledEventArgs e)
+		{
+			this.WindowState = FormWindowState.Maximized;
+			this.TopLevel = true;
+			Console.WriteLine("Windows + 1 pressed!");
 		}
 	}
 }

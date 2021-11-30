@@ -53,6 +53,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -66,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hotkey.cs" />
     <Compile Include="Overlay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +93,19 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="..\TestData\Matrix6.json">
+      <Link>Layouts\Matrix6.json</Link>
+    </None>
+    <None Include="..\TestData\Matrix7.json">
+      <Link>Layouts\Matrix7.json</Link>
+    </None>
+    <None Include="..\TestData\matrixSymbolMaps.json">
+      <Link>Layouts\matrixSymbolMaps.json</Link>
+    </None>
+    <None Include="..\TestData\sequenceSymbolMaps.json">
+      <Link>Layouts\sequenceSymbolMaps.json</Link>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -101,6 +118,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cyberpunk2077HackHelper.Grabbing\Cyberpunk2077HackHelper.Grabbing.csproj">
+      <Project>{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}</Project>
+      <Name>Cyberpunk2077HackHelper.Grabbing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
