@@ -1,5 +1,4 @@
-﻿using Cyberpunk2077HackHelper.Overlay.Hotkeys;
-using GameOverlay.Drawing;
+﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using System;
 using System.Collections.Generic;
@@ -11,8 +10,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 	public class Example : IDisposable
 	{
 		private readonly StickyWindow _window;
-
-		private HotKeyManager _hotKeyManager;
 
 		private readonly Dictionary<string, SolidBrush> _brushes;
 		private readonly Dictionary<string, Font> _fonts;
@@ -178,7 +175,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 		public void Run()
 		{
 			_window.Create();
-			_hotKeyManager = new HotKeyManager(_window.Handle);
 			_window.Join();
 		}
 
