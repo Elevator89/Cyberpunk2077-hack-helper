@@ -36,6 +36,9 @@
     <Reference Include="GameOverlay, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GameOverlay.Net.4.3.1\lib\net47\GameOverlay.dll</HintPath>
     </Reference>
+    <Reference Include="LowLevelInput, Version=1.36.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LowLevelInput.Net.1.36.6\lib\LowLevelInput.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -61,10 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Example.cs" />
-    <Compile Include="Hotkeys\HotKeyManager.cs" />
-    <Compile Include="Hotkeys\HotKey.cs" />
-    <Compile Include="Hotkeys\KeyPressedEventArgs.cs" />
-    <Compile Include="Hotkeys\WinApi.cs" />
+    <Compile Include="OverlayApplication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
