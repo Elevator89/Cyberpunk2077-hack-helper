@@ -7,6 +7,8 @@ namespace Cyberpunk2077HackHelper.Grabbing
 {
 	public class Grabber
 	{
+		private const int StubBufferLength = 8;
+
 		private readonly IEnumerable<SymbolMap> _matrixSymbolMaps;
 		private readonly IEnumerable<SymbolMap> _sequenceSymbolMaps;
 
@@ -20,7 +22,23 @@ namespace Cyberpunk2077HackHelper.Grabbing
 		{
 			return new Problem(
 				GrabMatrix(bitmap, layout.Matrix, _matrixSymbolMaps),
-				GrabSequences(bitmap, layout.Sequences, _sequenceSymbolMaps), -1);
+				GrabSequences(bitmap, layout.Sequences, _sequenceSymbolMaps), StubBufferLength);
+		}
+
+		public bool TryGrab(Bitmap bitmap, Layout layout, out Problem problem)
+		{
+			try
+			{
+				Symbol[,] matrix = GrabMatrix(bitmap, layout.Matrix, _matrixSymbolMaps);
+				var sequences = GrabSequences(bitmap, layout.Sequences, _sequenceSymbolMaps);
+				problem = new Problem(matrix, sequences, StubBufferLength);
+				return true;
+			}
+			catch
+			{
+				problem = null;
+				return false;
+			}
 		}
 
 		private IReadOnlyList<IReadOnlyList<Symbol>> GrabSequences(Bitmap bitmap, LayoutTable sequencesTable, IEnumerable<SymbolMap> sequenceSymbolMaps)
