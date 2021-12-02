@@ -1,7 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Cyberpunk2077HackHelper.Overlay
@@ -25,8 +24,8 @@ namespace Cyberpunk2077HackHelper.Overlay
 				TextAntiAliasing = true
 			};
 
-			IntPtr windowHandle = Utils.WinGetHandle("Noita");
-			//IntPtr windowHandle = Utils.WinGetHandle("Cyberpunk 2077 (C) 2020");
+			//IntPtr windowHandle = Utils.WinGetHandle("Noita");
+			IntPtr windowHandle = Utils.WinGetHandle("Cyberpunk 2077 (C) 2020");
 
 			_window = new StickyWindow(windowHandle)
 			{
@@ -100,7 +99,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 			if (!_disposedValue)
 			{
 				_window.Dispose();
-
 				_disposedValue = true;
 			}
 		}
