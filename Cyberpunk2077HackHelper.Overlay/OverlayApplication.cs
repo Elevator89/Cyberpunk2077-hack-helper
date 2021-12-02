@@ -1,5 +1,6 @@
 ﻿using GameOverlay.Drawing;
 using GameOverlay.Windows;
+using LowLevelInput.Hooks;
 using System;
 using System.Text;
 
@@ -7,6 +8,8 @@ namespace Cyberpunk2077HackHelper.Overlay
 {
 	public class OverlayApplication : IDisposable
 	{
+		readonly InputManager _inputManager = new InputManager();
+
 		private readonly StickyWindow _window;
 		private bool _disposedValue;
 
@@ -17,6 +20,9 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		public OverlayApplication()
 		{
+			_inputManager.OnKeyboardEvent += InputManager_OnKeyboardEvent;
+			_inputManager.Initialize();
+
 			Graphics gfx = new Graphics()
 			{
 				MeasureFPS = true,
@@ -42,7 +48,27 @@ namespace Cyberpunk2077HackHelper.Overlay
 		public void Run()
 		{
 			_window.Create();
+			_window.Hide();
 			_window.Join();
+		}
+
+		private void InputManager_OnKeyboardEvent(VirtualKeyCode key, KeyState state)
+		{
+			if (state == KeyState.Up)
+			{
+				switch (key)
+				{
+					case VirtualKeyCode.Add:
+						_window.Show();
+						break;
+					case VirtualKeyCode.Subtract:
+						_window.Hide();
+						break;
+					case VirtualKeyCode.Decimal:
+						Dispose();
+						break;
+				}
+			}
 		}
 
 		private void WindowSetupGraphics(object sender, SetupGraphicsEventArgs e)
@@ -99,6 +125,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			if (!_disposedValue)
 			{
 				_window.Dispose();
+				_inputManager.Dispose();
 				_disposedValue = true;
 			}
 		}
