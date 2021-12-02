@@ -71,11 +71,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\TestData\Matrix6.json">
-      <Link>Overlays\Matrix6.json</Link>
+      <Link>Layouts\Matrix6.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\TestData\Matrix7.json">
-      <Link>Overlays\Matrix7.json</Link>
+      <Link>Layouts\Matrix7.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\TestData\matrixSymbolMaps.json">
@@ -88,6 +88,12 @@
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cyberpunk2077HackHelper.Grabbing\Cyberpunk2077HackHelper.Grabbing.csproj">
+      <Project>{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}</Project>
+      <Name>Cyberpunk2077HackHelper.Grabbing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
