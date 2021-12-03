@@ -8,9 +8,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 {
 	public class OverlayApplication : IDisposable
 	{
-		readonly InputManager _inputManager = new InputManager();
-
-		private readonly StickyWindow _window;
+		private readonly GraphicsWindow _window;
 		private bool _disposedValue;
 
 		private SolidBrush _clearBrush;
@@ -20,9 +18,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		public OverlayApplication()
 		{
-			_inputManager.OnKeyboardEvent += InputManager_OnKeyboardEvent;
-			_inputManager.Initialize();
-
 			Graphics gfx = new Graphics()
 			{
 				MeasureFPS = true,
@@ -33,7 +28,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			//IntPtr windowHandle = Utils.WinGetHandle("Noita");
 			IntPtr windowHandle = Utils.WinGetHandle("Cyberpunk 2077 (C) 2020");
 
-			_window = new StickyWindow(windowHandle)
+			_window = new GraphicsWindow(gfx)
 			{
 				FPS = 30,
 				IsTopmost = true,
@@ -52,23 +47,14 @@ namespace Cyberpunk2077HackHelper.Overlay
 			_window.Join();
 		}
 
-		private void InputManager_OnKeyboardEvent(VirtualKeyCode key, KeyState state)
+		public void Show()
 		{
-			if (state == KeyState.Up)
-			{
-				switch (key)
-				{
-					case VirtualKeyCode.Add:
-						_window.Show();
-						break;
-					case VirtualKeyCode.Subtract:
-						_window.Hide();
-						break;
-					case VirtualKeyCode.Decimal:
-						Dispose();
-						break;
-				}
-			}
+			_window.Show();
+		}
+
+		public void Hide()
+		{
+			_window.Hide();
 		}
 
 		private void WindowSetupGraphics(object sender, SetupGraphicsEventArgs e)
@@ -125,7 +111,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 			if (!_disposedValue)
 			{
 				_window.Dispose();
-				_inputManager.Dispose();
 				_disposedValue = true;
 			}
 		}
