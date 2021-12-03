@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -90,9 +91,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cyberpunk2077HackHelper.Common\Cyberpunk2077HackHelper.Common.csproj">
+      <Project>{517AF8D1-7573-4C24-9E83-63D401FD7475}</Project>
+      <Name>Cyberpunk2077HackHelper.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cyberpunk2077HackHelper.Grabbing\Cyberpunk2077HackHelper.Grabbing.csproj">
       <Project>{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}</Project>
       <Name>Cyberpunk2077HackHelper.Grabbing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cyberpunk2077HackHelper.Solving\Cyberpunk2077HackHelper.Solving.csproj">
+      <Project>{6541DCE0-1443-48F3-AB68-ECF62D71F7B5}</Project>
+      <Name>Cyberpunk2077HackHelper.Solving</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
