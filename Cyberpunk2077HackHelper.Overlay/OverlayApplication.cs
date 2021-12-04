@@ -10,16 +10,19 @@ namespace Cyberpunk2077HackHelper.Overlay
 {
 	public class OverlayApplication : IDisposable
 	{
+		private static readonly Point _precisionDisplacement = new Point(0.5f, 0.5f);
+
 		private readonly GraphicsWindow _window;
 		private bool _disposedValue;
 
 		private SolidBrush _clearBrush;
-		private SolidBrush _backgroundBrush;
-		private SolidBrush _foregroundBrush;
-		private Font _font;
+		private SolidBrush _darkBrush;
+		private SolidBrush _brightBrush;
+		private Font _fontSmall;
+		private Font _fontBig;
 
-		private Geometry _matrixTableGeometry;
-		private Geometry _sequencesTableGeometry;
+		private Geometry _gridGeometry;
+		private Geometry _solutionGeometry;
 
 		private Layout _layout = null;
 		private Problem _problem = null;
@@ -29,6 +32,8 @@ namespace Cyberpunk2077HackHelper.Overlay
 		{
 			get { return new System.Drawing.Size(_window.Width, _window.Height); }
 		}
+
+		public bool IsActive { get { return _window.IsVisible; } }
 
 		public OverlayApplication()
 		{
@@ -75,57 +80,37 @@ namespace Cyberpunk2077HackHelper.Overlay
 			_problem = problem;
 			_solution = solution;
 
-			if (_matrixTableGeometry != null)
+			if (_gridGeometry != null)
 			{
-				_matrixTableGeometry.Dispose();
-				_matrixTableGeometry = null;
+				_gridGeometry.Dispose();
+				_gridGeometry = null;
 			}
 
-			if (_sequencesTableGeometry != null)
+			if (_solutionGeometry != null)
 			{
-				_sequencesTableGeometry.Dispose();
-				_sequencesTableGeometry = null;
+				_solutionGeometry.Dispose();
+				_solutionGeometry = null;
 			}
+
+			Graphics gfx = _window.Graphics;
 
 			if (_layout != null)
 			{
-				Graphics gfx = _window.Graphics;
-				_matrixTableGeometry = CreateLayoutTableGeometry(gfx, _layout.Matrix);
-				_sequencesTableGeometry = CreateLayoutTableGeometry(gfx, _layout.Sequences);
+				_gridGeometry = gfx.CreateGeometry();
+				AddLayoutTableGeometry(_gridGeometry, _layout.Matrix);
+				AddLayoutTableGeometry(_gridGeometry, _layout.Sequences);
+				_gridGeometry.Close();
+			}
+
+			if (_solution != null)
+			{
+				_solutionGeometry = gfx.CreateGeometry();
+				Point cellMiddle = new Point(0.75f * _layout.Matrix.CellSize.Width, 0.25f * _layout.Matrix.CellSize.Height);
+				AddSolutionGeometry(_solutionGeometry, _layout.Matrix, _solution, cellMiddle, new Point(40, 40));
+				_solutionGeometry.Close();
 			}
 
 			_window.Show();
-		}
-
-		private Geometry CreateLayoutTableGeometry(Graphics gfx, LayoutTable layoutTable)
-		{
-			Geometry geometry = gfx.CreateGeometry();
-
-			for (int row = 0; row <= layoutTable.CellCount.Height; ++row)
-			{
-				Line line = new Line(
-					layoutTable.Position.X,
-					layoutTable.Position.Y + row * layoutTable.CellSize.Height,
-					layoutTable.Position.X + layoutTable.CellCount.Width * layoutTable.CellSize.Width,
-					layoutTable.Position.Y + row * layoutTable.CellSize.Height);
-
-				geometry.BeginFigure(line);
-				geometry.EndFigure(false);
-			}
-
-			for (int col = 0; col <= layoutTable.CellCount.Width; ++col)
-			{
-				Line line = new Line(
-					layoutTable.Position.X + col * layoutTable.CellSize.Width,
-					layoutTable.Position.Y,
-					layoutTable.Position.X + col * layoutTable.CellSize.Width,
-					layoutTable.Position.Y + layoutTable.CellCount.Height * layoutTable.CellSize.Height);
-
-				geometry.BeginFigure(line);
-				geometry.EndFigure(false);
-			}
-			geometry.Close();
-			return geometry;
 		}
 
 		public void Hide()
@@ -140,14 +125,15 @@ namespace Cyberpunk2077HackHelper.Overlay
 			if (e.RecreateResources)
 			{
 				_clearBrush.Dispose();
-				_backgroundBrush.Dispose();
-				_foregroundBrush.Dispose();
+				_darkBrush.Dispose();
+				_brightBrush.Dispose();
 			}
 
 			_clearBrush = gfx.CreateSolidBrush(0x33, 0x36, 0x3F, 0);
-			_backgroundBrush = gfx.CreateSolidBrush(0x30, 0x30, 0x30);
-			_foregroundBrush = gfx.CreateSolidBrush(0xFF, 0xFF, 0x00);
-			_font = gfx.CreateFont("Arial", 28);
+			_darkBrush = gfx.CreateSolidBrush(0x00, 0x40, 0x40);
+			_brightBrush = gfx.CreateSolidBrush(0xFF, 0xFF, 0xFF);
+			_fontSmall = gfx.CreateFont("Arial", 12);
+			_fontBig = gfx.CreateFont("Arial", 24);
 
 			if (e.RecreateResources)
 				return;
@@ -157,68 +143,42 @@ namespace Cyberpunk2077HackHelper.Overlay
 		{
 			Graphics gfx = e.Graphics;
 
-			int padding = 16;
-			string infoText = new StringBuilder()
-				.Append("FPS: ").Append(gfx.FPS.ToString().PadRight(padding))
-				.Append("FrameTime: ").Append(e.FrameTime.ToString().PadRight(padding))
-				.Append("FrameCount: ").Append(e.FrameCount.ToString().PadRight(padding))
-				.Append("DeltaTime: ").Append(e.DeltaTime.ToString().PadRight(padding))
-				.ToString();
-
 			gfx.ClearScene(_clearBrush);
-			gfx.DrawTextWithBackground(_font, _foregroundBrush, _backgroundBrush, 58, 30, infoText);
 
-			if (_matrixTableGeometry != null)
-				gfx.DrawGeometry(_matrixTableGeometry, _foregroundBrush, 1.0f);
+			StringBuilder sb = new StringBuilder();
 
-			if (_sequencesTableGeometry != null)
-				gfx.DrawGeometry(_sequencesTableGeometry, _foregroundBrush, 1.0f);
-
-			if (_problem != null)
+			if (_layout != null && _problem != null)
 			{
-				string matrixText = GetMatrixText(_problem.Matrix);
-				gfx.DrawTextWithBackground(_font, _foregroundBrush, _backgroundBrush, 58, 60, matrixText);
+				gfx.DrawGeometry(_gridGeometry, _darkBrush, 1.0f);
 
-				string sequencesText = GetSequencesText(_problem.DaemonSequences);
-				gfx.DrawTextWithBackground(_font, _foregroundBrush, _backgroundBrush, 658, 60, sequencesText);
+				DrawMatrixTable(_layout.Matrix, _problem.Matrix, gfx, _fontSmall, _darkBrush);
+				DrawSequencesTable(_layout.Sequences, _problem.DaemonSequences, gfx, _fontSmall, _darkBrush);
 			}
-		}
-
-		private string GetMatrixText(Symbol[,] matrix)
-		{
-			StringBuilder matrixSb = new StringBuilder();
-			for (int row = 0; row < matrix.GetLength(0); ++row)
+			else
 			{
-				for (int col = 0; col < matrix.GetLength(1); ++col)
-					matrixSb.Append(matrix[row, col] + "  ");
-
-				matrixSb.AppendLine();
+				sb.AppendLine("Unable to grab a problem");
 			}
 
-			return matrixSb.ToString();
-		}
-
-		private string GetSequencesText(IReadOnlyList<IReadOnlyList<Symbol>> sequences)
-		{
-			StringBuilder sequencesSb = new StringBuilder();
-
-			foreach (IReadOnlyList<Symbol> sequence in sequences)
+			if (_solution != null)
 			{
-				foreach (Symbol symbol in sequence)
-					sequencesSb.Append(symbol + "  ");
-
-				sequencesSb.AppendLine();
+				gfx.DrawGeometry(_solutionGeometry, _brightBrush, 1.0f);
+			}
+			else
+			{
+				sb.AppendLine("Unable to find a solution");
 			}
 
-			return sequencesSb.ToString();
+			gfx.DrawText(_fontBig, _brightBrush, 250, 880, sb.ToString());
 		}
+
 
 		private void WindowDestroyGraphics(object sender, DestroyGraphicsEventArgs e)
 		{
-			_font.Dispose();
+			_fontSmall.Dispose();
+			_fontBig.Dispose();
 			_clearBrush.Dispose();
-			_backgroundBrush.Dispose();
-			_foregroundBrush.Dispose();
+			_darkBrush.Dispose();
+			_brightBrush.Dispose();
 		}
 
 		~OverlayApplication()
@@ -239,6 +199,175 @@ namespace Cyberpunk2077HackHelper.Overlay
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		private static void AddLayoutTableGeometry(Geometry geometry, LayoutTable layoutTable)
+		{
+			float positionX = layoutTable.Position.X + 0.5f;
+			float positionY = layoutTable.Position.Y + 0.5f;
+
+			for (int row = 0; row <= layoutTable.CellCount.Height; ++row)
+			{
+				Line line = new Line(
+					positionX,
+					positionY + row * layoutTable.CellSize.Height,
+					positionX + layoutTable.CellCount.Width * layoutTable.CellSize.Width,
+					positionY + row * layoutTable.CellSize.Height);
+
+				geometry.BeginFigure(line);
+				geometry.EndFigure(false);
+			}
+
+			for (int col = 0; col <= layoutTable.CellCount.Width; ++col)
+			{
+				Line line = new Line(
+					positionX + col * layoutTable.CellSize.Width,
+					positionY,
+					positionX + col * layoutTable.CellSize.Width,
+					positionY + layoutTable.CellCount.Height * layoutTable.CellSize.Height);
+
+				geometry.BeginFigure(line);
+				geometry.EndFigure(false);
+			}
+		}
+
+		private static void AddSolutionGeometry(Geometry geometry, LayoutTable layoutTable, IReadOnlyList<System.Drawing.Point> solution, Point cellMiddle, Point cellSize)
+		{
+			Point startPoint = PointOps.Add(TransformPoint(solution[0]), cellMiddle);
+			AddRect(geometry, Precise(startPoint), cellSize.X, cellSize.Y);
+
+			for (int pointIndex = 1; pointIndex < solution.Count; ++pointIndex)
+			{
+				Point endPoint = PointOps.Add(TransformPoint(solution[pointIndex]), cellMiddle);
+				AddRect(geometry, Precise(endPoint), cellSize.X, cellSize.Y);
+				AddArrow(geometry, startPoint, endPoint, 0.5f * cellSize.X);
+				startPoint = endPoint;
+			}
+
+			Point TransformPoint(System.Drawing.Point point)
+			{
+				return new Point(
+					layoutTable.Position.X + point.X * layoutTable.CellSize.Width,
+					layoutTable.Position.Y + point.Y * layoutTable.CellSize.Height);
+			}
+		}
+
+		private static Point Precise(Point p)
+		{
+			return PointOps.Add(p.Round(), _precisionDisplacement);
+		}
+
+		private static void AddRect(Geometry geometry, Point center, float width, float height)
+		{
+			geometry.AddRectangle(new Rectangle(center.X - 0.5f * width, center.Y - 0.5f * height, center.X + 0.5f * width, center.Y + 0.5f * height));
+		}
+
+		private static void AddArrow(Geometry geometry, Point start, Point end, float cut)
+		{
+			const float ArrowLength = 10.0f;
+			const float ArrowWidth = 5.0f;
+
+			Point vector = PointOps.Subtract(end, start);
+			Point normalized = vector.Normalized();
+			Point lineStart = PointOps.Add(start, normalized.Multiply(cut));
+			Point lineEnd = PointOps.Subtract(end, normalized.Multiply(cut));
+			Point arrowStart = PointOps.Subtract(lineEnd, normalized.Multiply(ArrowLength));
+			Point arrowLeftSide = normalized.RotatedLeft().Multiply(ArrowWidth);
+
+			geometry.BeginFigure(new Line(lineStart, lineEnd));
+			geometry.EndFigure(false);
+			geometry.BeginFigure(new Line(PointOps.Add(arrowStart, arrowLeftSide), lineEnd));
+			geometry.EndFigure(false);
+			geometry.BeginFigure(new Line(PointOps.Subtract(arrowStart, arrowLeftSide), lineEnd));
+			geometry.EndFigure(false);
+		}
+
+		private static void DrawMatrixTable(LayoutTable table, Symbol[,] matrix, Graphics gfx, Font font, SolidBrush brush)
+		{
+			float positionX = table.Position.X + 0.5f;
+			float positionY = table.Position.Y + 0.5f;
+
+			for (int row = 0; row < table.CellCount.Height; ++row)
+			{
+				for (int col = 0; col < table.CellCount.Width; ++col)
+				{
+					Point point = new Point(
+						positionX + col * table.CellSize.Width,
+						positionY + row * table.CellSize.Height);
+
+					gfx.DrawText(font, brush, point, SymbolToString(matrix[row, col]));
+				}
+			}
+		}
+
+		private static string GetMatrixText(Symbol[,] matrix)
+		{
+			StringBuilder matrixSb = new StringBuilder();
+			for (int row = 0; row < matrix.GetLength(0); ++row)
+			{
+				for (int col = 0; col < matrix.GetLength(1); ++col)
+					matrixSb.Append(matrix[row, col] + "  ");
+
+				matrixSb.AppendLine();
+			}
+
+			return matrixSb.ToString();
+		}
+
+		private static void DrawSequencesTable(LayoutTable table, IReadOnlyList<IReadOnlyList<Symbol>> sequences, Graphics gfx, Font font, SolidBrush brush)
+		{
+			float positionX = table.Position.X + 0.5f;
+			float positionY = table.Position.Y + 0.5f; // Displace symbol from cell start
+
+			for (int sequenceIndex = 0; sequenceIndex < sequences.Count; ++sequenceIndex)
+			{
+				IReadOnlyList<Symbol> sequence = sequences[sequenceIndex];
+				for (int symbolIndex = 0; symbolIndex < sequence.Count; ++symbolIndex)
+				{
+					Point point = new Point(
+						positionX + symbolIndex * table.CellSize.Width,
+						positionY + sequenceIndex * table.CellSize.Height);
+
+					gfx.DrawText(font, brush, point, SymbolToString(sequence[symbolIndex]));
+				}
+			}
+		}
+
+		private static string GetSequencesText(IReadOnlyList<IReadOnlyList<Symbol>> sequences)
+		{
+			StringBuilder sequencesSb = new StringBuilder();
+
+			foreach (IReadOnlyList<Symbol> sequence in sequences)
+			{
+				foreach (Symbol symbol in sequence)
+					sequencesSb.Append(symbol + "  ");
+
+				sequencesSb.AppendLine();
+			}
+
+			return sequencesSb.ToString();
+		}
+
+		private static string SymbolToString(Symbol symbol)
+		{
+			switch (symbol)
+			{
+				case Symbol._1C:
+					return "1C";
+				case Symbol._55:
+					return "55";
+				case Symbol._7A:
+					return "7A";
+				case Symbol._BD:
+					return "BD";
+				case Symbol._E9:
+					return "E9";
+				case Symbol._FF:
+					return "FF";
+				case Symbol.Unknown:
+				default:
+					return "00";
+			}
 		}
 	}
 }

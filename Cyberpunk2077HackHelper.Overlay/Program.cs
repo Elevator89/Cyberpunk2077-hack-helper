@@ -62,15 +62,14 @@ namespace Cyberpunk2077HackHelper.Overlay
 			{
 				switch (key)
 				{
-					case VirtualKeyCode.Add:
-						_overlayApp.Show();
-						break;
 					case VirtualKeyCode.Tab:
-						TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<Point> solution);
-						_overlayApp.Show(grabbedLayout, problem, solution);
-						break;
-					case VirtualKeyCode.Subtract:
-						_overlayApp.Hide();
+						if (_overlayApp.IsActive)
+							_overlayApp.Hide();
+						else
+						{
+							TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<Point> solution);
+							_overlayApp.Show(grabbedLayout, problem, solution);
+						}
 						break;
 					case VirtualKeyCode.Decimal:
 						_overlayApp.Dispose();
