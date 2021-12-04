@@ -62,7 +62,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			{
 				switch (key)
 				{
-					case VirtualKeyCode.Tab:
+					case VirtualKeyCode.Subtract:
 						if (_overlayApp.IsActive)
 							_overlayApp.Hide();
 						else
