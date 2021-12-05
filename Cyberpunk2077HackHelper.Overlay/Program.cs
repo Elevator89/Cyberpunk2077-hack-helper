@@ -13,8 +13,12 @@ namespace Cyberpunk2077HackHelper.Overlay
 {
 	class Program
 	{
+		private const string SymbolMapsPath = "Data/SymbolMaps/";
+		private const string LayoutsPath = "Data/Layouts/";
+		private const string ScreenshotsPath = "Data/Screenshots/";
+
 		private static InputManager _inputManager;
-		private static OverlayApplication _overlayApp;
+		private static Overlay _overlay;
 
 		private static List<Layout> _layouts = new List<Layout>();
 
@@ -25,15 +29,15 @@ namespace Cyberpunk2077HackHelper.Overlay
 		{
 			GameOverlay.TimerService.EnableHighPrecisionTimers();
 
-			string matrixSymbolMapsContents = File.ReadAllText("Data/SymbolMaps/matrixSymbolMaps.json");
-			string sequenceSymbolMapsContents = File.ReadAllText("Data/SymbolMaps/sequenceSymbolMaps.json");
+			string matrixSymbolMapsContents = File.ReadAllText(Path.Combine(SymbolMapsPath, "matrixSymbolMaps.json"));
+			string sequenceSymbolMapsContents = File.ReadAllText(Path.Combine(SymbolMapsPath, "sequenceSymbolMaps.json"));
 
 			List<SymbolMap> matrixSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(matrixSymbolMapsContents);
 			List<SymbolMap> sequenceSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(sequenceSymbolMapsContents);
 
 			_grabber = new Grabber(matrixSymbolMaps, sequenceSymbolMaps);
 
-			foreach (string layoutFileName in Directory.GetFiles("Data/Layouts/", "Matrix*.json"))
+			foreach (string layoutFileName in Directory.GetFiles(LayoutsPath, "Matrix*.json"))
 			{
 				string layoutContents = File.ReadAllText(layoutFileName);
 				_layouts.Add(JsonConvert.DeserializeObject<Layout>(layoutContents));
@@ -45,13 +49,13 @@ namespace Cyberpunk2077HackHelper.Overlay
 				_inputManager.OnKeyboardEvent += InputManager_OnKeyboardEvent;
 				_inputManager.Initialize();
 
-				_overlayApp = new OverlayApplication();
+				_overlay = new Overlay();
 
-				_overlayApp.Run();
+				_overlay.Run();
 			}
 			finally
 			{
-				_overlayApp.Dispose();
+				_overlay.Dispose();
 				_inputManager.Dispose();
 			}
 		}
@@ -62,17 +66,21 @@ namespace Cyberpunk2077HackHelper.Overlay
 			{
 				switch (key)
 				{
-					case VirtualKeyCode.Subtract:
-						if (_overlayApp.IsActive)
-							_overlayApp.Hide();
+					case VirtualKeyCode.F6:
+						if (_overlay.IsActive)
+							_overlay.Hide();
 						else
 						{
 							TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<Point> solution);
-							_overlayApp.Show(grabbedLayout, problem, solution);
+							_overlay.Show(grabbedLayout, problem, solution);
 						}
 						break;
-					case VirtualKeyCode.Decimal:
-						_overlayApp.Dispose();
+					case VirtualKeyCode.F7:
+						using (Bitmap screenshot = MakeScreenshot())
+							SaveScreenshot(screenshot);
+						break;
+					case VirtualKeyCode.F8:
+						_overlay.Dispose();
 						break;
 				}
 			}
@@ -84,14 +92,12 @@ namespace Cyberpunk2077HackHelper.Overlay
 			{
 				if (TryGrabProblem(screenshot, out grabbedLayout, out problem))
 				{
-					screenshot.Save($"Layouts/GrabbedScreen{DateTimeToFileNameString(DateTime.Now)}.png", System.Drawing.Imaging.ImageFormat.Png);
 					solution = _solver.Solve(problem).FirstOrDefault();
 					return solution != null;
 				}
 				else
 				{
 					solution = null;
-					screenshot.Save($"Layouts/FailedScreen{DateTimeToFileNameString(DateTime.Now)}.png", System.Drawing.Imaging.ImageFormat.Png);
 					return false;
 				}
 			}
@@ -114,7 +120,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private static Bitmap MakeScreenshot()
 		{
-			Size size = _overlayApp.Size;
+			Size size = _overlay.Size;
 			Bitmap bmpScreenCapture = new Bitmap(size.Width, size.Height);
 
 			using (Graphics g = Graphics.FromImage(bmpScreenCapture))
@@ -122,6 +128,11 @@ namespace Cyberpunk2077HackHelper.Overlay
 				g.CopyFromScreen(0, 0, 0, 0, bmpScreenCapture.Size, CopyPixelOperation.SourceCopy);
 			}
 			return bmpScreenCapture;
+		}
+
+		private static void SaveScreenshot(Bitmap screenshot)
+		{
+			screenshot.Save(Path.Combine(ScreenshotsPath, $"Screen_{DateTimeToFileNameString(DateTime.Now)}.png"), System.Drawing.Imaging.ImageFormat.Png);
 		}
 
 		private static string DateTimeToFileNameString(DateTime dateTime)

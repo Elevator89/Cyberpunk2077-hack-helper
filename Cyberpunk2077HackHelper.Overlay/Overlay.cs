@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Cyberpunk2077HackHelper.Overlay
 {
-	public class OverlayApplication : IDisposable
+	public class Overlay : IDisposable
 	{
 		private static readonly Point _precisionDisplacement = new Point(0.5f, 0.5f);
 
@@ -35,7 +35,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		public bool IsActive { get { return _window.IsVisible; } }
 
-		public OverlayApplication()
+		public Overlay()
 		{
 			Graphics gfx = new Graphics()
 			{
@@ -44,10 +44,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 				TextAntiAliasing = true,
 			};
 
-			IntPtr windowHandle = Utils.WinGetHandle("Noita");
-			//IntPtr windowHandle = Utils.WinGetHandle("Cyberpunk 2077 (C) 2020");
-
-			//_window = new StickyWindow(windowHandle, gfx)
 			_window = new GraphicsWindow(gfx)
 			{
 				FPS = 30,
@@ -181,7 +177,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			_brightBrush.Dispose();
 		}
 
-		~OverlayApplication()
+		~Overlay()
 		{
 			Dispose(false);
 		}
@@ -300,20 +296,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 			}
 		}
 
-		private static string GetMatrixText(Symbol[,] matrix)
-		{
-			StringBuilder matrixSb = new StringBuilder();
-			for (int row = 0; row < matrix.GetLength(0); ++row)
-			{
-				for (int col = 0; col < matrix.GetLength(1); ++col)
-					matrixSb.Append(matrix[row, col] + "  ");
-
-				matrixSb.AppendLine();
-			}
-
-			return matrixSb.ToString();
-		}
-
 		private static void DrawSequencesTable(LayoutTable table, IReadOnlyList<IReadOnlyList<Symbol>> sequences, Graphics gfx, Font font, SolidBrush brush)
 		{
 			float positionX = table.Position.X + 0.5f;
@@ -331,21 +313,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 					gfx.DrawText(font, brush, point, SymbolToString(sequence[symbolIndex]));
 				}
 			}
-		}
-
-		private static string GetSequencesText(IReadOnlyList<IReadOnlyList<Symbol>> sequences)
-		{
-			StringBuilder sequencesSb = new StringBuilder();
-
-			foreach (IReadOnlyList<Symbol> sequence in sequences)
-			{
-				foreach (Symbol symbol in sequence)
-					sequencesSb.Append(symbol + "  ");
-
-				sequencesSb.AppendLine();
-			}
-
-			return sequencesSb.ToString();
 		}
 
 		private static string SymbolToString(Symbol symbol)
