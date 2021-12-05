@@ -4,7 +4,7 @@ This program allows to quickly find a full solution for "Breach Protocol" puzzle
 
 ## Usage
 
-1. Run Cyberpunk 2077 game and yberpunk2077HackHelper.Overlay.exe (in any sequence)
+1. Run Cyberpunk 2077 game and Cyberpunk2077HackHelper.Overlay.exe (in any sequence)
 2. Enter "Breach Protocol" minigame
 3. Press F6 to show overlay
 4. The shortest solution (if exists) will be displayed in the overlay.
