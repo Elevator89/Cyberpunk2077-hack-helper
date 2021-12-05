@@ -25,15 +25,15 @@ namespace Cyberpunk2077HackHelper.Overlay
 		{
 			GameOverlay.TimerService.EnableHighPrecisionTimers();
 
-			string matrixSymbolMapsContents = File.ReadAllText("SymbolMaps/matrixSymbolMaps.json");
-			string sequenceSymbolMapsContents = File.ReadAllText("SymbolMaps/sequenceSymbolMaps.json");
+			string matrixSymbolMapsContents = File.ReadAllText("Data/SymbolMaps/matrixSymbolMaps.json");
+			string sequenceSymbolMapsContents = File.ReadAllText("Data/SymbolMaps/sequenceSymbolMaps.json");
 
 			List<SymbolMap> matrixSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(matrixSymbolMapsContents);
 			List<SymbolMap> sequenceSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(sequenceSymbolMapsContents);
 
 			_grabber = new Grabber(matrixSymbolMaps, sequenceSymbolMaps);
 
-			foreach (string layoutFileName in Directory.GetFiles("Layouts/", "Matrix*.json"))
+			foreach (string layoutFileName in Directory.GetFiles("Data/Layouts/", "Matrix*.json"))
 			{
 				string layoutContents = File.ReadAllText(layoutFileName);
 				_layouts.Add(JsonConvert.DeserializeObject<Layout>(layoutContents));

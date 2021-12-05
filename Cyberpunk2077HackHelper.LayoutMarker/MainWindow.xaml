@@ -57,7 +57,7 @@
         </ScrollViewer>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" CanContentScroll="True" VerticalAlignment="Stretch" Margin="0">
             <Grid>
-                <Image Name="Screenshot" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None" Source="/Cyberpunk2077-hack-helper.LayoutMarker;component/DefaultData/Matrix7_1.png"/>
+                <Image Name="Screenshot" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None" Source="/Cyberpunk2077-hack-helper.LayoutMarker;component/Data/Screenshots/Matrix7_1.png"/>
                 <Canvas Name="Canvas" MouseMove="Canvas_MouseMove" MouseDown="Canvas_MouseDown" MouseEnter="Canvas_MouseEnter" MouseLeave="Canvas_MouseLeave" MouseUp="Canvas_MouseUp" MouseWheel="Canvas_MouseWheel" >
                     <Canvas.Background>
                         <ImageBrush/>
