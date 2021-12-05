@@ -149,16 +149,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="..\TestData\Matrix7.json">
-      <Link>DefaultData\Matrix7.json</Link>
+    <None Include="..\Data\Layouts\Matrix6.json">
+      <Link>Data\Layouts\Matrix6.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\TestData\matrixSymbolMaps.json">
-      <Link>DefaultData\matrixSymbolMaps.json</Link>
+    <None Include="..\Data\Layouts\Matrix7.json">
+      <Link>Data\Layouts\Matrix7.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\TestData\sequenceSymbolMaps.json">
-      <Link>DefaultData\sequenceSymbolMaps.json</Link>
+    <None Include="..\Data\SymbolMaps\matrixSymbolMaps.json">
+      <Link>Data\SymbolMaps\matrixSymbolMaps.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Data\SymbolMaps\sequenceSymbolMaps.json">
+      <Link>Data\SymbolMaps\sequenceSymbolMaps.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -181,8 +185,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\TestData\Matrix7_1.png">
-      <Link>DefaultData\Matrix7_1.png</Link>
+    <Resource Include="..\Data\Screenshots\Matrix7_1.png">
+      <Link>Data\Screenshots\Matrix7_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

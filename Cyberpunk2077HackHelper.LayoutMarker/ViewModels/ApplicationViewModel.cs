@@ -8,9 +8,9 @@ namespace Cyberpunk2077HackHelper.LayoutMarker.ViewModels
 {
 	public class ApplicationViewModel
 	{
-		private const string DefaultLayoutPath = "DefaultData/Matrix7.json";
-		private const string DefaultMatrixSymbolMapsPath = "DefaultData/matrixSymbolMaps.json";
-		private const string DefaultSequenceSymbolMapsPath = "DefaultData/sequenceSymbolMaps.json";
+		private const string DefaultLayoutPath = "Data/Layouts/Matrix7.json";
+		private const string DefaultMatrixSymbolMapsPath = "Data/SymbolMaps/matrixSymbolMaps.json";
+		private const string DefaultSequenceSymbolMapsPath = "Data/SymbolMaps/sequenceSymbolMaps.json";
 
 		private readonly IDialogService _dialogService;
 		private readonly IFileService _fileService;

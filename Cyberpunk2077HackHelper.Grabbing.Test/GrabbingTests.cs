@@ -15,8 +15,8 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 		[TestInitialize]
 		public void Init()
 		{
-			string layoutContents = File.ReadAllText("TestData/matrixSymbolMaps.json");
-			string sequenceContents = File.ReadAllText("TestData/sequenceSymbolMaps.json");
+			string layoutContents = File.ReadAllText("Data/SymbolMaps/matrixSymbolMaps.json");
+			string sequenceContents = File.ReadAllText("Data/SymbolMaps/sequenceSymbolMaps.json");
 
 			List<SymbolMap> matrixSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(layoutContents);
 			List<SymbolMap> sequenceSymbolMaps = JsonConvert.DeserializeObject<List<SymbolMap>>(sequenceContents);
@@ -24,12 +24,12 @@ namespace Cyberpunk2077HackHelper.Grabbing.Test
 		}
 
 		[DataTestMethod]
-		[DataRow(61, "TestData/Matrix6_1.png", "TestData/Matrix6.json")]
-		[DataRow(62, "TestData/Matrix6_2.png", "TestData/Matrix6.json")]
-		[DataRow(71, "TestData/Matrix7_1.png", "TestData/Matrix7.json")]
-		[DataRow(72, "TestData/Matrix7_2.png", "TestData/Matrix7.json")]
-		[DataRow(73, "TestData/Matrix7_3.png", "TestData/Matrix7.json")]
-		[DataRow(74, "TestData/Matrix7_4.png", "TestData/Matrix7.json")]
+		[DataRow(61, "Data/Screenshots/Matrix6_1.png", "Data/Layouts/Matrix6.json")]
+		[DataRow(62, "Data/Screenshots/Matrix6_2.png", "Data/Layouts/Matrix6.json")]
+		[DataRow(71, "Data/Screenshots/Matrix7_1.png", "Data/Layouts/Matrix7.json")]
+		[DataRow(72, "Data/Screenshots/Matrix7_2.png", "Data/Layouts/Matrix7.json")]
+		[DataRow(73, "Data/Screenshots/Matrix7_3.png", "Data/Layouts/Matrix7.json")]
+		[DataRow(74, "Data/Screenshots/Matrix7_4.png", "Data/Layouts/Matrix7.json")]
 		public void Grabs(int caseId, string screenshotFileName, string layoutFileName)
 		{
 			Grabs(screenshotFileName, layoutFileName, GetExpectedProblem(caseId));

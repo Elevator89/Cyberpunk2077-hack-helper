@@ -67,46 +67,46 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\TestData\Matrix6.json">
-      <Link>TestData\Matrix6.json</Link>
+    <None Include="..\Data\Layouts\Matrix6.json">
+      <Link>Data\Layouts\Matrix6.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\TestData\Matrix7.json">
-      <Link>TestData\Matrix7.json</Link>
+    <None Include="..\Data\Layouts\Matrix7.json">
+      <Link>Data\Layouts\Matrix7.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\TestData\matrixSymbolMaps.json">
-      <Link>TestData\matrixSymbolMaps.json</Link>
+    <None Include="..\Data\SymbolMaps\matrixSymbolMaps.json">
+      <Link>Data\SymbolMaps\matrixSymbolMaps.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\TestData\sequenceSymbolMaps.json">
-      <Link>TestData\sequenceSymbolMaps.json</Link>
+    <None Include="..\Data\SymbolMaps\sequenceSymbolMaps.json">
+      <Link>Data\SymbolMaps\sequenceSymbolMaps.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\TestData\Matrix6_1.png">
-      <Link>TestData\Matrix6_1.png</Link>
+    <Content Include="..\Data\Screenshots\Matrix6_1.png">
+      <Link>Data\Screenshots\Matrix6_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestData\Matrix6_2.png">
-      <Link>TestData\Matrix6_2.png</Link>
+    <Content Include="..\Data\Screenshots\Matrix6_2.png">
+      <Link>Data\Screenshots\Matrix6_2.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestData\Matrix7_1.png">
-      <Link>TestData\Matrix7_1.png</Link>
+    <Content Include="..\Data\Screenshots\Matrix7_1.png">
+      <Link>Data\Screenshots\Matrix7_1.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestData\Matrix7_2.png">
-      <Link>TestData\Matrix7_2.png</Link>
+    <Content Include="..\Data\Screenshots\Matrix7_2.png">
+      <Link>Data\Screenshots\Matrix7_2.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestData\Matrix7_3.png">
-      <Link>TestData\Matrix7_3.png</Link>
+    <Content Include="..\Data\Screenshots\Matrix7_3.png">
+      <Link>Data\Screenshots\Matrix7_3.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\TestData\Matrix7_4.png">
-      <Link>TestData\Matrix7_4.png</Link>
+    <Content Include="..\Data\Screenshots\Matrix7_4.png">
+      <Link>Data\Screenshots\Matrix7_4.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
