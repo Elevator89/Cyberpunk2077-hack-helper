@@ -129,8 +129,8 @@ namespace Cyberpunk2077HackHelper.Overlay
 				_brightBrush.Dispose();
 			}
 
-			_clearBrush = gfx.CreateSolidBrush(0x33, 0x36, 0x3F, 0);
-			_darkBrush = gfx.CreateSolidBrush(0x00, 0x40, 0x40);
+			_clearBrush = gfx.CreateSolidBrush(0x00, 0x00, 0x00, 0);
+			_darkBrush = gfx.CreateSolidBrush(0x00, 0xFF, 0xFF, 0x40);
 			_brightBrush = gfx.CreateSolidBrush(0xFF, 0xFF, 0xFF);
 			_fontSmall = gfx.CreateFont("Arial", 12);
 			_fontBig = gfx.CreateFont("Arial", 24);
