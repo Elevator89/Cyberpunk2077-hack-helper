@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077HackHelper", "Cyberpunk2077HackHelper\Cyberpunk2077HackHelper.csproj", "{D260CBD3-64DE-47EB-9676-D08CA3EE2538}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077HackHelper.Grabbing", "Cyberpunk2077HackHelper.Grabbing\Cyberpunk2077HackHelper.Grabbing.csproj", "{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cyberpunk2077HackHelper.Common", "Cyberpunk2077HackHelper.Common\Cyberpunk2077HackHelper.Common.csproj", "{517AF8D1-7573-4C24-9E83-63D401FD7475}"
@@ -32,14 +30,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Debug|x64.ActiveCfg = Debug|x64
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Debug|x64.Build.0 = Debug|x64
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Release|x64.ActiveCfg = Release|x64
-		{D260CBD3-64DE-47EB-9676-D08CA3EE2538}.Release|x64.Build.0 = Release|x64
 		{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35FAFB4B-64D3-40DA-8151-B5B775B95AC7}.Debug|x64.ActiveCfg = Debug|x64
