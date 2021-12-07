@@ -11,7 +11,7 @@ namespace Cyberpunk2077HackHelper.Solving
 
 		public IEnumerable<IReadOnlyList<Point>> Solve(Problem problem)
 		{
-			foreach (IReadOnlyList<Symbol> possibleCombination in GetPossibleSequenceCombinations(problem.DaemonSequences, problem.BufferLength))
+			foreach (IReadOnlyList<Symbol> possibleCombination in GetPossibleSequenceCombinations(problem.DaemonSequences, problem.BufferLength).OrderBy(c => c.Count))
 			{
 				List<SequenceItem> foundSequence = new List<SequenceItem>(20); // The actual size is usually less than 20
 
