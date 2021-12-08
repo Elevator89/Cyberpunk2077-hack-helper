@@ -42,6 +42,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 				string layoutContents = File.ReadAllText(layoutFileName);
 				_layouts.Add(JsonConvert.DeserializeObject<Layout>(layoutContents));
 			}
+			_layouts.Sort((a, b) => b.Matrix.CellCount.Width - a.Matrix.CellCount.Width);
 
 			try
 			{
