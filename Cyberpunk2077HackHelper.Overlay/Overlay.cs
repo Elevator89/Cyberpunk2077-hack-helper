@@ -18,6 +18,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private SolidBrush _clearBrush;
 		private SolidBrush _darkBrush;
+		private SolidBrush _backgroundBrush;
 		private SolidBrush _brightBrush;
 		private Font _fontSmall;
 		private Font _fontBig;
@@ -126,11 +127,13 @@ namespace Cyberpunk2077HackHelper.Overlay
 				_clearBrush.Dispose();
 				_darkBrush.Dispose();
 				_brightBrush.Dispose();
+				_backgroundBrush.Dispose();
 			}
 
 			_clearBrush = gfx.CreateSolidBrush(0x00, 0x00, 0x00, 0);
 			_darkBrush = gfx.CreateSolidBrush(0x00, 0xFF, 0xFF, 0x40);
 			_brightBrush = gfx.CreateSolidBrush(0xFF, 0xFF, 0xFF);
+			_backgroundBrush = gfx.CreateSolidBrush(0x00, 0x00, 0x00, 0x40);
 			_fontSmall = gfx.CreateFont("Arial", 12);
 			_fontBig = gfx.CreateFont("Arial", 24);
 
@@ -152,7 +155,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 				DrawMatrixTable(_layout.Matrix, _problem.Matrix, gfx, _fontSmall, _darkBrush);
 				DrawSequencesTable(_layout.Sequences, _problem.DaemonSequences, gfx, _fontSmall, _darkBrush);
-				DrawCombinations(_layout.Sequences, _combinations, gfx, _fontSmall, _brightBrush);
+				DrawCombinations(_layout.Sequences, _combinations, gfx, _fontSmall, _brightBrush, _backgroundBrush);
 			}
 			else
 			{
@@ -168,7 +171,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 				sb.AppendLine("Unable to find a solution");
 			}
 
-			gfx.DrawText(_fontBig, _brightBrush, 250, 880, sb.ToString());
+			gfx.DrawTextWithBackground(_fontBig, _brightBrush, _backgroundBrush, 250, 880, sb.ToString());
 		}
 
 
@@ -314,7 +317,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			}
 		}
 
-		private static void DrawCombinations(LayoutTable table, IReadOnlyList<IReadOnlyList<Symbol>> combinations, Graphics gfx, Font font, SolidBrush brush)
+		private static void DrawCombinations(LayoutTable table, IReadOnlyList<IReadOnlyList<Symbol>> combinations, Graphics gfx, Font font, SolidBrush brush, SolidBrush backgroundBrush)
 		{
 			// Below the table
 			float startX = table.Position.X;
@@ -332,7 +335,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 						startX + symbolIndex * stepX,
 						startY + combinationIndex * stepY);
 
-					gfx.DrawText(font, brush, Precise(point), SymbolToString(combination[symbolIndex]));
+					gfx.DrawTextWithBackground(font, brush, backgroundBrush, Precise(point), SymbolToString(combination[symbolIndex]));
 				}
 			}
 		}
