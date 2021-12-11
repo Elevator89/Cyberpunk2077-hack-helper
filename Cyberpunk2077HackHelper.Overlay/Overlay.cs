@@ -78,7 +78,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			_layout = layout;
 			_problem = problem;
 			_combinations = combinations.OrderBy(c => c.Count).ToArray();
-			_solution = solution.ToArray();
+			_solution = solution?.ToArray();
 
 			if (_gridGeometry != null)
 			{
@@ -236,14 +236,18 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private static void AddSolutionGeometry(Geometry geometry, LayoutTable layoutTable, IReadOnlyList<System.Drawing.Point> solution, Point cellMiddle, Point cellSize)
 		{
+			int solutionHalfLength = solution.Count / 2;
 			Point startPoint = PointOps.Add(TransformPoint(solution[0]), cellMiddle);
 			AddRect(geometry, Precise(startPoint), cellSize.X, cellSize.Y);
 
 			for (int pointIndex = 1; pointIndex < solution.Count; ++pointIndex)
 			{
+				int coordDisplacement = pointIndex - solutionHalfLength;
+				Point displacement = new Point(pointIndex % 2 * coordDisplacement, (pointIndex + 1) % 2 * coordDisplacement);
+
 				Point endPoint = PointOps.Add(TransformPoint(solution[pointIndex]), cellMiddle);
 				AddRect(geometry, Precise(endPoint), cellSize.X, cellSize.Y);
-				AddArrow(geometry, startPoint, endPoint, 0.5f * cellSize.X);
+				AddArrow(geometry, Precise(PointOps.Add(startPoint, displacement)), Precise(PointOps.Add(endPoint, displacement)), 0.5f * cellSize.X);
 				startPoint = endPoint;
 			}
 
