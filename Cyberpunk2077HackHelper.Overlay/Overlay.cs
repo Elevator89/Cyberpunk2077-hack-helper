@@ -27,8 +27,8 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private Layout _layout = null;
 		private Problem _problem = null;
-		private IReadOnlyList<IReadOnlyList<Symbol>> _combinations = null;
-		private IReadOnlyList<System.Drawing.Point> _solution = null;
+		private IReadOnlyList<Symbol>[] _combinations = null;
+		private System.Drawing.Point[] _solution = null;
 
 		public System.Drawing.Size Size
 		{
@@ -72,12 +72,12 @@ namespace Cyberpunk2077HackHelper.Overlay
 			_window.Show();
 		}
 
-		public void Show(Layout layout, Problem problem, IReadOnlyList<IReadOnlyList<Symbol>> combinations, IReadOnlyList<System.Drawing.Point> solution)
+		public void Show(Layout layout, Problem problem, IReadOnlyList<IReadOnlyList<Symbol>> combinations, IEnumerable<System.Drawing.Point> solution)
 		{
 			_layout = layout;
 			_problem = problem;
 			_combinations = combinations.OrderBy(c => c.Count).ToArray();
-			_solution = solution;
+			_solution = solution.ToArray();
 
 			if (_gridGeometry != null)
 			{

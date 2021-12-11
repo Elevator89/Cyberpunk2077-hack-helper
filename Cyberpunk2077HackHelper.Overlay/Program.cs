@@ -72,7 +72,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 							_overlay.Hide();
 						else
 						{
-							TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<IReadOnlyList<Symbol>> combinations, out IReadOnlyList<Point> solution);
+							TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<IReadOnlyList<Symbol>> combinations, out IEnumerable<Point> solution);
 							_overlay.Show(grabbedLayout, problem, combinations, solution);
 						}
 						break;
@@ -87,7 +87,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 			}
 		}
 
-		private static bool TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<IReadOnlyList<Symbol>> combinations, out IReadOnlyList<Point> path)
+		private static bool TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<IReadOnlyList<Symbol>> combinations, out IEnumerable<Point> path)
 		{
 			path = null;
 			using (Bitmap screenshot = MakeScreenshot())
@@ -97,7 +97,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 					combinations = _combiner.GetUnorderedSequenceCombinations(problem.DaemonSequences, problem.BufferLength, Symbol.Unknown, 1).OrderBy(c => c.Count).ToArray();
 					foreach (IReadOnlyList<Symbol> combination in combinations.OrderBy(c => c.Count))
 					{
-						IReadOnlyList<Point> possiblePath = _walker.Walk(problem.Matrix, combination).FirstOrDefault();
+						IEnumerable<Point> possiblePath = _walker.Walk(problem.Matrix, combination).FirstOrDefault();
 						if (possiblePath != null)
 						{
 							path = possiblePath;

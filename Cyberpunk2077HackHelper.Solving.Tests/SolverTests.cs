@@ -32,7 +32,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 			IEnumerable<IReadOnlyList<Symbol>> combinations = _combiner.GetUnorderedSequenceCombinations(problem.DaemonSequences, 8, Symbol.Unknown, 1);
 			foreach (IReadOnlyList<Symbol> combination in combinations.OrderBy(c => c.Count))
 			{
-				IReadOnlyList<System.Drawing.Point>[] solutions = _solver.Walk(problem.Matrix, combination).ToArray();
+				IEnumerable<System.Drawing.Point>[] solutions = _solver.Walk(problem.Matrix, combination).ToArray();
 			}
 		}
 
