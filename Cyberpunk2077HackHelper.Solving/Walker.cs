@@ -1,0 +1,91 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Drawing;
+using Cyberpunk2077HackHelper.Common;
+
+namespace Cyberpunk2077HackHelper.Solving
+{
+	public class Walker
+	{
+		public IEnumerable<IReadOnlyList<Point>> Walk(Symbol[,] matrix, IReadOnlyList<Symbol> combination)
+		{
+			List<Step> foundPath = new List<Step>(20); // The actual size is usually less than 20
+
+			HashSet<Point> visitedCells = new HashSet<Point>();
+			Queue<Step> queue = new Queue<Step>();
+
+			foreach (Step initialStep in GetInitialSteps())
+			{
+				visitedCells.Add(initialStep.Cell);
+				queue.Enqueue(initialStep);
+			}
+
+			while (queue.Count > 0)
+			{
+				Step currentStep = queue.Dequeue();
+
+				foundPath.Add(currentStep);
+
+				foreach (Step nextStep in GetNextItems())
+				{
+					visitedCells.Add(nextStep.Cell);
+					queue.Enqueue(nextStep);
+				}
+
+				IEnumerable<Step> GetNextItems()
+				{
+					int nextStepIndex = currentStep.Index + 1;
+					if (nextStepIndex >= combination.Count)
+						yield break;
+
+					MatrixLineDirection nextStepLineDirection = GetSymbolDirection(nextStepIndex);
+					Symbol nextCombinationSymbol = combination[nextStepIndex];
+
+					foreach (Point nextCell in matrix.GetOtherCellsInLine(nextStepLineDirection, currentStep.Cell).Where(nextCell => !visitedCells.Contains(nextCell)))
+					{
+						if (nextCombinationSymbol == Symbol.Unknown || matrix.Get(nextCell) == nextCombinationSymbol)
+							yield return new Step(nextCell, nextStepIndex, currentStep);
+					}
+				}
+			}
+
+			foreach (Step step in foundPath)
+			{
+				if (step.Index == combination.Count - 1)
+					yield return UnwindPath(step);
+			}
+
+			IEnumerable<Step> GetInitialSteps()
+			{
+				MatrixLineDirection initialStepLineDirection = GetSymbolDirection(0);
+				Symbol initialCombinationSymbol = combination[0];
+
+				foreach (Point initialCell in matrix.GetOtherCellsInLine(initialStepLineDirection, new Point(-1, 0)))
+				{
+					if (initialCombinationSymbol == Symbol.Unknown || matrix.Get(initialCell) == initialCombinationSymbol)
+						yield return new Step(initialCell, 0, null);
+				}
+			}
+		}
+
+		private static MatrixLineDirection GetSymbolDirection(int symbolIndex)
+		{
+			// 0-th symbol should be found in row, 1-th - in column, etc.
+			return symbolIndex % 2 == 0 ? MatrixLineDirection.Row : MatrixLineDirection.Column;
+		}
+
+		private static IReadOnlyList<Point> UnwindPath(Step step)
+		{
+			int length = step.Index + 1;
+			Point[] pathCells = new Point[length];
+
+			for (int i = length - 1; i >= 0; --i)
+			{
+				pathCells[i] = step.Cell;
+				step = step.PrevStep;
+			}
+
+			return pathCells;
+		}
+	}
+}

@@ -2,17 +2,17 @@
 
 namespace Cyberpunk2077HackHelper.Solving
 {
-	public class SequenceItem
+	public class Step
 	{
 		public readonly Point Cell;
 		public readonly int Index;
-		public readonly SequenceItem PrevPoint;
+		public readonly Step PrevStep;
 
-		public SequenceItem(Point point, int index, SequenceItem prevPoint)
+		public Step(Point point, int index, Step prevPoint)
 		{
 			Cell = point;
 			Index = index;
-			PrevPoint = prevPoint;
+			PrevStep = prevPoint;
 		}
 	}
 }

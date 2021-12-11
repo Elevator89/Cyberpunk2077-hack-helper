@@ -8,17 +8,20 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 	[TestClass]
 	public class SolverTests
 	{
-		private Solver _solver;
+		private Walker _solver;
+		private Combiner<Symbol> _combiner;
 
 		[TestInitialize]
 		public void Init()
 		{
-			_solver = new Solver();
+			_solver = new Walker();
+			_combiner = new Combiner<Symbol>(EqualityComparer<Symbol>.Default);
 		}
 
 		[DataTestMethod]
 		[DataRow(61)]
 		[DataRow(62)]
+		[DataRow(63)]
 		[DataRow(71)]
 		[DataRow(72)]
 		[DataRow(73)]
@@ -26,8 +29,11 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 		public void Solves(int caseId)
 		{
 			Problem problem = GetProblem(caseId);
-			IReadOnlyList<System.Drawing.Point>[] solutions = _solver.Solve(problem).ToArray();
-
+			IEnumerable<IReadOnlyList<Symbol>> combinations = _combiner.GetUnorderedSequenceCombinations(problem.DaemonSequences, 8, Symbol.Unknown, 1);
+			foreach (IReadOnlyList<Symbol> combination in combinations.OrderBy(c => c.Count))
+			{
+				IReadOnlyList<System.Drawing.Point>[] solutions = _solver.Walk(problem.Matrix, combination).ToArray();
+			}
 		}
 
 		private Problem GetProblem(int caseId)

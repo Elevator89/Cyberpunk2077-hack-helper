@@ -52,7 +52,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 		{
 			(IReadOnlyList<int> seqA, IReadOnlyList<int> seqB, int maxCombinationLength, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) = GetSequencesAndCombinations(caseId);
 
-			IReadOnlyList<int>[] combinations = _combiner.GetPossibleCombinations(seqA, seqB, maxCombinationLength, wildValue, wildMaxCount).ToArray();
+			IReadOnlyList<int>[] combinations = _combiner.GetCombinations(seqA, seqB, maxCombinationLength, wildValue, wildMaxCount).ToArray();
 
 			Assert.AreEqual(expectedCombinations.Length, combinations.Length);
 			for (int i = 0; i < combinations.Length; ++i)
@@ -67,7 +67,7 @@ namespace Cyberpunk2077HackHelper.Solving.Tests
 		{
 			(IReadOnlyList<int>[] sequences, int maxCombinationLength, int wildValue, int wildMaxCount, IReadOnlyList<int>[] expectedCombinations) = GetAllSequencesAndCombinations(caseId);
 
-			IReadOnlyList<int>[] combinations = _combiner.GetPossibleCombinations(sequences, maxCombinationLength, wildValue, wildMaxCount).ToArray();
+			IReadOnlyList<int>[] combinations = _combiner.GetOrderedSequenceCombinations(sequences, maxCombinationLength, wildValue, wildMaxCount).ToArray();
 
 			Assert.AreEqual(expectedCombinations.Length, combinations.Length);
 			for (int i = 0; i < combinations.Length; ++i)

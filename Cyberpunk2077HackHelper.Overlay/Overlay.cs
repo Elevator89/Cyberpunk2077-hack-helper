@@ -4,6 +4,7 @@ using GameOverlay.Drawing;
 using GameOverlay.Windows;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Cyberpunk2077HackHelper.Overlay
@@ -26,6 +27,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private Layout _layout = null;
 		private Problem _problem = null;
+		private IReadOnlyList<IReadOnlyList<Symbol>> _combinations = null;
 		private IReadOnlyList<System.Drawing.Point> _solution = null;
 
 		public System.Drawing.Size Size
@@ -70,10 +72,11 @@ namespace Cyberpunk2077HackHelper.Overlay
 			_window.Show();
 		}
 
-		public void Show(Layout layout, Problem problem, IReadOnlyList<System.Drawing.Point> solution)
+		public void Show(Layout layout, Problem problem, IReadOnlyList<IReadOnlyList<Symbol>> combinations, IReadOnlyList<System.Drawing.Point> solution)
 		{
 			_layout = layout;
 			_problem = problem;
+			_combinations = combinations.OrderBy(c => c.Count).ToArray();
 			_solution = solution;
 
 			if (_gridGeometry != null)
@@ -149,6 +152,7 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 				DrawMatrixTable(_layout.Matrix, _problem.Matrix, gfx, _fontSmall, _darkBrush);
 				DrawSequencesTable(_layout.Sequences, _problem.DaemonSequences, gfx, _fontSmall, _darkBrush);
+				DrawCombinations(_layout.Sequences, _combinations, gfx, _fontSmall, _brightBrush);
 			}
 			else
 			{
@@ -199,16 +203,16 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private static void AddLayoutTableGeometry(Geometry geometry, LayoutTable layoutTable)
 		{
-			float positionX = layoutTable.Position.X + 0.5f;
-			float positionY = layoutTable.Position.Y + 0.5f;
+			float startX = layoutTable.Position.X;
+			float startY = layoutTable.Position.Y;
 
 			for (int row = 0; row <= layoutTable.CellCount.Height; ++row)
 			{
+				float lineY = startY + row * layoutTable.CellSize.Height;
+
 				Line line = new Line(
-					positionX,
-					positionY + row * layoutTable.CellSize.Height,
-					positionX + layoutTable.CellCount.Width * layoutTable.CellSize.Width,
-					positionY + row * layoutTable.CellSize.Height);
+					Precise(new Point(startX, lineY)),
+					Precise(new Point(startX + layoutTable.CellCount.Width * layoutTable.CellSize.Width, lineY)));
 
 				geometry.BeginFigure(line);
 				geometry.EndFigure(false);
@@ -216,11 +220,11 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 			for (int col = 0; col <= layoutTable.CellCount.Width; ++col)
 			{
+				float lineX = startX + col * layoutTable.CellSize.Width;
+
 				Line line = new Line(
-					positionX + col * layoutTable.CellSize.Width,
-					positionY,
-					positionX + col * layoutTable.CellSize.Width,
-					positionY + layoutTable.CellCount.Height * layoutTable.CellSize.Height);
+					Precise(new Point(lineX, startY)),
+					Precise(new Point(lineX, startY + layoutTable.CellCount.Height * layoutTable.CellSize.Height)));
 
 				geometry.BeginFigure(line);
 				geometry.EndFigure(false);
@@ -246,11 +250,6 @@ namespace Cyberpunk2077HackHelper.Overlay
 					layoutTable.Position.X + point.X * layoutTable.CellSize.Width,
 					layoutTable.Position.Y + point.Y * layoutTable.CellSize.Height);
 			}
-		}
-
-		private static Point Precise(Point p)
-		{
-			return PointOps.Add(p.Round(), _precisionDisplacement);
 		}
 
 		private static void AddRect(Geometry geometry, Point center, float width, float height)
@@ -280,26 +279,26 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 		private static void DrawMatrixTable(LayoutTable table, Symbol[,] matrix, Graphics gfx, Font font, SolidBrush brush)
 		{
-			float positionX = table.Position.X + 0.5f;
-			float positionY = table.Position.Y + 0.5f;
+			float startX = table.Position.X;
+			float startY = table.Position.Y;
 
 			for (int row = 0; row < table.CellCount.Height; ++row)
 			{
 				for (int col = 0; col < table.CellCount.Width; ++col)
 				{
 					Point point = new Point(
-						positionX + col * table.CellSize.Width,
-						positionY + row * table.CellSize.Height);
+						startX + col * table.CellSize.Width,
+						startY + row * table.CellSize.Height);
 
-					gfx.DrawText(font, brush, point, SymbolToString(matrix[row, col]));
+					gfx.DrawText(font, brush, Precise(point), SymbolToString(matrix[row, col]));
 				}
 			}
 		}
 
 		private static void DrawSequencesTable(LayoutTable table, IReadOnlyList<IReadOnlyList<Symbol>> sequences, Graphics gfx, Font font, SolidBrush brush)
 		{
-			float positionX = table.Position.X + 0.5f;
-			float positionY = table.Position.Y + 0.5f; // Displace symbol from cell start
+			float startX = table.Position.X;
+			float startY = table.Position.Y;
 
 			for (int sequenceIndex = 0; sequenceIndex < sequences.Count; ++sequenceIndex)
 			{
@@ -307,10 +306,33 @@ namespace Cyberpunk2077HackHelper.Overlay
 				for (int symbolIndex = 0; symbolIndex < sequence.Count; ++symbolIndex)
 				{
 					Point point = new Point(
-						positionX + symbolIndex * table.CellSize.Width,
-						positionY + sequenceIndex * table.CellSize.Height);
+						startX + symbolIndex * table.CellSize.Width,
+						startY + sequenceIndex * table.CellSize.Height);
 
-					gfx.DrawText(font, brush, point, SymbolToString(sequence[symbolIndex]));
+					gfx.DrawText(font, brush, Precise(point), SymbolToString(sequence[symbolIndex]));
+				}
+			}
+		}
+
+		private static void DrawCombinations(LayoutTable table, IReadOnlyList<IReadOnlyList<Symbol>> combinations, Graphics gfx, Font font, SolidBrush brush)
+		{
+			// Below the table
+			float startX = table.Position.X;
+			float startY = table.Position.Y + table.CellCount.Height * table.CellSize.Height;
+
+			float stepX = 0.5f * table.CellSize.Width;
+			float stepY = 0.3f * table.CellSize.Height;
+
+			for (int combinationIndex = 0; combinationIndex < combinations.Count; ++combinationIndex)
+			{
+				IReadOnlyList<Symbol> combination = combinations[combinationIndex];
+				for (int symbolIndex = 0; symbolIndex < combination.Count; ++symbolIndex)
+				{
+					Point point = new Point(
+						startX + symbolIndex * stepX,
+						startY + combinationIndex * stepY);
+
+					gfx.DrawText(font, brush, Precise(point), SymbolToString(combination[symbolIndex]));
 				}
 			}
 		}
@@ -333,8 +355,13 @@ namespace Cyberpunk2077HackHelper.Overlay
 					return "FF";
 				case Symbol.Unknown:
 				default:
-					return "00";
+					return "**";
 			}
+		}
+
+		private static Point Precise(Point p)
+		{
+			return PointOps.Add(p.Round(), _precisionDisplacement);
 		}
 	}
 }

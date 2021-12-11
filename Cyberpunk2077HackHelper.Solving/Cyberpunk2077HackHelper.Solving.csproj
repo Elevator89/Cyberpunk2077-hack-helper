@@ -43,11 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combiner.cs" />
+    <Compile Include="ListComparer.cs" />
     <Compile Include="MatrixExtensions.cs" />
     <Compile Include="MatrixLineDirection.cs" />
-    <Compile Include="SequenceItem.cs" />
+    <Compile Include="Step.cs" />
     <Compile Include="PermutationNarayana.cs" />
-    <Compile Include="Solver.cs" />
+    <Compile Include="Walker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

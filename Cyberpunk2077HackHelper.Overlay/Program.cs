@@ -17,13 +17,14 @@ namespace Cyberpunk2077HackHelper.Overlay
 		private const string LayoutsPath = "Data/Layouts/";
 		private const string ScreenshotsPath = "Data/Screenshots/";
 
-		private static InputManager _inputManager;
+		private static LowLevelKeyboardHook _keyboardHook;
 		private static Overlay _overlay;
 
 		private static List<Layout> _layouts = new List<Layout>();
 
 		private static Grabber _grabber;
-		private static Solver _solver = new Solver();
+		private static Combiner<Symbol> _combiner = new Combiner<Symbol>(EqualityComparer<Symbol>.Default);
+		private static Walker _walker = new Walker();
 
 		static void Main(string[] args)
 		{
@@ -46,10 +47,9 @@ namespace Cyberpunk2077HackHelper.Overlay
 
 			try
 			{
-				_inputManager = new InputManager();
-				_inputManager.OnKeyboardEvent += InputManager_OnKeyboardEvent;
-				_inputManager.Initialize();
-
+				_keyboardHook = new LowLevelKeyboardHook();
+				_keyboardHook.OnKeyboardEvent += ProcessKeyboardEvent;
+				_keyboardHook.InstallHook();
 				_overlay = new Overlay();
 
 				_overlay.Run();
@@ -57,11 +57,11 @@ namespace Cyberpunk2077HackHelper.Overlay
 			finally
 			{
 				_overlay.Dispose();
-				_inputManager.Dispose();
+				_keyboardHook.Dispose();
 			}
 		}
 
-		private static void InputManager_OnKeyboardEvent(VirtualKeyCode key, KeyState state)
+		private static void ProcessKeyboardEvent(VirtualKeyCode key, KeyState state)
 		{
 			if (state == KeyState.Up)
 			{
@@ -72,8 +72,8 @@ namespace Cyberpunk2077HackHelper.Overlay
 							_overlay.Hide();
 						else
 						{
-							TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<Point> solution);
-							_overlay.Show(grabbedLayout, problem, solution);
+							TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<IReadOnlyList<Symbol>> combinations, out IReadOnlyList<Point> solution);
+							_overlay.Show(grabbedLayout, problem, combinations, solution);
 						}
 						break;
 					case VirtualKeyCode.F7:
@@ -87,18 +87,28 @@ namespace Cyberpunk2077HackHelper.Overlay
 			}
 		}
 
-		private static bool TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<Point> solution)
+		private static bool TryGrabAndSolve(out Layout grabbedLayout, out Problem problem, out IReadOnlyList<IReadOnlyList<Symbol>> combinations, out IReadOnlyList<Point> path)
 		{
+			path = null;
 			using (Bitmap screenshot = MakeScreenshot())
 			{
 				if (TryGrabProblem(screenshot, out grabbedLayout, out problem))
 				{
-					solution = _solver.Solve(problem).FirstOrDefault();
-					return solution != null;
+					combinations = _combiner.GetUnorderedSequenceCombinations(problem.DaemonSequences, problem.BufferLength, Symbol.Unknown, 1).OrderBy(c => c.Count).ToArray();
+					foreach (IReadOnlyList<Symbol> combination in combinations.OrderBy(c => c.Count))
+					{
+						IReadOnlyList<Point> possiblePath = _walker.Walk(problem.Matrix, combination).FirstOrDefault();
+						if (possiblePath != null)
+						{
+							path = possiblePath;
+							break;
+						}
+					}
+					return path != null;
 				}
 				else
 				{
-					solution = null;
+					combinations = null;
 					return false;
 				}
 			}
